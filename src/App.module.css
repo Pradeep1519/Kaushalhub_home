@@ -1,0 +1,57 @@
+/* CSS module styles specifically for App.tsx component */
+
+/* Main application container styles */
+.appContainer {
+  min-height: 100vh; /* Ensure app takes full viewport height */
+  transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth opacity transition with custom easing */
+}
+
+/* Container for page content with transition effects */
+.pageContainer {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition for all properties */
+}
+
+/* Additional padding for pages that need header/footer spacing */
+.pageContainerWithPadding {
+  padding-top: 4rem; /* Add top padding equivalent to pt-16 Tailwind class */
+}
+
+/* Page transition animation classes for entering pages */
+.pageEnter {
+  opacity: 0; /* Start with transparent */
+  transform: translateX(20px); /* Start shifted 20px to the right */
+}
+
+/* Active state for page enter animation */
+.pageEnterActive {
+  opacity: 1; /* Fade in to full opacity */
+  transform: translateX(0); /* Move to original position */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition timing */
+}
+
+/* Initial state for page exit animation */
+.pageExit {
+  opacity: 1; /* Start with full opacity */
+  transform: translateX(0); /* Start at original position */
+}
+
+/* Active state for page exit animation */
+.pageExitActive {
+  opacity: 0; /* Fade out to transparent */
+  transform: translateX(-20px); /* Move 20px to the left */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition timing */
+}
+
+/* Loading screen container positioning */
+.loadingContainer {
+  position: fixed; /* Fix position relative to viewport */
+  inset: 0; /* Cover entire viewport (top: 0, right: 0, bottom: 0, left: 0) */
+  z-index: 9999; /* Highest z-index to appear above all other content */
+}
+
+/* Theme transition optimization for smooth dark/light mode switching */
+.themeTransition * {
+  transition-property: background-color, border-color, color, box-shadow; /* Only transition these properties */
+  transition-duration: 0.3s; /* 300ms transition duration */
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing function */
+}

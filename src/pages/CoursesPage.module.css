@@ -1,0 +1,76 @@
+/* CoursesPage specific styles */
+.coursesContainer {
+  min-height: 100vh;
+}
+
+.heroSection {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.05) 0%, 
+    rgba(255, 255, 255, 1) 50%, 
+    rgba(20, 184, 166, 0.05) 100%);
+}
+
+.dark .heroSection {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.1) 0%, 
+    rgba(17, 24, 39, 1) 50%, 
+    rgba(20, 184, 166, 0.1) 100%);
+}
+
+.filterBadge {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+}
+
+.filterBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.filterBadgeActive {
+  background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.filterBadgeActive:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #0e7490 100%);
+}
+
+.searchInput {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.searchInput:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+.viewToggle {
+  transition: all 0.2s ease;
+}
+
+.viewToggle:hover {
+  transform: scale(1.05);
+}
+
+.coursesGrid {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.noResults {
+  animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

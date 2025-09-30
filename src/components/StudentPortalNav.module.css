@@ -1,0 +1,176 @@
+/* CSS module styles for StudentPortalNav component */
+
+/* Mobile menu button positioning and styling */
+.mobileMenuButton {
+  backdrop-filter: blur(20px); /* Glass effect for mobile menu button */
+  -webkit-backdrop-filter: blur(20px); /* Safari support for backdrop filter */
+}
+
+/* Main sidebar container */
+.sidebar {
+  width: 280px; /* Fixed sidebar width */
+  backdrop-filter: blur(20px); /* Glass effect */
+  -webkit-backdrop-filter: blur(20px); /* Safari support */
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Desktop sidebar (always visible on large screens) */
+.desktopSidebar {
+  width: 280px; /* Match mobile sidebar width */
+  backdrop-filter: blur(20px); /* Glass effect */
+  -webkit-backdrop-filter: blur(20px); /* Safari support */
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Sidebar header section */
+.sidebarHeader {
+  backdrop-filter: blur(10px); /* Additional blur for header section */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+}
+
+/* Navigation container */
+.navigation {
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+  scrollbar-color: rgba(59, 130, 246, 0.3) transparent; /* Custom scrollbar colors */
+}
+
+/* Webkit scrollbar styling for navigation */
+.navigation::-webkit-scrollbar {
+  width: 4px; /* Thin scrollbar width */
+}
+
+.navigation::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+.navigation::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3); /* Blue scrollbar thumb */
+  border-radius: 2px; /* Rounded scrollbar thumb */
+}
+
+.navigation::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5); /* Darker blue on hover */
+}
+
+/* Navigation item base styles */
+.navItem {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transitions */
+  background-color: transparent; /* Transparent background by default */
+  border: none; /* Remove default border */
+  position: relative; /* For positioning pseudo-elements */
+}
+
+/* Hover state for navigation items */
+.navItem:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* Light blue background on hover */
+  transform: translateX(2px); /* Slight movement on hover */
+}
+
+/* Active navigation item styles */
+.navItemActive {
+  background-color: rgba(59, 130, 246, 0.15); /* Slightly more opaque blue for active state */
+  border-left: 3px solid; /* Left border indicator */
+  border-image: linear-gradient(135deg, #3b82f6, #8b5cf6, #f97316) 1; /* Gradient border */
+}
+
+/* Active item glow effect */
+.navItemActive::before {
+  content: ''; /* Empty content for pseudo-element */
+  position: absolute; /* Absolute positioning */
+  top: 0; /* Align to top */
+  left: 0; /* Align to left */
+  right: 0; /* Align to right */
+  bottom: 0; /* Align to bottom */
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1), rgba(249, 115, 22, 0.1)); /* Gradient background */
+  border-radius: 8px; /* Rounded corners */
+  z-index: -1; /* Behind the content */
+  opacity: 0.5; /* Semi-transparent */
+}
+
+/* Sidebar footer styling */
+.sidebarFooter {
+  backdrop-filter: blur(10px); /* Glass effect for footer */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+}
+
+/* Responsive behavior for mobile */
+@media (max-width: 1023px) {
+  .sidebar {
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.2); /* Stronger shadow on mobile */
+  }
+}
+
+/* Animation for navigation items */
+.navItem {
+  transform-origin: left center; /* Transform from left side */
+}
+
+/* Pulse animation for notification badges */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1); /* Normal size */
+    opacity: 1; /* Full opacity */
+  }
+  50% {
+    transform: scale(1.05); /* Slightly larger */
+    opacity: 0.8; /* Slightly transparent */
+  }
+}
+
+/* Apply pulse animation to badges */
+.navItem .badge {
+  animation: pulse 2s ease-in-out infinite; /* Continuous pulsing */
+}
+
+/* Gradient text animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%; /* Start position */
+  }
+  50% {
+    background-position: 100% 50%; /* Middle position */
+  }
+  100% {
+    background-position: 0% 50%; /* End position (back to start) */
+  }
+}
+
+/* Logo gradient animation */
+.sidebarHeader .text-transparent {
+  background-size: 200% 200%; /* Large background for animation */
+  animation: gradientShift 4s ease-in-out infinite; /* Continuous gradient animation */
+}
+
+/* Smooth transitions for theme changes */
+.sidebar * {
+  transition-property: background-color, border-color, color, box-shadow; /* Properties to transition */
+  transition-duration: 0.3s; /* Transition duration */
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
+}
+
+/* Focus states for accessibility */
+.navItem:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5); /* Blue outline for focus */
+  outline-offset: 2px; /* Offset outline from element */
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .navItem {
+    border: 1px solid currentColor; /* Visible borders in high contrast */
+  }
+  
+  .navItemActive {
+    background-color: rgba(59, 130, 246, 0.3); /* More visible active state */
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .navItem,
+  .sidebar,
+  .navItem .badge {
+    animation: none; /* Disable animations */
+    transition: none; /* Disable transitions */
+  }
+}

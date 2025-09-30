@@ -1,0 +1,126 @@
+/* SignInPage specific styles */
+.signInContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1rem 3rem;
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.05) 0%, 
+    rgba(255, 255, 255, 1) 50%, 
+    rgba(20, 184, 166, 0.05) 100%);
+}
+
+.dark .signInContainer {
+  background: linear-gradient(135deg, 
+    rgba(17, 24, 39, 1) 0%, 
+    rgba(31, 41, 55, 1) 50%, 
+    rgba(17, 24, 39, 1) 100%);
+}
+
+.formCard {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.dark .formCard {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.iconContainer {
+  background: linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+.gradientTitle {
+  background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.inputContainer {
+  position: relative;
+}
+
+.inputIcon {
+  transition: color 0.2s ease;
+}
+
+.formInput {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.formInput:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+.formInput:focus + .inputIcon {
+  color: #3b82f6;
+}
+
+.errorInput {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.errorMessage {
+  animation: slideDown 0.3s ease-out;
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.submitButton:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #0e7490 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.linkButton {
+  color: #2563eb;
+  transition: all 0.2s ease;
+}
+
+.linkButton:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.demoInfo {
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: #1e40af;
+}
+
+.dark .demoInfo {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

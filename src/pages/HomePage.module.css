@@ -1,0 +1,50 @@
+/* CSS module styles specifically for HomePage component */
+
+/* Main container for the home page layout */
+.homeContainer {
+  position: relative; /* Enable relative positioning for child elements */
+  overflow: hidden; /* Hide any content that overflows the container */
+}
+
+/* Gradient background for hero section in light mode */
+.heroGradient {
+  background: linear-gradient(135deg, /* 135-degree diagonal gradient */
+    rgba(59, 130, 246, 0.05) 0%, /* Blue color at start with 5% opacity */
+    rgba(255, 255, 255, 1) 50%, /* White color in middle with full opacity */
+    rgba(20, 184, 166, 0.05) 100%); /* Teal color at end with 5% opacity */
+}
+
+/* Gradient background for hero section in dark mode */
+.dark .heroGradient {
+  background: linear-gradient(135deg, /* 135-degree diagonal gradient for dark theme */
+    rgba(59, 130, 246, 0.1) 0%, /* Blue color at start with 10% opacity */
+    rgba(17, 24, 39, 1) 50%, /* Dark gray color in middle with full opacity */
+    rgba(20, 184, 166, 0.1) 100%); /* Teal color at end with 10% opacity */
+}
+
+/* Styles for statistic cards with smooth transitions */
+.statCard {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition for all properties */
+}
+
+/* Hover effect for statistic cards */
+.statCard:hover {
+  transform: translateY(-2px) scale(1.02); /* Move up 2px and scale up by 2% on hover */
+}
+
+/* Animation class for hero statistics section */
+.heroStats {
+  animation: slideUpStagger 0.8s ease-out forwards; /* Apply slide up animation with stagger effect */
+}
+
+/* Keyframe animation for sliding up with stagger effect */
+@keyframes slideUpStagger {
+  from {
+    opacity: 0; /* Start with transparent */
+    transform: translateY(30px); /* Start 30px below original position */
+  }
+  to {
+    opacity: 1; /* End with full opacity */
+    transform: translateY(0); /* End at original position */
+  }
+}
