@@ -5,7 +5,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { AnimatedButton } from "./AnimatedButton";
 import { motion, AnimatePresence } from "motion/react";
 import { useScrollDirection } from "./hooks/useScrollDirection";
-import { useUser } from "../contexts/UserContext"; // ✅ Import UserContext
+import { useUser } from "../contexts/UserContext";
 
 interface HeaderProps {
   currentPage?: string;
@@ -108,12 +108,11 @@ export function Header({
 
   // ✅ NEW: Logout handler
   const handleLogout = () => {
-    logout(); // ✅ Clear user from context and localStorage
+    logout();
     setIsMenuOpen(false);
     if (onNavigate) {
-      onNavigate("home"); // ✅ Redirect to home after logout
+      onNavigate("home");
     }
-    // ✅ Optional: Show logout success message
     console.log('Logged out successfully');
   };
 
@@ -124,32 +123,63 @@ export function Header({
     }
   };
 
-  // Dynamic logo font size
+  // Dynamic logo font size - Responsive improvements
   const getLogoFontSize = () => {
-    if (windowWidth < 400) return `calc(${logoSize} * 0.35)`;
-    if (windowWidth < 600) return `calc(${logoSize} * 0.45)`;
+    if (windowWidth < 400) return `calc(${logoSize} * 0.3)`;
+    if (windowWidth < 500) return `calc(${logoSize} * 0.35)`;
+    if (windowWidth < 600) return `calc(${logoSize} * 0.4)`;
+    if (windowWidth < 768) return `calc(${logoSize} * 0.45)`;
     return `calc(${logoSize} * 0.5)`;
   };
 
-  // Dynamic nav spacing
+  // Dynamic nav spacing - Responsive improvements
   const getNavSpacing = () => {
-    if (windowWidth < 400) return "space-x-2";
-    if (windowWidth < 600) return "space-x-4";
-    return "space-x-8";
+    if (windowWidth < 1024) return "space-x-6";
+    if (windowWidth < 1280) return "space-x-8";
+    return "space-x-10";
   };
 
-  // ✅ UPDATED: Dynamic Auth button text and class
+  // ✅ UPDATED: Dynamic Auth button text and class - Responsive improvements
   const getAuthButtonText = () => {
     if (isAuthenticated) {
+      if (windowWidth < 400) return user?.name ? `${user.name.split(' ')[0]}` : 'Account';
+      if (windowWidth < 500) return user?.name ? `Hi, ${user.name.split(' ')[0]}` : 'Dashboard';
       return user?.name ? `Hi, ${user.name.split(' ')[0]}` : 'Dashboard';
     }
+    if (windowWidth < 400) return 'Login';
+    if (windowWidth < 500) return 'Sign In';
     return 'Sign In / Sign Up';
   };
 
   const getAuthButtonClass = () => {
-    if (windowWidth < 400) return "text-[10px] px-2 py-1";
-    if (windowWidth < 600) return "text-xs px-3 py-1.5";
-    return "text-xs sm:text-sm px-3 sm:px-4 py-2";
+    if (windowWidth < 400) return "text-xs px-3 py-1.5";
+    if (windowWidth < 500) return "text-xs px-3 py-1.5";
+    if (windowWidth < 640) return "text-sm px-3 py-2";
+    return "text-sm px-4 py-2";
+  };
+
+  // Responsive logo container size
+  const getLogoContainerSize = () => {
+    if (windowWidth < 400) return "max(35px, 50px)";
+    if (windowWidth < 500) return "max(40px, 55px)";
+    if (windowWidth < 640) return "max(45px, 60px)";
+    return `max(${logoSize}, 80px)`;
+  };
+
+  // ✅ NEW: Dynamic navigation font size - Larger for laptop/tablet
+  const getNavFontSize = () => {
+    if (windowWidth < 1024) return "text-base"; // For mobile
+    if (windowWidth < 1280) return "text-lg";   // For tablet
+    return "text-lg";                          // For laptop/desktop
+  };
+
+  // ✅ NEW: Dynamic company name font size - Smaller on mobile
+  const getCompanyNameFontSize = () => {
+    if (windowWidth < 400) return `calc(${logoSize} * 0.25)`;
+    if (windowWidth < 500) return `calc(${logoSize} * 0.3)`;
+    if (windowWidth < 640) return `calc(${logoSize} * 0.35)`;
+    if (windowWidth < 768) return `calc(${logoSize} * 0.4)`;
+    return `calc(${logoSize} * 0.45)`;
   };
 
   return (
@@ -164,27 +194,26 @@ export function Header({
         backgroundColor: "rgba(255, 255, 255, 0.65)",
       }}
     >
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Left: Logo + Name */}
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-5 lg:px-6 xl:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-18">
+          {/* Left: Logo + Name - Responsive improvements */}
           <div className="flex items-center flex-shrink-0" style={{ gap: logoNameSpacing }}>
             <motion.div
-              whileHover={{ scale: 1.05}}
+              whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               onClick={handleLogoClick}
               className="cursor-pointer flex items-center justify-center"
               style={{
-                width: `max(${logoSize}, 90px)`,
-                height: `max(${logoSize}, 70px)`,
-                minWidth: "60px",
+                width: getLogoContainerSize(),
+                height: getLogoContainerSize(),
+                minWidth: "35px",
               }}
             >
               {!logoError ? (
                 <img
-                  src="src/public/logo.svg"
+                  src="/logo.svg"
                   alt="KaushalHub Logo"
-                  className="object-contain"
-                  style={{ width: "150%", height: "150%" }}
+                  className="object-contain w-full h-full"
                   onError={() => setLogoError(true)}
                 />
               ) : (
@@ -201,15 +230,17 @@ export function Header({
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               className="font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent whitespace-nowrap cursor-pointer"
-              style={{ fontSize: getLogoFontSize() }}
+              style={{ fontSize: getCompanyNameFontSize() }}
               onClick={handleLogoClick}
             >
-              KaushalHub NaukriPath
+              {windowWidth < 400 ? "KaushalHub" : 
+               windowWidth < 500 ? "KaushalHub NP" : 
+               "KaushalHub NaukriPath"}
             </motion.span>
           </div>
 
-          {/* Center: Desktop Navigation */}
-          <nav className={`hidden md:flex flex-1 justify-center ${getNavSpacing()}`}>
+          {/* Center: Desktop Navigation - Larger font sizes for laptop/tablet */}
+          <nav className={`hidden lg:flex flex-1 justify-center ${getNavSpacing()} mx-2 xl:mx-4`}>
             {[
               { id: "home", label: "Home", page: "home" },
               { id: "about", label: "About", anchor: "about" },
@@ -221,8 +252,8 @@ export function Header({
               <motion.button
                 key={item.id}
                 onClick={() => handleNavClick(item.page || "", item.anchor)}
-                className={`relative text-foreground/80 hover:text-blue-600 transition-colors ${
-                  item.id === currentPage || item.page === currentPage ? "text-blue-600" : ""
+                className={`relative text-foreground/80 hover:text-blue-600 transition-colors duration-200 font-medium ${getNavFontSize()} ${
+                  item.id === currentPage || item.page === currentPage ? "text-blue-600 font-semibold" : ""
                 }`}
                 whileHover={{ y: -2 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -239,40 +270,48 @@ export function Header({
             ))}
           </nav>
 
-          {/* Right: Theme + Auth + Menu */}
-          <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+          {/* Right: Theme + Auth + Menu - Responsive improvements */}
+          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 flex-shrink-0">
             <ThemeToggle />
             
-            {/* ✅ UPDATED: Auth Button - shows different text based on login status */}
-            <AnimatedButton
-              className={`bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 whitespace-nowrap ${getAuthButtonClass()}`}
-              glowEffect
-              onClick={handleAuthClick}
-            >
-              {getAuthButtonText()}
-            </AnimatedButton>
+            {/* ✅ UPDATED: Auth Button - responsive text and sizing */}
+            <div className="hidden sm:block">
+              <AnimatedButton
+                className={`bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 whitespace-nowrap text-white font-medium ${getAuthButtonClass()}`}
+                glowEffect
+                scaleOnHover={windowWidth > 400}
+                onClick={handleAuthClick}
+              >
+                {getAuthButtonText()}
+              </AnimatedButton>
+            </div>
             
+            {/* Mobile menu button - responsive sizing */}
             <button
-              className="md:hidden p-2 text-foreground hover:text-blue-600 transition-colors"
+              className="lg:hidden p-1.5 sm:p-2 text-foreground hover:text-blue-600 transition-colors duration-200 rounded-lg hover:bg-gray-100"
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
+              {isMenuOpen ? (
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              ) : (
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+              )}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Enhanced with larger text and better spacing */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              className="md:hidden py-4 border-t border-border glass-effect"
+              className="lg:hidden py-4 border-t border-border glass-effect"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <nav className="flex flex-col space-y-4">
+              <nav className="flex flex-col space-y-3 sm:space-y-4">
                 {[
                   { id: "home", label: "Home", page: "home" },
                   { id: "about", label: "About", anchor: "about" },
@@ -284,19 +323,20 @@ export function Header({
                   <motion.button
                     key={item.id}
                     onClick={() => handleNavClick(item.page || "home", item.anchor)}
-                    className={`text-left text-foreground/80 hover:text-blue-600 transition-colors ${
-                      item.id === currentPage || item.page === currentPage ? "text-blue-600 font-medium" : ""
+                    className={`text-left text-foreground/80 hover:text-blue-600 transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-gray-50 text-lg sm:text-xl font-medium ${
+                      item.id === currentPage || item.page === currentPage ? "text-blue-600 font-semibold bg-blue-50" : ""
                     }`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
+                    whileHover={{ x: 5 }}
                   >
                     {item.label}
                   </motion.button>
                 ))}
                 
-                {/* ✅ UPDATED: Mobile Auth Section - shows different options based on login status */}
-                <div className="pt-4 border-t border-gray-200">
+                {/* ✅ UPDATED: Mobile Auth Section - responsive improvements */}
+                <div className="pt-4 border-t border-gray-200 space-y-3">
                   {isAuthenticated ? (
                     <>
                       <motion.button
@@ -307,7 +347,9 @@ export function Header({
                           setIsMenuOpen(false);
                           if (onNavigate) onNavigate("student-portal");
                         }}
-                        className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-2 px-4 rounded-lg text-sm font-medium mb-2"
+                        className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         Go to Dashboard
                       </motion.button>
@@ -316,7 +358,9 @@ export function Header({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
                         onClick={handleLogout}
-                        className="w-full bg-gray-500 text-white py-2 px-4 rounded-lg text-sm font-medium"
+                        className="w-full bg-gray-500 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:bg-gray-600 transition-all duration-200"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         Logout
                       </motion.button>
@@ -327,7 +371,9 @@ export function Header({
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6 }}
                       onClick={handleAuthClick}
-                      className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-2 px-4 rounded-lg text-sm font-medium"
+                      className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       Sign In / Sign Up
                     </motion.button>

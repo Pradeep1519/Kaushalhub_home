@@ -1,4 +1,4 @@
-/* CSS module styles for StudentPortalNav component */
+/* CSS module styles for StudentPortalNav component - Enhanced Responsive */
 
 /* Mobile menu button positioning and styling */
 .mobileMenuButton {
@@ -6,9 +6,9 @@
   -webkit-backdrop-filter: blur(20px); /* Safari support for backdrop filter */
 }
 
-/* Main sidebar container */
+/* Main sidebar container - Responsive width */
 .sidebar {
-  width: 280px; /* Fixed sidebar width */
+  width: 280px; /* Fixed sidebar width for desktop */
   backdrop-filter: blur(20px); /* Glass effect */
   -webkit-backdrop-filter: blur(20px); /* Safari support */
   box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
@@ -58,6 +58,8 @@
   background-color: transparent; /* Transparent background by default */
   border: none; /* Remove default border */
   position: relative; /* For positioning pseudo-elements */
+  min-height: 44px; /* Minimum touch target for mobile */
+  padding: 0.75rem 1rem; /* Responsive padding */
 }
 
 /* Hover state for navigation items */
@@ -93,12 +95,122 @@
   -webkit-backdrop-filter: blur(10px); /* Safari support */
 }
 
-/* Responsive behavior for mobile */
-@media (max-width: 1023px) {
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+
+/* Mobile First: Base styles for all devices */
+
+/* Small Mobile (320px - 480px) */
+@media (max-width: 480px) {
   .sidebar {
-    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.2); /* Stronger shadow on mobile */
+    width: 100vw; /* Full viewport width on mobile */
+    max-width: 100%; /* Ensure no overflow */
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.25); /* Stronger shadow on mobile */
+  }
+  
+  .navItem {
+    padding: 0.875rem 1rem; /* Slightly larger padding for mobile */
+    min-height: 48px; /* Larger touch targets */
+  }
+  
+  .mobileMenuButton {
+    padding: 0.75rem; /* Larger touch target for menu button */
   }
 }
+
+/* Mobile (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+  .sidebar {
+    width: 320px; /* Slightly wider on larger mobile */
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.2); /* Strong shadow */
+  }
+  
+  .navItem {
+    padding: 0.875rem 1.25rem; /* Comfortable padding */
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sidebar {
+    width: 280px; /* Standard width for tablet */
+    box-shadow: 3px 0 25px rgba(0, 0, 0, 0.15); /* Medium shadow */
+  }
+  
+  .desktopSidebar {
+    width: 280px; /* Consistent with mobile sidebar */
+  }
+  
+  .navItem {
+    padding: 0.75rem 1.125rem; /* Balanced padding */
+  }
+  
+  .navigation {
+    max-height: 60vh; /* Limit height on tablet */
+  }
+}
+
+/* Desktop (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .sidebar {
+    width: 260px; /* Slightly narrower for medium desktop */
+  }
+  
+  .desktopSidebar {
+    width: 260px; /* Consistent width */
+  }
+  
+  .navItem {
+    padding: 0.7rem 1rem; /* Compact padding */
+  }
+}
+
+/* Large Desktop (1280px and above) */
+@media (min-width: 1280px) {
+  .sidebar {
+    width: 280px; /* Original width for large screens */
+  }
+  
+  .desktopSidebar {
+    width: 280px; /* Match original */
+  }
+  
+  .navItem {
+    padding: 0.75rem 1rem; /* Original padding */
+  }
+}
+
+/* ========== ENHANCED RESPONSIVE FEATURES ========== */
+
+/* Safe area insets for modern mobile devices */
+@supports (padding: max(0px)) {
+  .sidebar {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 1023px) and (orientation: landscape) {
+  .navigation {
+    max-height: 50vh; /* Shorter navigation in landscape */
+  }
+  
+  .sidebarHeader {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* High DPI screen optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .sidebar {
+    -webkit-backdrop-filter: blur(30px); /* Enhanced blur for retina */
+    backdrop-filter: blur(30px);
+  }
+}
+
+/* ========== ANIMATIONS & EFFECTS (PRESERVED) ========== */
 
 /* Animation for navigation items */
 .navItem {
@@ -148,6 +260,8 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
 }
 
+/* ========== ACCESSIBILITY ENHANCEMENTS ========== */
+
 /* Focus states for accessibility */
 .navItem:focus {
   outline: 2px solid rgba(59, 130, 246, 0.5); /* Blue outline for focus */
@@ -162,6 +276,12 @@
   
   .navItemActive {
     background-color: rgba(59, 130, 246, 0.3); /* More visible active state */
+    border-left-width: 4px; /* Thicker border */
+  }
+  
+  .sidebar {
+    backdrop-filter: none; /* Disable blur in high contrast */
+    background-color: rgba(255, 255, 255, 0.95); /* Solid background */
   }
 }
 
@@ -169,8 +289,32 @@
 @media (prefers-reduced-motion: reduce) {
   .navItem,
   .sidebar,
-  .navItem .badge {
+  .navItem .badge,
+  .sidebarHeader .text-transparent {
     animation: none; /* Disable animations */
     transition: none; /* Disable transitions */
+  }
+  
+  .navItem:hover {
+    transform: none; /* Disable hover movement */
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .navItem:hover {
+    background-color: transparent; /* Disable hover effects on touch */
+    transform: none; /* Disable movement on touch */
+  }
+  
+  .navItem:active {
+    background-color: rgba(59, 130, 246, 0.1); /* Active state instead of hover */
+  }
+}
+
+/* Print styles */
+@media print {
+  .sidebar {
+    display: none; /* Hide sidebar when printing */
   }
 }

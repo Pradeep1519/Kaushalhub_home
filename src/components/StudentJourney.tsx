@@ -141,7 +141,7 @@ export function StudentJourney() {
               glowEffect
               onClick={() => window.location.href = "/signup"}
             > 
-              Get Started Now ?
+              Get Started Now
             </AnimatedButton>
           </div>
         </div>

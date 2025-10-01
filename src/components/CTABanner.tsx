@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import { ArrowRight, Users, Clock, Trophy } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { AnimatedButton } from "./AnimatedButton";
 
 interface CTABannerProps {
   onNavigate?: (page: string) => void;
@@ -19,80 +20,125 @@ export function CTABanner({ onNavigate }: CTABannerProps) {
       });
     }
   };
+
+  const handleGetStarted = () => {
+    if (user) {
+      onNavigate?.("dashboard");
+    } else {
+      onNavigate?.("signup");
+    }
+  };
+
   return (
-    <section className="py-20 bg-gradient-to-r from-blue-600 via-blue-700 to-teal-600 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full"></div>
-        <div className="absolute top-32 right-20 w-16 h-16 border-2 border-white rounded-lg rotate-45"></div>
-        <div className="absolute bottom-20 left-32 w-12 h-12 border-2 border-white rounded-full"></div>
-        <div className="absolute bottom-32 right-10 w-24 h-24 border-2 border-white rounded-lg rotate-12"></div>
+    <section className="relative py-16 sm:py-20 lg:py-24 bg-gradient-to-r from-blue-600 via-blue-700 to-teal-600 overflow-hidden">
+      {/* Background Pattern - Responsive */}
+      <div className="absolute inset-0 opacity-5 sm:opacity-10">
+        {/* Large screens - more elements */}
+        <div className="hidden sm:block absolute top-10 left-10 w-16 h-16 sm:w-20 sm:h-20 border-2 border-white rounded-full"></div>
+        <div className="hidden sm:block absolute top-32 right-20 w-12 h-12 sm:w-16 sm:h-16 border-2 border-white rounded-lg rotate-45"></div>
+        <div className="hidden sm:block absolute bottom-20 left-32 w-10 h-10 sm:w-12 sm:h-12 border-2 border-white rounded-full"></div>
+        <div className="hidden sm:block absolute bottom-32 right-10 w-16 h-16 sm:w-24 sm:h-24 border-2 border-white rounded-lg rotate-12"></div>
+        
+        {/* Mobile - fewer, smaller elements */}
+        <div className="sm:hidden absolute top-6 left-6 w-12 h-12 border border-white rounded-full"></div>
+        <div className="sm:hidden absolute bottom-6 right-6 w-10 h-10 border border-white rounded-lg rotate-45"></div>
+        <div className="sm:hidden absolute top-1/2 left-1/4 w-8 h-8 border border-white rounded-full"></div>
       </div>
 
-      <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <div className="max-w-4xl mx-auto text-center text-white space-y-8">
-          {/* Main Headline */}
-          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight">
-            Ready to Transform
-            <span className="block">Your Career?</span>
-          </h2>
-          
-          <p className="text-lg sm:text-xl lg:text-2xl opacity-90 max-w-2xl mx-auto">
-            Join thousands of successful students and start building the future you deserve today.
-          </p>
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-teal-500/10 animate-pulse-slow"></div>
 
-          {/* Features */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 py-6 sm:py-8">
-            <div className="flex flex-col items-center space-y-2">
-              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/20 rounded-full flex items-center justify-center">
-                <Users className="w-5 sm:w-6 h-5 sm:h-6" />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-4xl mx-auto text-center text-white space-y-6 sm:space-y-8 lg:space-y-10">
+          {/* Main Headline */}
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight sm:leading-tighter">
+              Ready to Transform
+              <span className="block bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent mt-1 sm:mt-2">
+                Your Career?
+              </span>
+            </h2>
+            
+            <p className="text-base sm:text-lg lg:text-xl opacity-90 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed sm:leading-loose px-2 sm:px-0">
+              Join thousands of successful students and start building the future you deserve today.
+            </p>
+          </div>
+
+          {/* Features Grid - Improved Responsive Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 py-4 sm:py-6 lg:py-8">
+            <div className="flex flex-col items-center space-y-2 sm:space-y-3 p-4 sm:p-6 rounded-xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
               </div>
-              <div className="font-semibold text-sm sm:text-base">Expert Instructors</div>
-              <div className="text-xs sm:text-sm opacity-80 text-center">Learn from industry professionals</div>
+              <div className="font-semibold text-sm sm:text-base lg:text-lg">Expert Instructors</div>
+              <div className="text-xs sm:text-sm opacity-80 text-center leading-tight">
+                Learn from industry professionals
+              </div>
             </div>
             
-            <div className="flex flex-col items-center space-y-2">
-              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/20 rounded-full flex items-center justify-center">
-                <Clock className="w-5 sm:w-6 h-5 sm:h-6" />
+            <div className="flex flex-col items-center space-y-2 sm:space-y-3 p-4 sm:p-6 rounded-xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                <Clock className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
               </div>
-              <div className="font-semibold text-sm sm:text-base">Flexible Schedule</div>
-              <div className="text-xs sm:text-sm opacity-80 text-center">Study at your own pace</div>
+              <div className="font-semibold text-sm sm:text-base lg:text-lg">Flexible Schedule</div>
+              <div className="text-xs sm:text-sm opacity-80 text-center leading-tight">
+                Study at your own pace
+              </div>
             </div>
             
-            <div className="flex flex-col items-center space-y-2">
-              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/20 rounded-full flex items-center justify-center">
-                <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
+            <div className="flex flex-col items-center space-y-2 sm:space-y-3 p-4 sm:p-6 rounded-xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                <Trophy className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
               </div>
-              <div className="font-semibold text-sm sm:text-base">Career Support</div>
-              <div className="text-xs sm:text-sm opacity-80 text-center">Job placement assistance</div>
+              <div className="font-semibold text-sm sm:text-base lg:text-lg">Career Support</div>
+              <div className="text-xs sm:text-sm opacity-80 text-center leading-tight">
+                Job placement assistance
+              </div>
             </div>
           </div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              size="lg" 
-              className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8"
-              onClick={() => window.location.href = user ? "/dashboard" : "/signup"}
+          {/* CTAs - Improved Responsive Layout */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 justify-center items-stretch sm:items-center w-full max-w-md sm:max-w-lg mx-auto">
+            <AnimatedButton 
+              className="bg-white text-blue-600 hover:bg-gray-50 font-semibold text-base sm:text-lg px-6 sm:px-8 lg:px-10 py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300"
+              glowEffect
+              onClick={handleGetStarted}
             >
               Get Started Today
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="border-white text-white hover:bg-white/10 font-semibold px-8"
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
+            </AnimatedButton>
+            
+            <AnimatedButton 
+              variant="outline"
+              className="border-2 border-white text-white hover:bg-white/10 font-semibold text-base sm:text-lg px-6 sm:px-8 lg:px-10 py-3 sm:py-4 flex items-center justify-center w-full sm:w-auto backdrop-blur-sm transition-all duration-300"
               onClick={() => onNavigate?.("courses")}
             >
               View All Courses
-            </Button>
+            </AnimatedButton>
           </div>
 
-          {/* Special Offer */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 mt-6 sm:mt-8">
-            <div className="text-base sm:text-lg font-semibold mb-2">🎉 Limited Time Offer</div>
-            <div className="text-xs sm:text-sm opacity-90">
-              Get 40% off your first course when you enroll this month. Use code <span className="font-mono bg-white/20 px-2 py-1 rounded text-xs sm:text-sm">LEARN40</span>
+          {/* Special Offer - Improved Responsive */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 mt-6 sm:mt-8 lg:mt-10 border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center sm:text-left">
+              <div className="text-2xl sm:text-3xl">🎉</div>
+              <div className="flex-1">
+                <div className="font-semibold text-base sm:text-lg lg:text-xl mb-1 sm:mb-2">
+                  Limited Time Offer
+                </div>
+                <div className="text-xs sm:text-sm lg:text-base opacity-90 flex flex-col sm:flex-row items-center gap-1 sm:gap-2 justify-center sm:justify-start">
+                  Get 40% off your first course when you enroll this month. Use code{" "}
+                  <code className="font-mono bg-white/20 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm lg:text-base border border-white/30">
+                    LEARN40
+                  </code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="pt-4 sm:pt-6 lg:pt-8 border-t border-white/20">
+            <div className="text-xs sm:text-sm opacity-80">
+              <span className="font-semibold">10,000+</span> students trusted us • <span className="font-semibold">98%</span> satisfaction rate • <span className="font-semibold">24/7</span> support
             </div>
           </div>
         </div>

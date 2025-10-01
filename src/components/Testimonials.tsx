@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ScrollReveal } from "./ScrollReveal";
 
 const testimonials = [
   {
@@ -57,59 +58,69 @@ export function Testimonials() {
   const currentTestimonial = testimonials[currentIndex];
 
   return (
-    <section id="testimonials" className="py-20 bg-gradient-to-br from-blue-50 via-white to-teal-50">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="testimonials" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-teal-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Header */}
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold">
-            What Our
-            <span className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              Students Say
-            </span>
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Don't just take our word for it. Hear from our successful graduates who have transformed their careers.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16 lg:mb-20">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight">
+              What Our
+              <span className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mt-1 lg:mt-2">
+                Students Say
+              </span>
+            </h2>
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl lg:max-w-3xl mx-auto leading-relaxed sm:leading-loose px-4 sm:px-0">
+              Don't just take our word for it. Hear from our successful graduates who have transformed their careers.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Testimonial Carousel */}
         <div className="relative max-w-4xl mx-auto">
           <Card className="overflow-hidden shadow-2xl">
-            <CardContent className="p-8 lg:p-12">
-              <div className="grid lg:grid-cols-3 gap-8 items-center">
-                {/* Student Image */}
-                <div className="lg:col-span-1 flex justify-center">
+            <CardContent className="p-4 sm:p-6 lg:p-8 xl:p-12">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 items-center">
+                {/* Student Image - Responsive sizing */}
+                <div className="lg:col-span-1 flex justify-center order-2 lg:order-1">
                   <div className="relative">
                     <ImageWithFallback
                       src={currentTestimonial.image}
                       alt={currentTestimonial.name}
-                      className="w-32 h-32 lg:w-48 lg:h-48 rounded-full object-cover shadow-xl"
+                      className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48 rounded-full object-cover shadow-xl"
+                      fallbackSrc="/student-placeholder.jpg"
                     />
-                    <div className="absolute -top-4 -right-4 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full p-3">
-                      <Quote className="w-6 h-6 text-white" />
+                    <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full p-2 sm:p-3">
+                      <Quote className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                     </div>
                   </div>
                 </div>
 
                 {/* Testimonial Content */}
-                <div className="lg:col-span-2 space-y-6">
-                  {/* Rating */}
+                <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-1 lg:order-2">
+                  {/* Rating - Responsive alignment */}
                   <div className="flex justify-center lg:justify-start">
                     {[...Array(currentTestimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                      <Star 
+                        key={i} 
+                        className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 fill-yellow-400 text-yellow-400" 
+                      />
                     ))}
                   </div>
 
-                  {/* Testimonial Text */}
-                  <blockquote className="text-lg lg:text-xl text-gray-700 leading-relaxed text-center lg:text-left">
+                  {/* Testimonial Text - Responsive typography */}
+                  <blockquote className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed sm:leading-loose text-center lg:text-left">
                     "{currentTestimonial.testimonial}"
                   </blockquote>
 
-                  {/* Student Info */}
-                  <div className="text-center lg:text-left">
-                    <div className="font-bold text-xl">{currentTestimonial.name}</div>
-                    <div className="text-gray-600">{currentTestimonial.role}</div>
-                    <div className="text-sm text-blue-600 mt-1">
+                  {/* Student Info - Responsive typography */}
+                  <div className="text-center lg:text-left space-y-1 sm:space-y-2">
+                    <div className="font-bold text-lg sm:text-xl lg:text-2xl text-foreground">
+                      {currentTestimonial.name}
+                    </div>
+                    <div className="text-sm sm:text-base text-muted-foreground">
+                      {currentTestimonial.role}
+                    </div>
+                    <div className="text-xs sm:text-sm text-blue-600 font-medium">
                       Graduate of {currentTestimonial.course}
                     </div>
                   </div>
@@ -118,69 +129,71 @@ export function Testimonials() {
             </CardContent>
           </Card>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-center space-x-4 mt-8">
+          {/* Navigation Buttons - Responsive sizing */}
+          <div className="flex justify-center space-x-3 sm:space-x-4 mt-6 sm:mt-8">
             <Button
               variant="outline"
               size="icon"
               onClick={prevTestimonial}
-              className="rounded-full border-gray-300 hover:border-blue-500 hover:bg-blue-50"
+              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <Button
               variant="outline"
               size="icon"
               onClick={nextTestimonial}
-              className="rounded-full border-gray-300 hover:border-blue-500 hover:bg-blue-50"
+              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
 
-          {/* Dots Indicator */}
-          <div className="flex justify-center space-x-2 mt-6">
+          {/* Dots Indicator - Responsive sizing */}
+          <div className="flex justify-center space-x-2 sm:space-x-3 mt-4 sm:mt-6">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                className={`transition-all duration-300 ${
                   index === currentIndex 
                     ? 'bg-gradient-to-r from-blue-600 to-teal-600' 
                     : 'bg-gray-300 hover:bg-gray-400'
                 }`}
+                style={{
+                  width: index === currentIndex ? '24px' : '12px',
+                  height: '12px',
+                  borderRadius: '6px'
+                }}
+                aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-12 sm:mt-16 max-w-3xl mx-auto">
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              100%
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Job Placement Rate</div>
+        {/* Stats - Enhanced responsive grid */}
+        <ScrollReveal delay={200}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-10 sm:mt-12 lg:mt-16 max-w-4xl mx-auto">
+            {[
+              { value: "100%", label: "Job Placement Rate" },
+              { value: "4.8", label: "Average Rating" },
+              { value: "10K+", label: "Graduates" },
+              { value: "₹5L+", label: "Avg. Starting Salary" }
+            ].map((stat, index) => (
+              <div 
+                key={index}
+                className="text-center p-4 sm:p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300"
+              >
+                <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-1 sm:mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-xs sm:text-sm text-muted-foreground font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              4.8
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Average Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              10K+
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Graduates</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              ₹5L+
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Avg. Starting Salary</div>
-          </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
