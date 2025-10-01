@@ -219,7 +219,7 @@ export function Header({
             >
               {!logoError ? (
                 <img
-                  src="/logo.svg"
+                  src="/src/public/logo.svg"
                   alt="KaushalHub Logo"
                   className="object-contain w-full h-full"
                   onError={() => setLogoError(true)}
