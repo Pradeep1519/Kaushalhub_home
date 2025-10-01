@@ -132,11 +132,11 @@ export function Header({
     return `calc(${logoSize} * 0.5)`;
   };
 
-  // Dynamic nav spacing - Responsive improvements
+  // Dynamic nav spacing - MORE SPACE BETWEEN NAV ITEMS
   const getNavSpacing = () => {
-    if (windowWidth < 1024) return "space-x-6";
-    if (windowWidth < 1280) return "space-x-8";
-    return "space-x-10";
+    if (windowWidth < 1024) return "space-x-8";
+    if (windowWidth < 1280) return "space-x-10";
+    return "space-x-12";
   };
 
   // ✅ UPDATED: Dynamic Auth button text and class - Responsive improvements
@@ -166,20 +166,28 @@ export function Header({
     return `max(${logoSize}, 80px)`;
   };
 
-  // ✅ NEW: Dynamic navigation font size - Larger for laptop/tablet
+  // ✅ IMPROVED: Dynamic navigation font size - MUCH LARGER for laptop/tablet
   const getNavFontSize = () => {
     if (windowWidth < 1024) return "text-base"; // For mobile
-    if (windowWidth < 1280) return "text-lg";   // For tablet
-    return "text-lg";                          // For laptop/desktop
+    if (windowWidth < 1280) return "text-xl";   // For tablet - LARGER
+    return "text-xl";                          // For laptop/desktop - LARGER
   };
 
-  // ✅ NEW: Dynamic company name font size - Smaller on mobile
+  // ✅ IMPROVED: Dynamic company name font size - SMALLER on mobile
   const getCompanyNameFontSize = () => {
-    if (windowWidth < 400) return `calc(${logoSize} * 0.25)`;
-    if (windowWidth < 500) return `calc(${logoSize} * 0.3)`;
-    if (windowWidth < 640) return `calc(${logoSize} * 0.35)`;
-    if (windowWidth < 768) return `calc(${logoSize} * 0.4)`;
-    return `calc(${logoSize} * 0.45)`;
+    if (windowWidth < 400) return `calc(${logoSize} * 0.2)`; // MUCH SMALLER
+    if (windowWidth < 500) return `calc(${logoSize} * 0.25)`; // SMALLER
+    if (windowWidth < 640) return `calc(${logoSize} * 0.3)`; // SMALL
+    if (windowWidth < 768) return `calc(${logoSize} * 0.35)`; // MEDIUM
+    return `calc(${logoSize} * 0.4)`; // NORMAL
+  };
+
+  // ✅ NEW: Get company name based on screen size
+  const getCompanyName = () => {
+    if (windowWidth < 400) return "KH";
+    if (windowWidth < 500) return "KaushalHub";
+    if (windowWidth < 640) return "KaushalHub NP";
+    return "KaushalHub NaukriPath";
   };
 
   return (
@@ -233,14 +241,12 @@ export function Header({
               style={{ fontSize: getCompanyNameFontSize() }}
               onClick={handleLogoClick}
             >
-              {windowWidth < 400 ? "KaushalHub" : 
-               windowWidth < 500 ? "KaushalHub NP" : 
-               "KaushalHub NaukriPath"}
+              {getCompanyName()}
             </motion.span>
           </div>
 
-          {/* Center: Desktop Navigation - Larger font sizes for laptop/tablet */}
-          <nav className={`hidden lg:flex flex-1 justify-center ${getNavSpacing()} mx-2 xl:mx-4`}>
+          {/* Center: Desktop Navigation - MUCH LARGER font sizes with PROPER SPACING */}
+          <nav className={`hidden lg:flex flex-1 justify-center ${getNavSpacing()} mx-4 xl:mx-6`}>
             {[
               { id: "home", label: "Home", page: "home" },
               { id: "about", label: "About", anchor: "about" },
@@ -252,8 +258,8 @@ export function Header({
               <motion.button
                 key={item.id}
                 onClick={() => handleNavClick(item.page || "", item.anchor)}
-                className={`relative text-foreground/80 hover:text-blue-600 transition-colors duration-200 font-medium ${getNavFontSize()} ${
-                  item.id === currentPage || item.page === currentPage ? "text-blue-600 font-semibold" : ""
+                className={`relative text-foreground/80 hover:text-blue-600 transition-colors duration-200 font-semibold ${getNavFontSize()} px-2 ${
+                  item.id === currentPage || item.page === currentPage ? "text-blue-600 font-bold" : ""
                 }`}
                 whileHover={{ y: -2 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -301,7 +307,7 @@ export function Header({
           </div>
         </div>
 
-        {/* Mobile Navigation - Enhanced with larger text and better spacing */}
+        {/* Mobile Navigation - Enhanced with LARGER text and better spacing */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -311,7 +317,7 @@ export function Header({
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <nav className="flex flex-col space-y-3 sm:space-y-4">
+              <nav className="flex flex-col space-y-4 sm:space-y-5">
                 {[
                   { id: "home", label: "Home", page: "home" },
                   { id: "about", label: "About", anchor: "about" },
@@ -323,20 +329,20 @@ export function Header({
                   <motion.button
                     key={item.id}
                     onClick={() => handleNavClick(item.page || "home", item.anchor)}
-                    className={`text-left text-foreground/80 hover:text-blue-600 transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-gray-50 text-lg sm:text-xl font-medium ${
-                      item.id === currentPage || item.page === currentPage ? "text-blue-600 font-semibold bg-blue-50" : ""
+                    className={`text-left text-foreground/80 hover:text-blue-600 transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-gray-50 text-xl sm:text-2xl font-bold ${
+                      item.id === currentPage || item.page === currentPage ? "text-blue-600 font-extrabold bg-blue-50" : ""
                     }`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    whileHover={{ x: 5 }}
+                    whileHover={{ x: 5, scale: 1.02 }}
                   >
                     {item.label}
                   </motion.button>
                 ))}
                 
-                {/* ✅ UPDATED: Mobile Auth Section - responsive improvements */}
-                <div className="pt-4 border-t border-gray-200 space-y-3">
+                {/* ✅ UPDATED: Mobile Auth Section - LARGER text */}
+                <div className="pt-4 border-t border-gray-200 space-y-4">
                   {isAuthenticated ? (
                     <>
                       <motion.button
@@ -347,7 +353,7 @@ export function Header({
                           setIsMenuOpen(false);
                           if (onNavigate) onNavigate("student-portal");
                         }}
-                        className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200"
+                        className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-4 px-4 rounded-lg text-xl font-bold hover:from-blue-700 hover:to-teal-700 transition-all duration-200"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -358,7 +364,7 @@ export function Header({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
                         onClick={handleLogout}
-                        className="w-full bg-gray-500 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:bg-gray-600 transition-all duration-200"
+                        className="w-full bg-gray-500 text-white py-4 px-4 rounded-lg text-xl font-bold hover:bg-gray-600 transition-all duration-200"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -371,7 +377,7 @@ export function Header({
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6 }}
                       onClick={handleAuthClick}
-                      className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200"
+                      className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-4 px-4 rounded-lg text-xl font-bold hover:from-blue-700 hover:to-teal-700 transition-all duration-200"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
