@@ -27,7 +27,6 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [pendingCourse, setPendingCourse] = useState<any>(null);
 
-  // ✅ Check for pending course on component mount
   useEffect(() => {
     const storedPendingCourse = localStorage.getItem('pendingCourse');
     if (storedPendingCourse) {
@@ -49,43 +48,61 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ REAL FLOW: Handle signup form submission
+  // ✅ DEBUGGING: Improved signup with detailed error handling
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setErrors({});
+    
     try {
-      // ✅ REAL API CALL: Signup user
-      const response = await fetch('http://localhost:8000/api/auth/signup', {
+      console.log('🔄 Starting signup process...');
+      
+      const signupData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: 'student'
+      };
+
+      console.log('📤 Sending request to backend:', signupData);
+
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: 'student'
-        }),
+        body: JSON.stringify(signupData),
       });
 
+      console.log('📡 Response status:', response.status, response.statusText);
+
+      // Check if response is OK
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ HTTP Error:', errorText);
+        throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+      }
+
       const result = await response.json();
+      console.log('✅ Backend response:', result);
 
       if (result.success) {
-        // ✅ Signup successful - update context and localStorage
+        console.log('🎉 Signup successful!');
+        
+        // Update user context
         login(result.user, result.token);
         
-        // ✅ STUDENT PORTAL INTEGRATION: Transfer auth to student portal
+        // Store in localStorage
         localStorage.setItem('studentToken', result.token);
         localStorage.setItem('studentUser', JSON.stringify(result.user));
 
-        // ✅ Check if there's a pending course enrollment
+        // Handle pending course if any
         if (pendingCourse) {
-          // ✅ Enroll user in the pending course
+          console.log('📚 Enrolling in pending course:', pendingCourse.courseTitle);
           await enrollInPendingCourse(result.user, result.token, pendingCourse);
         } else {
-          // ✅ No pending course - redirect to courses
           setShowSuccess(true);
           setTimeout(() => {
             onNavigate("courses");
@@ -93,59 +110,62 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
         }
         
       } else {
-        // ❌ Signup failed - show error message from backend
-        setErrors({ general: result.message || 'Sign up failed. Email might already exist.' });
+        console.error('❌ Backend error:', result.message);
+        setErrors({ general: result.message || 'Sign up failed. Please try again.' });
       }
-    } catch (error) {
-      console.error('Signup error:', error);
-      setErrors({ general: 'Network error. Please check your connection and try again.' });
+    } catch (error: any) {
+      console.error('💥 Signup error:', error);
+      setErrors({ 
+        general: `Connection failed: ${error.message}. Please ensure backend is running on http://localhost:5000` 
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ✅ REAL FLOW: Enroll user in pending course after signup
+  // ✅ Course enrollment
   const enrollInPendingCourse = async (user: any, token: string, course: any) => {
     try {
-      const response = await fetch('http://localhost:8000/api/courses/enroll', {
+      console.log('🎓 Starting course enrollment...');
+      
+      const response = await fetch('http://localhost:5000/api/courses/enroll', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           courseId: course.courseId,
           courseTitle: course.courseTitle,
-          coursePrice: course.coursePrice
+          coursePrice: course.coursePrice,
+          email: user.email
         }),
       });
 
-      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(`Enrollment failed: ${response.status}`);
+      }
 
+      const result = await response.json();
+      
       if (result.success) {
-        // ✅ Update user data with new course
         const updatedUser = {
           ...user,
-          enrolledCourses: [...(user.enrolledCourses || []), course.courseId]
+          enrolledCourses: result.user.enrolledCourses || user.enrolledCourses
         };
         
-        // Update context and localStorage
         login(updatedUser, token);
         localStorage.setItem('user', JSON.stringify(updatedUser));
-        
-        // ✅ Clear pending course
         localStorage.removeItem('pendingCourse');
         setPendingCourse(null);
         
-        // ✅ Show success and redirect to student portal
         setShowSuccess(true);
         setTimeout(() => {
-          redirectToStudentPortal();
+          onNavigate("student-portal-dashboard");
         }, 2000);
       }
     } catch (error) {
       console.error('Enrollment error:', error);
-      // Fallback - redirect to courses page
+      // Continue without enrollment
       setShowSuccess(true);
       setTimeout(() => {
         onNavigate("courses");
@@ -153,18 +173,11 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
     }
   };
 
-  // ✅ REAL FLOW: Redirect to student portal
-  const redirectToStudentPortal = () => {
-    onNavigate("student-portal-dashboard");
-  };
-
-  // ✅ Handle input changes and clear field-specific errors
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
-  // ✅ Clear pending course and go to courses
   const handleContinueWithoutEnrollment = () => {
     localStorage.removeItem('pendingCourse');
     setPendingCourse(null);
@@ -181,7 +194,6 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
         className="w-full max-w-md"
       >
         <Card className="border border-blue-100 shadow-xl rounded-2xl bg-white">
-          {/* Header */}
           <CardHeader className="space-y-1 text-center pb-2">
             <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center shadow-md mb-3">
               <User className="w-7 h-7 text-white" />
@@ -197,7 +209,6 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
             </CardDescription>
           </CardHeader>
 
-          {/* Form */}
           <CardContent>
             {/* Pending Course Info */}
             {pendingCourse && (
@@ -225,8 +236,11 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {errors.general && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">
-                  {errors.general}
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-200">
+                  <strong>Error:</strong> {errors.general}
+                  <div className="text-xs mt-1">
+                    Backend URL: http://localhost:5000/api/auth/signup
+                  </div>
                 </div>
               )}
 
@@ -304,20 +318,21 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
                 {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword}</p>}
               </div>
 
-              {/* Create Account Button */}
-              <AnimatedButton 
-                type="submit" 
-                disabled={isLoading} 
-                className="w-full h-11 text-base"
-              >
-                {isLoading 
-                  ? (pendingCourse ? 'Creating Account & Enrolling...' : 'Creating Account...') 
-                  : (pendingCourse ? 'Create Account & Enroll' : 'Create Account')
-                }
-              </AnimatedButton>
+              {/* ✅ ADDED: Extra spacing before button */}
+              <div className="pt-6">
+                <AnimatedButton 
+                  type="submit" 
+                  disabled={isLoading} 
+                  className="w-full h-11 text-base"
+                >
+                  {isLoading 
+                    ? (pendingCourse ? 'Creating Account & Enrolling...' : 'Creating Account...') 
+                    : (pendingCourse ? 'Create Account & Enroll' : 'Create Account')
+                  }
+                </AnimatedButton>
+              </div>
             </form>
 
-            {/* Continue without enrollment */}
             {pendingCourse && (
               <div className="mt-4 text-center">
                 <button
@@ -330,18 +345,16 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
               </div>
             )}
 
-            {/* Student Portal Access Info */}
             <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-sm text-blue-700 text-center">
                 After signup, access your courses in <strong>Student Portal</strong>
               </p>
             </div>
 
-            {/* Footer Actions */}
             <div className="mt-6 text-center text-sm text-gray-600">
               Already have an account?{' '}
               <button
-                onClick={() => onNavigate('signin')}
+                onClick={() => onNavigate('login')}
                 className="text-blue-600 font-medium hover:underline"
                 disabled={isLoading}
               >
@@ -361,7 +374,6 @@ export function SignUpPage({ onNavigate }: SignUpPageProps) {
         </Card>
       </motion.div>
 
-      {/* Success Confetti */}
       <SuccessConfetti 
         isVisible={showSuccess} 
         onComplete={() => setShowSuccess(false)}

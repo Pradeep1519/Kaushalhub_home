@@ -8,6 +8,7 @@ import { Courses } from "../components/Courses";
 import { StudentJourney } from "../components/StudentJourney";
 // Import Testimonials component for student reviews section
 import { Testimonials } from "../components/Testimonials";
+import { PlacementsSection } from "../components/PlacementsSection";
 // Import CTABanner component for call-to-action section
 import { CTABanner } from "../components/CTABanner";
 // Import RecognitionLogos component for government recognition section
@@ -31,6 +32,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <Courses onNavigate={onNavigate} /> {/* Courses section with navigation to courses page */}
       <StudentJourney /> {/* Student journey timeline section */}
       <Testimonials /> {/* Student testimonials and reviews section */}
+      <PlacementsSection /> {/* Placement statistics and success stories section */}
       <CTABanner onNavigate={onNavigate} /> {/* Call-to-action banner with navigation */}
     </main>
   );

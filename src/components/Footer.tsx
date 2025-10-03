@@ -44,8 +44,8 @@ export function Footer({ onNavigate }: FooterProps) {
               Transform your career with our expert-led courses and hands-on projects.
             </p>
             
-            {/* Social Links - Same hover effects, responsive sizing */}
-            <div className="flex justify-center sm:justify-start space-x-3">
+            {/* Social Links - MOVED MORE TO LEFT SIDE */}
+            <div className="flex justify-start space-x-3">
               <a href="https://www.facebook.com/share/14RquNzDJJP/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 hover:scale-110">
                 <Facebook className="w-4 h-4" />
               </a>
@@ -139,22 +139,6 @@ export function Footer({ onNavigate }: FooterProps) {
                   Tally with GST + Excel
                 </button>
               </li>
-              <li>
-                <button 
-                  onClick={() => handleNavigation('courses')} 
-                  className="text-gray-400 hover:text-white text-sm text-left transition-all duration-200 hover:translate-x-1 w-full"
-                >
-                  Full Stack Development
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => handleNavigation('courses')} 
-                  className="text-gray-400 hover:text-white text-sm text-left transition-all duration-200 hover:translate-x-1 w-full"
-                >
-                  Data Science & AI
-                </button>
-              </li>
             </ul>
           </div>
 
@@ -202,8 +186,29 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
-        {/* Bottom Section - Same structure, responsive layout */}
+        {/* Government Recognition - MOVED UP ABOVE COPYRIGHT */}
         <div className="border-t border-gray-800 mt-8 pt-6">
+          <div className="text-center">
+            <p className="text-gray-400 text-xs mb-3">Recognized By</p>
+            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+              <div className="text-center p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-all duration-200">
+                <div className="text-gray-300 text-xs font-medium">Ministry of Corporate Affairs</div>
+                <div className="text-gray-400 text-xs">Government of India</div>
+              </div>
+              <div className="text-center p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-all duration-200">
+                <div className="text-gray-300 text-xs font-medium">Ministry of MSME</div>
+                <div className="text-gray-400 text-xs">Government of India</div>
+              </div>
+              <div className="text-center p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-all duration-200">
+                <div className="text-gray-300 text-xs font-medium">Startup India</div>
+                <div className="text-gray-400 text-xs">Recognized Startup</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section - Copyright & Policies MOVED DOWN */}
+        <div className="border-t border-gray-800 mt-6 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
             <div className="text-gray-400 text-xs text-center md:text-left">
               © 2024 KaushalHub NaukriPath Private Limited. All rights reserved.
@@ -228,27 +233,6 @@ export function Footer({ onNavigate }: FooterProps) {
               >
                 Refund Policy
               </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Government Recognition - Same design, responsive grid */}
-        <div className="border-t border-gray-800 mt-6 pt-6">
-          <div className="text-center">
-            <p className="text-gray-400 text-xs mb-3">Recognized By</p>
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <div className="text-center p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-all duration-200">
-                <div className="text-gray-300 text-xs font-medium">Ministry of Corporate Affairs</div>
-                <div className="text-gray-400 text-xs">Government of India</div>
-              </div>
-              <div className="text-center p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-all duration-200">
-                <div className="text-gray-300 text-xs font-medium">Ministry of MSME</div>
-                <div className="text-gray-400 text-xs">Government of India</div>
-              </div>
-              <div className="text-center p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-all duration-200">
-                <div className="text-gray-300 text-xs font-medium">Startup India</div>
-                <div className="text-gray-400 text-xs">Recognized Startup</div>
-              </div>
             </div>
           </div>
         </div>

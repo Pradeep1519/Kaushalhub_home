@@ -56,11 +56,11 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   useEffect(() => {
     const targets = {
       students: 12500,
-      placement: 97,
-      mentors: 68,
-      courses: 23,
+      placement: 99,
+      mentors: 20,
+      courses: 3,
       hours: 5000,
-      countries: 15
+      countries: 1
     };
 
     const duration = 3000;
@@ -358,9 +358,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                 transition={{ duration: 0.8, delay: 0.9 }}
               >
                 {[
-                  { number: "12.5K+", label: "Students" },
-                  { number: "97%", label: "Success Rate" },
-                  { number: "68+", label: "Mentors" }
+                  { number: "10K+", label: "Students" },
+                  { number: "99%", label: "Success Rate" },
+                  { number: "25+", label: "Mentors" }
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
                     <div className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{stat.number}</div>

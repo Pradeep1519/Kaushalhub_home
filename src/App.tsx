@@ -10,7 +10,7 @@ import { CareersPage } from "./pages/CareersPage";
 import { motion, AnimatePresence } from "motion/react";
 import styles from "./App.module.css"; 
 import { PrivacyPolicy } from "./pages/privacy-policy"; 
-import { SignInPage } from "./pages/SignInPage"; 
+import { LoginPage } from './pages/LoginPage'; // ✅ Import LoginPage
 import { SignUpPage } from "./pages/SignUpPage"; 
 import { CourseDetailsPage } from "./pages/CourseDetailsPage";
 import { AboutPage } from "./pages/AboutPage";
@@ -69,8 +69,8 @@ export default function App() {
         return <CareersPage key="careers" onNavigate={handleNavigate} />;
       case "signup":
         return <SignUpPage key="signup" onNavigate={handleNavigate} />;
-      case "signin":
-        return <SignInPage key="signin" onNavigate={handleNavigate} />;
+      case "login": // ✅ ADDED: Login case
+        return <LoginPage key="login" onNavigate={handleNavigate} />;
       case "privacy-policy":
         return <PrivacyPolicy key="privacy-policy" onNavigate={handleNavigate} />;
       case "course-details":
@@ -104,7 +104,8 @@ export default function App() {
           animate={{ opacity: showContent ? 1 : 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {!["signup", "signin"].includes(currentPage) && (
+          {/* ✅ UPDATED: Include "login" in pages where header should not show */}
+          {!["signup", "signin", "login"].includes(currentPage) && (
             <Header currentPage={currentPage} onNavigate={handleNavigate} />
           )}
 
@@ -112,7 +113,8 @@ export default function App() {
             <motion.div
               key={currentPage}
               className={`${styles.pageContainer} ${
-                !["signup", "signin"].includes(currentPage)
+                // ✅ UPDATED: Include "login" in pages where padding should not apply
+                !["signup", "signin", "login"].includes(currentPage)
                   ? styles.pageContainerWithPadding
                   : ""
               }`}
@@ -125,7 +127,8 @@ export default function App() {
             </motion.div>
           </AnimatePresence>
 
-          {!["signup", "signin"].includes(currentPage) && (
+          {/* ✅ UPDATED: Include "login" in pages where footer should not show */}
+          {!["signup", "signin", "login"].includes(currentPage) && (
             <Footer onNavigate={handleNavigate} />
           )}
         </motion.div>

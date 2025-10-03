@@ -18,27 +18,28 @@ const ContactPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
 
+  // Direct online images with proper URLs
   const leadershipTeam = [
     {
       id: 1,
-      name: "Rahul Sharma",
+      name: "Ankit Singh",
       role: "Founder & Director",
       intro: "Education visionary with 10+ years experience in skill development and corporate training.",
-      photo: "/images/rahul-sharma.jpg" // Full photo path
+      photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face"
     },
     {
       id: 2,
       name: "Priya Singh",
       role: "Co-Founder & Director", 
       intro: "Expert in educational partnerships and industry collaborations with 8+ years experience.",
-      photo: "/images/priya-singh.jpg" // Full photo path
+      photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face"  
     },
     {
       id: 3,
-      name: "Amit Kumar",
+      name: "Pradeep Kumar",
       role: "Head of Technology & Training",
       intro: "Seasoned technology professional specializing in industrial automation and digital solutions.",
-      photo: "/images/amit-kumar.jpg" // Full photo path
+      photo: "src/public/images/deep-kumar.jpeg" // Local image
     }
   ];
 
@@ -249,7 +250,7 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 text-sm">Phone</h4>
-                    <a href="tel:+91-9876543210" className="text-gray-600 hover:text-blue-600 text-sm">+91-9876543210</a>
+                    <a href="tel:+91-7274803306" className="text-gray-600 hover:text-blue-600 text-sm">+91-7274803306</a>
                   </div>
                 </div>
 
@@ -259,7 +260,7 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 text-sm">WhatsApp</h4>
-                    <a href="https://wa.me/919876543210" className="text-gray-600 hover:text-green-600 text-sm">+91-9876543210</a>
+                    <a href="https://wa.me/7274803306" className="text-gray-600 hover:text-green-600 text-sm">+91-7274803306</a>
                   </div>
                 </div>
 
@@ -279,7 +280,7 @@ const ContactPage: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 text-sm">Address</h4>
-                    <p className="text-gray-600 text-sm">KaushalHub Office, Your City - 1100XX</p>
+                    <p className="text-gray-600 text-sm">KaushalHub Office, Noida sector 2</p>
                   </div>
                 </div>
               </div>
@@ -443,27 +444,24 @@ const ContactPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Leadership Team with Full Photos */}
+            {/* Leadership Team with FULL SIZE Photos - SIMPLIFIED */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-8">Meet Our Team</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-8">Meet Our Leadership Team</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {leadershipTeam.map((member) => (
-                  <div key={member.id} className="text-center">
-                    <div className="w-32 h-32 bg-gray-300 rounded-full mx-auto mb-4 overflow-hidden">
-                      {/* Full Photo - Replace div with img tag when you have actual photos */}
-                      <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                        {member.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      {/* Actual photo usage:
+                  <div key={member.id} className="text-center group">
+                    {/* Simple Image Container */}
+                    <div className="w-full h-80 rounded-xl overflow-hidden mb-4 shadow-lg">
                       <img 
                         src={member.photo} 
                         alt={member.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-center"
                       />
-                      */}
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-1">{member.name}</h4>
-                    <p className="text-blue-600 text-sm mb-2">{member.role}</p>
+                    
+                    {/* Member Info */}
+                    <h4 className="font-bold text-gray-900 text-lg mb-1">{member.name}</h4>
+                    <p className="text-blue-600 font-medium mb-2">{member.role}</p>
                     <p className="text-gray-600 text-sm leading-relaxed">{member.intro}</p>
                   </div>
                 ))}

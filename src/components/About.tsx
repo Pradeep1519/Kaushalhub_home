@@ -21,13 +21,23 @@ export function About() {
                 />
               </div>
               
-              {/* Experience Badge - Responsive Positioning */}
-              <div className="absolute -bottom-3 -right-3 sm:-bottom-4 sm:-right-4 lg:-bottom-6 lg:-right-6 bg-gradient-to-br from-blue-600 to-teal-600 text-white p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl shadow-xl">
+              {/* ✅ UPDATED: Experience Badge - Left side with up-down motion */}
+              <motion.div 
+                className="absolute -bottom-3 -left-3 sm:-bottom-4 sm:-left-4 lg:-bottom-6 lg:-left-6 bg-gradient-to-br from-blue-600 to-teal-600 text-white p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl shadow-xl"
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
                 <div className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold leading-tight">2+</div>
                 <div className="text-xs sm:text-sm lg:text-base opacity-90 whitespace-nowrap">
                   Years Experience
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Right - Content Section */}

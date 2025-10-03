@@ -1,5 +1,4 @@
 import { Button } from "./ui/button";
-import { ArrowRight, Play } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ScrollReveal } from "./ScrollReveal";
 import { AnimatedButton } from "./AnimatedButton";
@@ -25,6 +24,22 @@ export function Hero({ onNavigate }: HeroProps) {
       });
     }
   };
+
+  // ✅ NEW: Handle Apply Now click - redirect to courses page
+  const handleApplyNow = () => {
+    if (onNavigate) {
+      onNavigate("courses");
+    }
+  };
+
+  // ✅ NEW: Handle Watch Demo click
+  const handleWatchDemo = () => {
+    // Yahan aap demo video show kar sakte hain ya koi aur action
+    console.log("Watch Demo clicked");
+    // Example: Demo modal open karna
+    // openDemoModal();
+  };
+
   return (
     <section id="home" className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-background to-teal-50 dark:from-blue-950/20 dark:via-background dark:to-teal-950/20 py-20 lg:py-32 transition-colors duration-300">
       <div className="container mx-auto px-4 lg:px-8">
@@ -78,17 +93,23 @@ export function Hero({ onNavigate }: HeroProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
             >
+              {/* ✅ UPDATED: Apply Now button without arrow */}
               <AnimatedButton 
                 size="lg" 
                 className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
                 glowEffect
-                onClick={() => onNavigate?.("coursespage")}
+                onClick={handleApplyNow} // ✅ Direct course navigation
               >
                 Apply Now
-                <ArrowRight className="ml-2 w-5 h-5" />
               </AnimatedButton>
-              <AnimatedButton variant="outline" size="lg" className="border-border">
-                <Play className="mr-2 w-5 h-5" />
+              
+              {/* ✅ UPDATED: Watch Demo button without icon */}
+              <AnimatedButton 
+                variant="outline" 
+                size="lg" 
+                className="border-border"
+                onClick={handleWatchDemo}
+              >
                 Watch Demo
               </AnimatedButton>
             </motion.div>
@@ -102,7 +123,7 @@ export function Hero({ onNavigate }: HeroProps) {
             >
               {[
                 { value: "10K+", label: "Students", color: "text-blue-600" },
-                { value: "4", label: "Specialized Courses", color: "text-teal-600" },
+                { value: "3", label: "Specialized Courses", color: "text-teal-600" },
                 { value: "100%", label: "Job Placement", color: "text-purple-600" }
               ].map((stat, index) => (
                 <motion.div 

@@ -1,5 +1,4 @@
 import { CheckCircle, BookOpen, Users, Trophy, Briefcase } from "lucide-react";
-import { AnimatedButton } from "./AnimatedButton";
 
 const journeySteps = [
   {
@@ -32,7 +31,13 @@ const journeySteps = [
   }
 ];
 
-export function StudentJourney() {
+interface StudentJourneyProps {
+  onNavigate?: (page: string) => void;
+}
+
+export function StudentJourney({ onNavigate }: StudentJourneyProps) {
+  // ✅ Button aur navigation code completely remove kar diya
+
   return (
     <section className="py-20 bg-background transition-colors duration-300">
       <div className="container mx-auto px-4 lg:px-8">
@@ -129,22 +134,8 @@ export function StudentJourney() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-12 sm:mt-16">
-          <div className="bg-gradient-to-r from-blue-50 to-teal-50 rounded-2xl p-6 sm:p-8">
-            <h3 className="text-xl sm:text-2xl font-bold mb-4">Ready to Start Your Journey?</h3>
-            <p className="text-sm sm:text-base text-gray-600 mb-6">Join thousands of successful students who have transformed their careers with our platform.</p>
-            <AnimatedButton
-              variant="solid"
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
-              glowEffect
-              onClick={() => window.location.href = "/signup"}
-            > 
-              Get Started Now
-            </AnimatedButton>
-          </div>
-        </div>
+        {/* ✅ CTA SECTION COMPLETELY REMOVED */}
+        {/* No button, no CTA, nothing - clean section */}
       </div>
     </section>
   );

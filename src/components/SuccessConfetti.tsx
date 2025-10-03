@@ -4,9 +4,10 @@ import { motion } from 'motion/react';
 interface SuccessConfettiProps {
   isVisible: boolean;
   onComplete?: () => void;
+  message?: string; // ✅ NEW: Custom message support
 }
 
-export function SuccessConfetti({ isVisible, onComplete }: SuccessConfettiProps) {
+export function SuccessConfetti({ isVisible, onComplete, message }: SuccessConfettiProps) {
   const [confettiPieces, setConfettiPieces] = useState<Array<{
     id: number;
     x: number;
@@ -62,6 +63,14 @@ export function SuccessConfetti({ isVisible, onComplete }: SuccessConfettiProps)
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      {/* ✅ REDUCED BLUR: Background overlay with minimal blur */}
+      <motion.div
+        className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" // ✅ Reduced blur from 'sm' to '1px'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      />
+      
       {/* Confetti Pieces */}
       {confettiPieces.map((piece) => (
         <motion.div
@@ -91,77 +100,115 @@ export function SuccessConfetti({ isVisible, onComplete }: SuccessConfettiProps)
         />
       ))}
       
-      {/* Success Message - Responsive positioning and sizing */}
+      {/* ✅ IMPROVED: Success Message - More clear and prominent */}
       <motion.div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg px-4"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0, opacity: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ 
+          type: "spring",
+          stiffness: 300,
+          damping: 25,
+          duration: 0.5, 
+          delay: 0.2 
+        }}
       >
-        <div className="bg-white dark:bg-gray-800 px-4 sm:px-6 md:px-8 py-4 sm:py-6 rounded-xl sm:rounded-2xl shadow-2xl border-2 border-green-500">
-          <motion.div
-            className="text-center"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            {/* Emoji - Responsive sizing */}
+        <div className="bg-white/95 backdrop-blur-sm border-2 border-green-500/80 shadow-2xl rounded-2xl overflow-hidden">
+          {/* Main Content */}
+          <div className="px-6 py-8 text-center">
+            {/* ✅ IMPROVED: Success Icon - More vibrant */}
             <motion.div
-              className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4"
+              className="mx-auto mb-4"
               animate={{ 
-                scale: [1, 1.2, 1],
-                rotate: [0, 10, -10, 0]
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
               }}
               transition={{ 
-                duration: 0.6,
-                delay: 0.6,
-                repeat: 2
+                duration: 0.8,
+                delay: 0.4,
+                repeat: 1
               }}
             >
-              🎉
+              <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                <span className="text-3xl">🎉</span>
+              </div>
             </motion.div>
             
-            {/* Title - Responsive typography */}
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-green-600 mb-2 sm:mb-3">
-              Welcome to the Course!
-            </h3>
-            
-            {/* Description - Responsive typography */}
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-              Enrollment successful! Let's start learning.
-            </p>
-
-            {/* Additional responsive message for larger screens */}
-            <motion.p
-              className="hidden sm:block text-xs text-gray-500 dark:text-gray-400 mt-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
+            {/* ✅ IMPROVED: Title - More clear and bold */}
+            <motion.h3
+              className="text-2xl font-bold text-gray-800 mb-3"
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
             >
-              Your learning journey begins now!
+              {message || "Success!"} {/* ✅ Use custom message or default */}
+            </motion.h3>
+            
+            {/* ✅ IMPROVED: Description - Better readability */}
+            <motion.p
+              className="text-gray-600 leading-relaxed mb-4"
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              {message 
+                ? "Your request has been processed successfully!"
+                : "Operation completed successfully!"
+              }
             </motion.p>
-          </motion.div>
 
-          {/* Progress indicator for mobile */}
+            {/* ✅ Progress Bar - More visible */}
+            <motion.div
+              className="w-full bg-gray-200 rounded-full h-2 overflow-hidden"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 2.8, ease: "linear" }}
+            >
+              <div className="h-2 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
+            </motion.div>
+          </div>
+
+          {/* ✅ ADDED: Decorative bottom border */}
           <motion.div
-            className="sm:hidden mt-4 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1"
+            className="h-1 bg-gradient-to-r from-green-400 to-green-600"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 2.8, ease: "linear" }}
-          >
-            <div className="h-1 bg-green-500 rounded-full"></div>
-          </motion.div>
+            transition={{ duration: 3, ease: "linear" }}
+          />
         </div>
       </motion.div>
 
-      {/* Background overlay with responsive blur */}
+      {/* ✅ ADDED: Floating celebration elements */}
       <motion.div
-        className="absolute inset-0 bg-black/20 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      />
+        className="absolute top-1/4 left-1/4 text-2xl"
+        animate={{ 
+          y: [0, -20, 0],
+          rotate: [0, 10, -10, 0]
+        }}
+        transition={{ 
+          duration: 2,
+          repeat: Infinity,
+          delay: 0.5
+        }}
+      >
+        ⭐
+      </motion.div>
+      
+      <motion.div
+        className="absolute top-1/3 right-1/4 text-xl"
+        animate={{ 
+          y: [0, -15, 0],
+          rotate: [0, -15, 15, 0]
+        }}
+        transition={{ 
+          duration: 2,
+          repeat: Infinity,
+          delay: 1
+        }}
+      >
+        ✨
+      </motion.div>
     </div>
   );
 }

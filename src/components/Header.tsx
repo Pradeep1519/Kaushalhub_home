@@ -1,5 +1,5 @@
 // src/components/Header.tsx
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut, User, LayoutDashboard, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { AnimatedButton } from "./AnimatedButton";
@@ -17,7 +17,7 @@ interface HeaderProps {
 export function Header({
   currentPage = "home",
   onNavigate,
-  logoSize = "50px",
+  logoSize = "55px",
   logoNameSpacing = "12px",
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,6 +26,7 @@ export function Header({
   const { scrollDirection, isScrolling } = useScrollDirection();
   const [logoError, setLogoError] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // ✅ NEW: Dropdown state
 
   // ✅ Get user data from context
   const { user, logout, isAuthenticated } = useUser();
@@ -58,12 +59,26 @@ export function Header({
     } else if (scrollDirection === "down" && scrollY > 100) {
       setIsVisible(false);
       setIsMenuOpen(false);
+      setIsDropdownOpen(false); // ✅ Close dropdown on scroll
     }
   }, [scrollDirection, scrollY]);
 
   useEffect(() => {
     if (isScrolling && isMenuOpen) setIsMenuOpen(false);
   }, [isScrolling, isMenuOpen]);
+
+  // ✅ NEW: Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.user-dropdown')) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleNavClick = (page: string, anchor?: string) => {
     setIsMenuOpen(false);
@@ -91,24 +106,39 @@ export function Header({
     }
   };
 
-  // ✅ UPDATED: Auth click handler - now handles both login and logout
+  // ✅ UPDATED: Auth click handler - now navigates to "login" page
   const handleAuthClick = () => {
     if (isAuthenticated) {
-      // ✅ User is logged in - navigate to dashboard
-      if (onNavigate) {
-        onNavigate("student-portal");
-      }
+      // ✅ User is logged in - toggle dropdown
+      setIsDropdownOpen(!isDropdownOpen);
     } else {
-      // ✅ User is not logged in - navigate to signin
+      // ✅ User is not logged in - navigate to login page
       if (onNavigate) {
-        onNavigate("signin");
+        onNavigate("login");
       }
     }
   };
 
-  // ✅ NEW: Logout handler
-  const handleLogout = () => {
+  // ✅ NEW: Dropdown handlers
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
+  const handleDashboardClick = () => {
+    if (user?.enrolledCourses && user.enrolledCourses.length > 0) {
+      // ✅ User has enrolled courses - navigate to dashboard
+      if (onNavigate) {
+        onNavigate("student-portal-dashboard");
+      }
+    } else {
+      // ✅ User has no courses - show message
+      console.log("No enrolled courses. Dashboard coming soon!");
+      // Yahan aap toast message ya alert show kar sakte hain
+    }
+    setIsDropdownOpen(false);
+  };
+
+  const handleLogoutClick = () => {
     logout();
+    setIsDropdownOpen(false);
     setIsMenuOpen(false);
     if (onNavigate) {
       onNavigate("home");
@@ -139,7 +169,7 @@ export function Header({
     return "space-x-12";
   };
 
-  // ✅ UPDATED: Dynamic Auth button text and class - Responsive improvements
+  // ✅ UPDATED: Dynamic Auth button text and class - Now shows "Login" consistently
   const getAuthButtonText = () => {
     if (isAuthenticated) {
       if (windowWidth < 400) return user?.name ? `${user.name.split(' ')[0]}` : 'Account';
@@ -147,8 +177,8 @@ export function Header({
       return user?.name ? `Hi, ${user.name.split(' ')[0]}` : 'Dashboard';
     }
     if (windowWidth < 400) return 'Login';
-    if (windowWidth < 500) return 'Sign In';
-    return 'Sign In / Sign Up';
+    if (windowWidth < 500) return 'Login';
+    return 'Login';
   };
 
   const getAuthButtonClass = () => {
@@ -189,6 +219,9 @@ export function Header({
     if (windowWidth < 640) return "KaushalHub NP";
     return "KaushalHub NaukriPath";
   };
+
+  // ✅ NEW: Check if user has enrolled courses
+  const hasEnrolledCourses = user?.enrolledCourses && user.enrolledCourses.length > 0;
 
   return (
     <motion.header
@@ -280,17 +313,91 @@ export function Header({
           <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 flex-shrink-0">
             <ThemeToggle />
             
-            {/* ✅ UPDATED: Auth Button - responsive text and sizing */}
-            <div className="hidden sm:block">
-              <AnimatedButton
-                className={`bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 whitespace-nowrap text-white font-medium ${getAuthButtonClass()}`}
-                glowEffect
-                scaleOnHover={windowWidth > 400}
-                onClick={handleAuthClick}
-              >
-                {getAuthButtonText()}
-              </AnimatedButton>
-            </div>
+            {/* ✅ UPDATED: User Dropdown for Authenticated Users */}
+            {isAuthenticated ? (
+              <div className="hidden sm:block relative user-dropdown">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-transparent hover:border-gray-200"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 flex items-center justify-center text-white text-sm font-bold shadow-md">
+                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 max-w-24 truncate">
+                    {getAuthButtonText()}
+                  </span>
+                  <ChevronDown 
+                    className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+                      isDropdownOpen ? 'rotate-180' : ''
+                    }`} 
+                  />
+                </button>
+
+                {/* ✅ Dropdown Menu */}
+                <AnimatePresence>
+                  {isDropdownOpen && (
+                    <motion.div
+                      className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50"
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                    >
+                      {/* User Info */}
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <p className="font-semibold text-gray-900 truncate">{user?.name}</p>
+                        <p className="text-sm text-gray-500 truncate">{user?.email}</p>
+                      </div>
+
+                      {/* Dashboard Button */}
+                      <button
+                        onClick={handleDashboardClick}
+                        className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors duration-200 ${
+                          hasEnrolledCourses 
+                            ? 'hover:bg-blue-50 text-gray-700 hover:text-blue-700' 
+                            : 'text-gray-400 cursor-not-allowed'
+                        }`}
+                        disabled={!hasEnrolledCourses}
+                      >
+                        <LayoutDashboard className={`w-4 h-4 ${
+                          hasEnrolledCourses ? 'text-blue-600' : 'text-gray-400'
+                        }`} />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Go to Dashboard</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {hasEnrolledCourses 
+                              ? 'Access your learning dashboard' 
+                              : 'Enroll in a course to access dashboard'
+                            }
+                          </p>
+                        </div>
+                      </button>
+
+                      {/* Logout Button */}
+                      <button
+                        onClick={handleLogoutClick}
+                        className="w-full flex items-center space-x-3 px-4 py-3 text-left text-red-600 hover:bg-red-50 transition-colors duration-200 border-t border-gray-100"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span className="text-sm font-medium">Logout</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              /* ✅ Login Button for Non-Authenticated Users */
+              <div className="hidden sm:block">
+                <AnimatedButton
+                  className={`bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 whitespace-nowrap text-white font-medium ${getAuthButtonClass()}`}
+                  glowEffect
+                  scaleOnHover={windowWidth > 400}
+                  onClick={handleAuthClick}
+                >
+                  {getAuthButtonText()}
+                </AnimatedButton>
+              </div>
+            )}
             
             {/* Mobile menu button - responsive sizing */}
             <button
@@ -341,34 +448,41 @@ export function Header({
                   </motion.button>
                 ))}
                 
-                {/* ✅ UPDATED: Mobile Auth Section - LARGER text */}
+                {/* ✅ UPDATED: Mobile Auth Section */}
                 <div className="pt-4 border-t border-gray-200 space-y-4">
                   {isAuthenticated ? (
                     <>
+                      {/* User Info */}
+                      <div className="px-4 py-3 bg-gray-50 rounded-lg">
+                        <p className="font-semibold text-gray-900">{user?.name}</p>
+                        <p className="text-sm text-gray-500">{user?.email}</p>
+                      </div>
+
                       <motion.button
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.6 }}
-                        onClick={() => {
-                          setIsMenuOpen(false);
-                          if (onNavigate) onNavigate("student-portal");
-                        }}
-                        className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-4 px-4 rounded-lg text-xl font-bold hover:from-blue-700 hover:to-teal-700 transition-all duration-200"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        onClick={handleDashboardClick}
+                        className={`w-full flex items-center space-x-3 py-4 px-4 rounded-lg text-xl font-bold transition-all duration-200 ${
+                          hasEnrolledCourses
+                            ? 'bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:from-blue-700 hover:to-teal-700'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                        disabled={!hasEnrolledCourses}
                       >
-                        Go to Dashboard
+                        <LayoutDashboard className="w-5 h-5" />
+                        <span>Go to Dashboard</span>
                       </motion.button>
+
                       <motion.button
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
-                        onClick={handleLogout}
-                        className="w-full bg-gray-500 text-white py-4 px-4 rounded-lg text-xl font-bold hover:bg-gray-600 transition-all duration-200"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        onClick={handleLogoutClick}
+                        className="w-full bg-gray-500 text-white py-4 px-4 rounded-lg text-xl font-bold hover:bg-gray-600 transition-all duration-200 flex items-center space-x-3"
                       >
-                        Logout
+                        <LogOut className="w-5 h-5" />
+                        <span>Logout</span>
                       </motion.button>
                     </>
                   ) : (
@@ -381,7 +495,7 @@ export function Header({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      Sign In / Sign Up
+                      Login
                     </motion.button>
                   )}
                 </div>

@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ScrollReveal } from "./ScrollReveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 const testimonials = [
   {
@@ -46,16 +47,46 @@ const testimonials = [
 
 export function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
 
   const nextTestimonial = () => {
+    setDirection(1);
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
   };
 
   const prevTestimonial = () => {
+    setDirection(-1);
     setCurrentIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);
   };
 
   const currentTestimonial = testimonials[currentIndex];
+
+  // Animation variants for smooth transitions
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 100 : -100,
+      opacity: 0,
+      scale: 0.95
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    exit: (direction: number) => ({
+      x: direction < 0 ? 100 : -100,
+      opacity: 0,
+      scale: 0.95,
+      transition: {
+        duration: 0.5,
+        ease: "easeIn"
+      }
+    })
+  };
 
   return (
     <section id="testimonials" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-teal-50">
@@ -79,52 +110,66 @@ export function Testimonials() {
         <div className="relative max-w-4xl mx-auto">
           <Card className="overflow-hidden shadow-2xl">
             <CardContent className="p-4 sm:p-6 lg:p-8 xl:p-12">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 items-center">
-                {/* Student Image - Responsive sizing */}
-                <div className="lg:col-span-1 flex justify-center order-2 lg:order-1">
-                  <div className="relative">
-                    <ImageWithFallback
-                      src={currentTestimonial.image}
-                      alt={currentTestimonial.name}
-                      className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48 rounded-full object-cover shadow-xl"
-                      fallbackSrc="/student-placeholder.jpg"
-                    />
-                    <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full p-2 sm:p-3">
-                      <Quote className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
-                    </div>
-                  </div>
-                </div>
+              <div className="relative h-64 sm:h-72 lg:h-80">
+                <AnimatePresence mode="popLayout" custom={direction}>
+                  <motion.div
+                    key={currentIndex}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="absolute inset-0"
+                  >
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 items-center h-full">
+                      {/* Student Image - Responsive sizing */}
+                      <div className="lg:col-span-1 flex justify-center order-2 lg:order-1">
+                        <div className="relative">
+                          <ImageWithFallback
+                            src={currentTestimonial.image}
+                            alt={currentTestimonial.name}
+                            className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48 rounded-full object-cover shadow-xl"
+                            fallbackSrc="/student-placeholder.jpg"
+                          />
+                          <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full p-2 sm:p-3">
+                            <Quote className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+                          </div>
+                        </div>
+                      </div>
 
-                {/* Testimonial Content */}
-                <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-1 lg:order-2">
-                  {/* Rating - Responsive alignment */}
-                  <div className="flex justify-center lg:justify-start">
-                    {[...Array(currentTestimonial.rating)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 fill-yellow-400 text-yellow-400" 
-                      />
-                    ))}
-                  </div>
+                      {/* Testimonial Content */}
+                      <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-1 lg:order-2">
+                        {/* Rating - Responsive alignment */}
+                        <div className="flex justify-center lg:justify-start">
+                          {[...Array(currentTestimonial.rating)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 fill-yellow-400 text-yellow-400" 
+                            />
+                          ))}
+                        </div>
 
-                  {/* Testimonial Text - Responsive typography */}
-                  <blockquote className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed sm:leading-loose text-center lg:text-left">
-                    "{currentTestimonial.testimonial}"
-                  </blockquote>
+                        {/* Testimonial Text - Responsive typography */}
+                        <blockquote className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed sm:leading-loose text-center lg:text-left">
+                          "{currentTestimonial.testimonial}"
+                        </blockquote>
 
-                  {/* Student Info - Responsive typography */}
-                  <div className="text-center lg:text-left space-y-1 sm:space-y-2">
-                    <div className="font-bold text-lg sm:text-xl lg:text-2xl text-foreground">
-                      {currentTestimonial.name}
+                        {/* Student Info - Responsive typography */}
+                        <div className="text-center lg:text-left space-y-1 sm:space-y-2">
+                          <div className="font-bold text-lg sm:text-xl lg:text-2xl text-foreground">
+                            {currentTestimonial.name}
+                          </div>
+                          <div className="text-sm sm:text-base text-muted-foreground">
+                            {currentTestimonial.role}
+                          </div>
+                          <div className="text-xs sm:text-sm text-blue-600 font-medium">
+                            Graduate of {currentTestimonial.course}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm sm:text-base text-muted-foreground">
-                      {currentTestimonial.role}
-                    </div>
-                    <div className="text-xs sm:text-sm text-blue-600 font-medium">
-                      Graduate of {currentTestimonial.course}
-                    </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </CardContent>
           </Card>
@@ -135,7 +180,7 @@ export function Testimonials() {
               variant="outline"
               size="icon"
               onClick={prevTestimonial}
-              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12"
+              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 hover:scale-110"
             >
               <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
@@ -143,18 +188,22 @@ export function Testimonials() {
               variant="outline"
               size="icon"
               onClick={nextTestimonial}
-              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12"
+              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 hover:scale-110"
             >
               <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
 
-          {/* Dots Indicator - Responsive sizing */}
-          <div className="flex justify-center space-x-2 sm:space-x-3 mt-4 sm:mt-6">
+          {/* Dots Indicator - Increased margin top for more space */}
+          <div className="flex justify-center space-x-2 sm:space-x-3 mt-8 sm:mt-10"> {/* Increased from mt-4/mt-6 to mt-8/mt-10 */}
             {testimonials.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => {
+                  const newDirection = index > currentIndex ? 1 : -1;
+                  setDirection(newDirection);
+                  setCurrentIndex(index);
+                }}
                 className={`transition-all duration-300 ${
                   index === currentIndex 
                     ? 'bg-gradient-to-r from-blue-600 to-teal-600' 
@@ -173,7 +222,7 @@ export function Testimonials() {
 
         {/* Stats - Enhanced responsive grid */}
         <ScrollReveal delay={200}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-10 sm:mt-12 lg:mt-16 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-12 sm:mt-16 lg:mt-20 max-w-4xl mx-auto"> {/* Increased margin top */}
             {[
               { value: "100%", label: "Job Placement Rate" },
               { value: "4.8", label: "Average Rating" },

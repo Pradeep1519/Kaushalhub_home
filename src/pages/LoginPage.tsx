@@ -1,4 +1,3 @@
-// src/pages/SignInPage.tsx
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Button } from '../components/ui/button';
@@ -10,11 +9,11 @@ import { Eye, EyeOff, ArrowLeft, LogIn, ShoppingCart } from 'lucide-react';
 import { useUser } from '../contexts/UserContext';
 import { SuccessConfetti } from '../components/SuccessConfetti';
 
-interface SignInPageProps {
+interface LoginPageProps {
   onNavigate: (page: string) => void;
 }
 
-export function SignInPage({ onNavigate }: SignInPageProps) {
+export function LoginPage({ onNavigate }: LoginPageProps) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -43,17 +42,15 @@ export function SignInPage({ onNavigate }: SignInPageProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ BACKEND INTEGRATION: Handle login form submission
+  // ✅ UPDATED: Backend URL port 5000
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // ✅ First validate form on client side
     if (!validateForm()) return;
 
     setIsLoading(true);
     try {
-      // ✅ Make API call to backend login endpoint
-      const response = await fetch('http://localhost:8000/api/auth/login', {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,26 +89,25 @@ export function SignInPage({ onNavigate }: SignInPageProps) {
       }
     } catch (error) {
       console.error('Login error:', error);
-      // ❌ Network error
       setErrors({ general: 'Network error. Please check your connection and try again.' });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ✅ REAL FLOW: Enroll user in pending course after login
+  // ✅ UPDATED: Enroll user in pending course after login
   const enrollInPendingCourse = async (user: any, token: string, course: any) => {
     try {
-      const response = await fetch('http://localhost:8000/api/courses/enroll', {
+      const response = await fetch('http://localhost:5000/api/courses/enroll', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           courseId: course.courseId,
           courseTitle: course.courseTitle,
-          coursePrice: course.coursePrice
+          coursePrice: course.coursePrice,
+          email: user.email  // Add email for temporary auth
         }),
       });
 
@@ -121,7 +117,7 @@ export function SignInPage({ onNavigate }: SignInPageProps) {
         // ✅ Update user data with new course
         const updatedUser = {
           ...user,
-          enrolledCourses: [...(user.enrolledCourses || []), course.courseId]
+          enrolledCourses: result.user.enrolledCourses || [...(user.enrolledCourses || []), course.courseId]
         };
         
         // Update context and localStorage
@@ -135,7 +131,7 @@ export function SignInPage({ onNavigate }: SignInPageProps) {
         // ✅ Show success and redirect to student portal
         setShowSuccess(true);
         setTimeout(() => {
-          redirectToStudentPortal();
+          onNavigate("student-portal-dashboard");
         }, 2000);
       }
     } catch (error) {
@@ -148,19 +144,14 @@ export function SignInPage({ onNavigate }: SignInPageProps) {
     }
   };
 
-  // ✅ REAL FLOW: Redirect to student portal
-  const redirectToStudentPortal = () => {
-    onNavigate("student-portal-dashboard");
-  };
-
-  // ✅ REAL FLOW: Redirect user after login
+  // ✅ Redirect user after login
   const redirectAfterLogin = (user: any) => {
     if (user.role === 'instructor') {
       onNavigate("instructor-dashboard");
     } else if (user.enrolledCourses && user.enrolledCourses.length === 0) {
       onNavigate("courses");
     } else {
-      redirectToStudentPortal();
+      onNavigate("student-portal-dashboard");
     }
   };
 
