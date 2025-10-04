@@ -25,7 +25,6 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [isMobile, setIsMobile] = useState(false);
 
-  // ✅ ADDED: Detect mobile device
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -44,33 +43,28 @@ export default function App() {
 
   const handleLoadingComplete = () => setIsLoading(false);
 
-  // ✅ IMPROVED: Updated navigation with mobile optimization
   const handleNavigate = (page: string, courseId?: string) => {
     console.log("🚀 App Navigation:", page, "Course ID:", courseId);
     
-    // ✅ Course details navigation
     if (page === "course-details" && courseId) {
       setCurrentPage('course-details');
       setSelectedCourseId(courseId);
       console.log("✅ Course Details Page Set:", courseId);
     }
-    // ✅ Course details navigation - OLD FORMAT
     else if (page.startsWith('course-details-')) {
       const courseIdFromPage = page.replace('course-details-', '');
       setCurrentPage('course-details');
       setSelectedCourseId(courseIdFromPage);
       console.log("✅ Course Details Page Set (old format):", courseIdFromPage);
     }
-    // ✅ OTHER PAGES
     else {
       setCurrentPage(page);
       setSelectedCourseId("");
     }
     
-    // ✅ SMOOTH SCROLL FOR MOBILE
     window.scrollTo({ 
       top: 0, 
-      behavior: isMobile ? "auto" : "smooth" // Mobile par instant scroll
+      behavior: isMobile ? "auto" : "smooth"
     });
   };
 
@@ -104,7 +98,6 @@ export default function App() {
     }
   };
 
-  // ✅ PAGES WITHOUT HEADER/FOOTER
   const noHeaderFooterPages = ["signup", "signin", "login"];
   const shouldShowHeaderFooter = !noHeaderFooterPages.includes(currentPage);
 
@@ -118,26 +111,22 @@ export default function App() {
         </AnimatePresence>
 
         <motion.div
-          className={`${styles.appContainer} bg-background text-foreground min-h-screen flex flex-col`}
+          className={`${styles.appContainer} bg-background text-foreground min-h-screen flex flex-col w-full max-w-full overflow-x-hidden`}
           initial={{ opacity: 0 }}
           animate={{ opacity: showContent ? 1 : 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {/* ✅ RESPONSIVE HEADER */}
+          {/* ✅ FIXED HEADER */}
           {shouldShowHeaderFooter && (
             <Header currentPage={currentPage} onNavigate={handleNavigate} />
           )}
 
-          {/* ✅ MAIN CONTENT AREA */}
-          <main className="flex-1 w-full">
+          {/* ✅ FIXED MAIN CONTENT */}
+          <main className="flex-1 w-full max-w-full overflow-x-hidden pt-16">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPage}
-                className={`${styles.pageContainer} ${
-                  shouldShowHeaderFooter 
-                    ? styles.pageContainerWithPadding 
-                    : ""
-                } w-full max-w-full overflow-x-hidden`}
+                className={`${styles.pageContainer} w-full max-w-full overflow-x-hidden mx-auto`}
                 initial={{ opacity: 0, x: isMobile ? 0 : 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: isMobile ? 0 : -20 }}
@@ -151,7 +140,7 @@ export default function App() {
             </AnimatePresence>
           </main>
 
-          {/* ✅ RESPONSIVE FOOTER */}
+          {/* ✅ FIXED FOOTER */}
           {shouldShowHeaderFooter && (
             <Footer onNavigate={handleNavigate} />
           )}

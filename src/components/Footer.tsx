@@ -12,14 +12,14 @@ export function Footer({ onNavigate }: FooterProps) {
   };
 
   return (
-    <footer id="contact" className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 lg:px-8 py-12">
-        {/* Main Grid - Responsive but same structure */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Brand Section - Same design, responsive sizing */}
-          <div className="lg:col-span-2 space-y-4">
+    <footer id="contact" className="bg-gray-900 text-white w-full">
+      {/* ✅ CRITICAL FIX: w-full with proper container */}
+      <div className="w-full px-4 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto w-full">
+          
+          {/* Brand Section */}
+          <div className="lg:col-span-2 space-y-4 w-full">
             <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
-              {/* ✅ COMPANY LOGO - RESPONSIVE BUT LARGE SIZE MAINTAINED */}
               <div className="flex-shrink-0">
                 <img 
                   src="/public/logo.svg" 
@@ -28,7 +28,6 @@ export function Footer({ onNavigate }: FooterProps) {
                 />
               </div>
               
-              {/* Company Name - Responsive text */}
               <div className="text-center sm:text-left">
                 <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
                   KaushalHub NaukriPath Private Limited
@@ -44,7 +43,6 @@ export function Footer({ onNavigate }: FooterProps) {
               Transform your career with our expert-led courses and hands-on projects.
             </p>
             
-            {/* Social Links - MOVED MORE TO LEFT SIDE */}
             <div className="flex justify-start space-x-3">
               <a href="https://www.facebook.com/share/14RquNzDJJP/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 hover:scale-110">
                 <Facebook className="w-4 h-4" />
@@ -64,8 +62,8 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
           </div>
 
-          {/* Quick Links - Same structure, responsive text */}
-          <div className="space-y-4">
+          {/* Quick Links */}
+          <div className="space-y-4 w-full">
             <h4 className="font-semibold text-lg">Quick Links</h4>
             <ul className="space-y-2">
               <li>
@@ -111,8 +109,8 @@ export function Footer({ onNavigate }: FooterProps) {
             </ul>
           </div>
 
-          {/* Popular Courses - Same structure */}
-          <div className="space-y-4">
+          {/* Popular Courses */}
+          <div className="space-y-4 w-full">
             <h4 className="font-semibold text-lg">Our Courses</h4>
             <ul className="space-y-2">
               <li>
@@ -142,8 +140,8 @@ export function Footer({ onNavigate }: FooterProps) {
             </ul>
           </div>
 
-          {/* Contact Info - Same structure, responsive layout */}
-          <div className="space-y-4">
+          {/* Contact Info */}
+          <div className="space-y-4 w-full">
             <h4 className="font-semibold text-lg">Contact Info</h4>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
@@ -169,7 +167,6 @@ export function Footer({ onNavigate }: FooterProps) {
               </div>
             </div>
 
-            {/* Newsletter Subscription - Same design, responsive */}
             <div className="pt-4">
               <h5 className="font-medium text-sm mb-2">Stay Updated</h5>
               <div className="flex flex-col sm:flex-row gap-2">
@@ -186,8 +183,8 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
-        {/* Government Recognition - MOVED UP ABOVE COPYRIGHT */}
-        <div className="border-t border-gray-800 mt-8 pt-6">
+        {/* Government Recognition */}
+        <div className="border-t border-gray-800 mt-8 pt-6 max-w-7xl mx-auto w-full">
           <div className="text-center">
             <p className="text-gray-400 text-xs mb-3">Recognized By</p>
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
@@ -207,8 +204,8 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
-        {/* Bottom Section - Copyright & Policies MOVED DOWN */}
-        <div className="border-t border-gray-800 mt-6 pt-6">
+        {/* Bottom Section */}
+        <div className="border-t border-gray-800 mt-6 pt-6 max-w-7xl mx-auto w-full">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
             <div className="text-gray-400 text-xs text-center md:text-left">
               © 2024 KaushalHub NaukriPath Private Limited. All rights reserved.
