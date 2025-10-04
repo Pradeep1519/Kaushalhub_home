@@ -10,7 +10,7 @@ import { CareersPage } from "./pages/CareersPage";
 import { motion, AnimatePresence } from "motion/react";
 import styles from "./App.module.css"; 
 import { PrivacyPolicy } from "./pages/privacy-policy"; 
-import { LoginPage } from './pages/LoginPage'; // ✅ Import LoginPage
+import { LoginPage } from './pages/LoginPage';
 import { SignUpPage } from "./pages/SignUpPage"; 
 import { CourseDetailsPage } from "./pages/CourseDetailsPage";
 import { AboutPage } from "./pages/AboutPage";
@@ -23,6 +23,19 @@ export default function App() {
   const [showContent, setShowContent] = useState(false);
   const [currentPage, setCurrentPage] = useState("home");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  // ✅ ADDED: Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowContent(true), 2000);
@@ -31,32 +44,34 @@ export default function App() {
 
   const handleLoadingComplete = () => setIsLoading(false);
 
-  // ✅ FIXED: Updated navigation to handle both formats
+  // ✅ IMPROVED: Updated navigation with mobile optimization
   const handleNavigate = (page: string, courseId?: string) => {
     console.log("🚀 App Navigation:", page, "Course ID:", courseId);
     
-    // ✅ Course details navigation - NEW FORMAT
+    // ✅ Course details navigation
     if (page === "course-details" && courseId) {
       setCurrentPage('course-details');
       setSelectedCourseId(courseId);
       console.log("✅ Course Details Page Set:", courseId);
-      return;
     }
-    
-    // ✅ Course details navigation - OLD FORMAT (backward compatibility)
-    if (page.startsWith('course-details-')) {
+    // ✅ Course details navigation - OLD FORMAT
+    else if (page.startsWith('course-details-')) {
       const courseIdFromPage = page.replace('course-details-', '');
       setCurrentPage('course-details');
       setSelectedCourseId(courseIdFromPage);
       console.log("✅ Course Details Page Set (old format):", courseIdFromPage);
-      return;
+    }
+    // ✅ OTHER PAGES
+    else {
+      setCurrentPage(page);
+      setSelectedCourseId("");
     }
     
-    // ✅ OTHER PAGES
-    setCurrentPage(page);
-    setSelectedCourseId(""); // Reset course ID for other pages
-    
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // ✅ SMOOTH SCROLL FOR MOBILE
+    window.scrollTo({ 
+      top: 0, 
+      behavior: isMobile ? "auto" : "smooth" // Mobile par instant scroll
+    });
   };
 
   const renderCurrentPage = () => {
@@ -69,7 +84,7 @@ export default function App() {
         return <CareersPage key="careers" onNavigate={handleNavigate} />;
       case "signup":
         return <SignUpPage key="signup" onNavigate={handleNavigate} />;
-      case "login": // ✅ ADDED: Login case
+      case "login":
         return <LoginPage key="login" onNavigate={handleNavigate} />;
       case "privacy-policy":
         return <PrivacyPolicy key="privacy-policy" onNavigate={handleNavigate} />;
@@ -89,6 +104,10 @@ export default function App() {
     }
   };
 
+  // ✅ PAGES WITHOUT HEADER/FOOTER
+  const noHeaderFooterPages = ["signup", "signin", "login"];
+  const shouldShowHeaderFooter = !noHeaderFooterPages.includes(currentPage);
+
   return (
     <ThemeProvider defaultTheme="system" storageKey="kaushal-hub-theme">
       <AuthProvider>
@@ -99,36 +118,41 @@ export default function App() {
         </AnimatePresence>
 
         <motion.div
-          className={`${styles.appContainer} bg-background text-foreground`}
+          className={`${styles.appContainer} bg-background text-foreground min-h-screen flex flex-col`}
           initial={{ opacity: 0 }}
           animate={{ opacity: showContent ? 1 : 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {/* ✅ UPDATED: Include "login" in pages where header should not show */}
-          {!["signup", "signin", "login"].includes(currentPage) && (
+          {/* ✅ RESPONSIVE HEADER */}
+          {shouldShowHeaderFooter && (
             <Header currentPage={currentPage} onNavigate={handleNavigate} />
           )}
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPage}
-              className={`${styles.pageContainer} ${
-                // ✅ UPDATED: Include "login" in pages where padding should not apply
-                !["signup", "signin", "login"].includes(currentPage)
-                  ? styles.pageContainerWithPadding
-                  : ""
-              }`}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            >
-              {renderCurrentPage()}
-            </motion.div>
-          </AnimatePresence>
+          {/* ✅ MAIN CONTENT AREA */}
+          <main className="flex-1 w-full">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPage}
+                className={`${styles.pageContainer} ${
+                  shouldShowHeaderFooter 
+                    ? styles.pageContainerWithPadding 
+                    : ""
+                } w-full max-w-full overflow-x-hidden`}
+                initial={{ opacity: 0, x: isMobile ? 0 : 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: isMobile ? 0 : -20 }}
+                transition={{ 
+                  duration: isMobile ? 0.3 : 0.4, 
+                  ease: [0.25, 0.46, 0.45, 0.94] 
+                }}
+              >
+                {renderCurrentPage()}
+              </motion.div>
+            </AnimatePresence>
+          </main>
 
-          {/* ✅ UPDATED: Include "login" in pages where footer should not show */}
-          {!["signup", "signin", "login"].includes(currentPage) && (
+          {/* ✅ RESPONSIVE FOOTER */}
+          {shouldShowHeaderFooter && (
             <Footer onNavigate={handleNavigate} />
           )}
         </motion.div>

@@ -1,15 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- ✅ ENHANCED VIEWPORT FOR RESPONSIVE DESIGN -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    
+    <!-- ✅ PREVENT PHONE NUMBER DETECTION -->
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- ✅ THEME COLOR FOR MOBILE BROWSERS -->
+    <meta name="theme-color" content="#ffffff" />
+    
+    <!-- ✅ FAVICON & APP ICONS -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- ✅ SITE DESCRIPTION FOR SEO -->
+    <meta name="description" content="Kaushalhub NaukriPath Private Limited - Your career growth partner" />
+    
+    <!-- ✅ OPEN GRAPH TAGS FOR SOCIAL SHARING -->
+    <meta property="og:title" content="Kaushalhub NaukriPath Private Limited" />
+    <meta property="og:description" content="Your career growth partner" />
+    <meta property="og:type" content="website" />
+    
+    <!-- ✅ PREVENT INDEXING DURING DEVELOPMENT -->
+    <meta name="robots" content="index, follow" />
+    
+    <title>Kaushalhub NaukriPath Private Limited</title>
+    
+    <!-- ✅ PRELOAD CRITICAL CSS -->
+    <link rel="preload" as="style" href="/src/index.css" />
+    
+    <!-- ✅ PREVENT FOUC (Flash of Unstyled Content) -->
+    <style>
+      /* Hide site until CSS loads */
+      .loading {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+      .loaded {
+        opacity: 1;
+      }
+    </style>
+  </head>
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Kaushalhub NaukriPath Private Limited</title>
-    </head>
-
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+  <body class="loading">
+    <div id="root"></div>
+    
+    <!-- ✅ LOADING SCRIPT WITH ERROR HANDLING -->
+    <script type="module">
+      // Remove loading class when page loads
+      window.addEventListener('load', function() {
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+      });
+      
+      // Fallback if main script fails
+      setTimeout(() => {
+        if (!window.React) {
+          document.body.classList.remove('loading');
+          document.body.classList.add('loaded');
+        }
+      }, 3000);
+    </script>
+    
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

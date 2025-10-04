@@ -48,17 +48,36 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // ✅ ADD THESE LINES FOR PUBLIC FOLDER
+  // ✅ PUBLIC FOLDER CONFIG
   publicDir: 'public',
   build: {
     target: 'esnext',
     outDir: 'dist',
-    assetsInclude: ['**/*.png', '**/*.jpg', '**/*.webp', '**/*.svg'],
+    assetsInclude: ['**/*.png', '**/*.jpg', '**/*.webp', '**/*.svg', '**/*.gif'],
     copyPublicDir: true,
     chunkSizeWarningLimit: 1000,
+    // ✅ ADDED FOR BETTER RESPONSIVE BUILD
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom'],
+          'ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+        }
+      }
+    },
+    // ✅ OPTIMIZE FOR MOBILE
+    minify: 'esbuild',
+    cssMinify: true,
   },
   server: {
     port: 3000,
     open: true,
+    // ✅ ADDED FOR NETWORK ACCESS
+    host: true,
+  },
+  // ✅ PREVIEW CONFIG FOR DEPLOYMENT
+  preview: {
+    port: 4173,
+    host: true,
   },
 });
