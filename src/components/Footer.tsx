@@ -22,7 +22,7 @@ export function Footer({ onNavigate }: FooterProps) {
               {/* ✅ COMPANY LOGO - RESPONSIVE BUT LARGE SIZE MAINTAINED */}
               <div className="flex-shrink-0">
                 <img 
-                  src="/src/public/logo.svg" 
+                  src="/public/logo.svg" 
                   alt="KaushalHub Logo" 
                   className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-contain transition-transform duration-300 hover:scale-105"
                 />

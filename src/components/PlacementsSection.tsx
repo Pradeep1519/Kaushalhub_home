@@ -13,10 +13,10 @@ const nonTechCompanies = [
   
   // Pharmaceuticals
   { name: "Sun Pharmaceutical", logo: "/companieslogo/sunpharma.png", type: "Pharma" },
-  { name: "Dr. Reddy's", logo: "/companieslogo/dr.reddy's.jpg", type: "Pharma" },
+  { name: "Dr. Reddy's", logo: "/companieslogo/dr-reddys.jpg", type: "Pharma" },
   { name: "Cipla", logo: "/companieslogo/cipla.png", type: "Pharma" },
   { name: "Lupin", logo: "/companieslogo/lupin.webp", type: "Pharma" },
-  { name: "Biocon", logo: "/companieslogo/images.jpg", type: "Pharma" },
+  { name: "Biocon", logo: "/companieslogo/biocon.jpg", type: "Pharma" },
   
   // Cement & Construction
   { name: "UltraTech Cement", logo: "/companieslogo/ultratech.png", type: "Cement" },
