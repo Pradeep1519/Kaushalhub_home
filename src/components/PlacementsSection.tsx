@@ -5,7 +5,7 @@ import { Building2, Users, Target, Award, Star, TrendingUp } from "lucide-react"
 const nonTechCompanies = [
   // FMCG Companies
   { name: "Hindustan Unilever", logo: "/companieslogo/unilever.png", type: "FMCG" },
-  { name: "ITC Limited", logo: "//itc.png", type: "FMCG" },
+  { name: "ITC Limited", logo: "/companieslogo/itc.png", type: "FMCG" },
   { name: "Nestlé India", logo: "/companieslogo/nestle.png", type: "FMCG" },
   { name: "Britannia", logo: "/companieslogo/britannia.png", type: "FMCG" },
   { name: "Dabur India", logo: "/companieslogo/dabur.png", type: "FMCG" },
