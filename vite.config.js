@@ -48,9 +48,14 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // ✅ ADD THESE LINES FOR PUBLIC FOLDER
+  publicDir: 'public',
   build: {
     target: 'esnext',
-    outDir: 'dist', // ✅ changed from "build" → "dist"
+    outDir: 'dist',
+    assetsInclude: ['**/*.png', '**/*.jpg', '**/*.webp', '**/*.svg'],
+    copyPublicDir: true,
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     port: 3000,
