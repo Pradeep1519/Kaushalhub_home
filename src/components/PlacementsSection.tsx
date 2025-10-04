@@ -4,48 +4,48 @@ import { Building2, Users, Target, Award, Star, TrendingUp } from "lucide-react"
 
 const nonTechCompanies = [
   // FMCG Companies
-  { name: "Hindustan Unilever", logo: "/src/public/Companieslogo/unilever.png", type: "FMCG" },
-  { name: "ITC Limited", logo: "/src/public/companieslogo/itc.png", type: "FMCG" },
-  { name: "Nestlé India", logo: "/src/public/companieslogo/nestle.png", type: "FMCG" },
-  { name: "Britannia", logo: "/src/public/companieslogo/britannia.png", type: "FMCG" },
-  { name: "Dabur India", logo: "/src/public/companieslogo/dabur.png", type: "FMCG" },
-  { name: "Colgate Palmolive", logo: "/src/public/companieslogo/colgate.png", type: "FMCG" },
+  { name: "Hindustan Unilever", logo: "/companieslogo/unilever.png", type: "FMCG" },
+  { name: "ITC Limited", logo: "/companieslogo/itc.png", type: "FMCG" },
+  { name: "Nestlé India", logo: "/companieslogo/nestle.png", type: "FMCG" },
+  { name: "Britannia", logo: "/companieslogo/britannia.png", type: "FMCG" },
+  { name: "Dabur India", logo: "/companieslogo/dabur.png", type: "FMCG" },
+  { name: "Colgate Palmolive", logo: "/companieslogo/colgate.png", type: "FMCG" },
   
   // Pharmaceuticals
-  { name: "Sun Pharmaceutical", logo: "/src/public/companieslogo/sunpharma.png", type: "Pharma" },
-  { name: "Dr. Reddy's", logo: "/src/public/companieslogo/dr.reddy's.jpg", type: "Pharma" },
-  { name: "Cipla", logo: "/src/public/companieslogo/cipla.png", type: "Pharma" },
-  { name: "Lupin", logo: "/src/public/companieslogo/lupin.webp", type: "Pharma" },
-  { name: "Biocon", logo: "/src/public/companieslogo/images.jpg", type: "Pharma" },
+  { name: "Sun Pharmaceutical", logo: "/companieslogo/sunpharma.png", type: "Pharma" },
+  { name: "Dr. Reddy's", logo: "/companieslogo/dr.reddy's.jpg", type: "Pharma" },
+  { name: "Cipla", logo: "/companieslogo/cipla.png", type: "Pharma" },
+  { name: "Lupin", logo: "/companieslogo/lupin.webp", type: "Pharma" },
+  { name: "Biocon", logo: "/companieslogo/images.jpg", type: "Pharma" },
   
   // Cement & Construction
-  { name: "UltraTech Cement", logo: "/src/public/companieslogo/ultratech.png", type: "Cement" },
-  { name: "Ambuja Cements", logo: "/src/public/companieslogo/ambuja.webp", type: "Cement" },
-  { name: "ACC Limited", logo: "/src/public/companieslogo/acc.png", type: "Cement" },
+  { name: "UltraTech Cement", logo: "/companieslogo/ultratech.png", type: "Cement" },
+  { name: "Ambuja Cements", logo: "/companieslogo/ambuja.webp", type: "Cement" },
+  { name: "ACC Limited", logo: "/companieslogo/acc.png", type: "Cement" },
   
   // Paints & Chemicals
-  { name: "Asian Paints", logo: "/src/public/companieslogo/asianpaints.webp", type: "Paints" },
-  { name: "Berger Paints", logo: "/src/public/companieslogo/bergerpaints.png", type: "Paints" },
-  { name: "Pidilite Industries", logo: "/src/public/companieslogo/pidilite.png", type: "Chemicals" },
+  { name: "Asian Paints", logo: "/companieslogo/asianpaints.webp", type: "Paints" },
+  { name: "Berger Paints", logo: "/companieslogo/bergerpaints.png", type: "Paints" },
+  { name: "Pidilite Industries", logo: "/companieslogo/pidilite.png", type: "Chemicals" },
   
   // Automotive
-  { name: "Mahindra & Mahindra", logo: "/src/public/companieslogo/mahindra.png", type: "Auto" },
-  { name: "Tata Motors", logo: "/src/public/companieslogo/tata.png", type: "Auto" },
-  { name: "Bajaj Auto", logo: "/src/public/companieslogo/bajaj.png", type: "Auto" },
+  { name: "Mahindra & Mahindra", logo: "/companieslogo/mahindra.png", type: "Auto" },
+  { name: "Tata Motors", logo: "/companieslogo/tata.png", type: "Auto" },
+  { name: "Bajaj Auto", logo: "/companieslogo/bajaj.png", type: "Auto" },
   
   // Retail
-  { name: "DMart", logo: "/src/public/companieslogo/dmart.svg", type: "Retail" },
+  { name: "DMart", logo: "/companieslogo/dmart.svg", type: "Retail" },
   
   // Food & Dairy
-  { name: "Amul", logo: "/src/public/companieslogo/amul.png", type: "Dairy" },
-  { name: "Parle Products", logo: "/src/public/companieslogo/parle.png", type: "Food" },
+  { name: "Amul", logo: "/companieslogo/amul.png", type: "Dairy" },
+  { name: "Parle Products", logo: "/companieslogo/parle.png", type: "Food" },
   
   // Textiles
-  { name: "Raymond", logo: "/src/public/companieslogo/raymond.png", type: "Textiles" }
+  { name: "Raymond", logo: "/companieslogo/raymond.png", type: "Textiles" }
 ];
 
 // Company Logo Component
-const CompanyLogo = ({ company, index }: { company: any; index: number }) => {
+const CompanyLogo = ({ company, index }) => {
   const [imgError, setImgError] = useState(false);
 
   const handleError = () => {
