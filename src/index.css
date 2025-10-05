@@ -9371,7 +9371,7 @@ html {
   }
 }
 .StudentPortalNav_sidebarHeader .StudentPortalNav_text-transparent {
-  background-size: 200% 200%;
+  background-size: 100% 100%;
   animation: StudentPortalNav_gradientShift 4s ease-in-out infinite;
 }
 .StudentPortalNav_sidebar * {

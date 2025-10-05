@@ -5,17 +5,17 @@ import React from 'react';
 const RecognitionLogos = () => {
   const logos = [
     {
-      src: "/public/mca.png",
+      src: "/public/recog/mca.png",
       alt: "Ministry of Corporate Affairs, Government of India", 
       href: "https://www.mca.gov.in"
     },
     {
-      src: "/public/msme.jpg",
+      src: "/public/recog/msme.jpg",
       alt: "Ministry of MSME, Government of India",
       href: "https://msme.gov.in"
     },
     {
-      src: "/public/startupindia.png",
+      src: "/public/recog/startupindia.png",
       alt: "Startup India", 
       href: "https://www.startupindia.gov.in"
     }
@@ -81,7 +81,7 @@ const RecognitionLogos = () => {
             }
           }
           
-          @media (min-width: 641px) and (max-width: 1024px) {
+          @media (min-width: 641px) and (max-width: 500px) {
             .marquee-container {
               gap: 3rem;
             }
@@ -90,7 +90,7 @@ const RecognitionLogos = () => {
             }
           }
           
-          @media (min-width: 1025px) {
+          @media (min-width: 500px) {
             .marquee-container {
               gap: 4rem;
             }

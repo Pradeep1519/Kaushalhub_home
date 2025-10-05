@@ -121,8 +121,8 @@ export default function App() {
             <Header currentPage={currentPage} onNavigate={handleNavigate} />
           )}
 
-          {/* ✅ FIXED MAIN CONTENT */}
-          <main className="flex-1 w-full max-w-full overflow-x-hidden pt-16">
+          {/* ✅ FIXED MAIN CONTENT - UPDATED PADDING */}
+          <main className="flex-1 w-full max-w-full overflow-x-hidden pt-20 sm:pt-22 lg:pt-24">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPage}

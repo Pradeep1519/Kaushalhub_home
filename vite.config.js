@@ -53,7 +53,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     outDir: 'dist',
-    assetsInclude: ['**/*.png', '**/*.jpg', '**/*.webp', '**/*.svg', '**/*.gif'],
+    publicInclude: ['**/*.png', '**/*.jpg', '**/*.webp', '**/*.svg', '**/*.gif'],
     copyPublicDir: true,
     chunkSizeWarningLimit: 1000,
     // ✅ ADDED FOR BETTER RESPONSIVE BUILD
