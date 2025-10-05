@@ -65,8 +65,7 @@ const coursesData = [
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop",
     duration: "3 Months",
     level: "Advanced",
-    originalPrice: "₹49,999",
-    price: "₹29,999",
+    price: "₹49,999",
     category: "Automation"
   },
   {
@@ -76,8 +75,7 @@ const coursesData = [
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop",
     duration: "3 Months",
     level: "Advanced",
-    originalPrice: "₹49,999",
-    price: "₹29,999",
+    price: "₹49,999",
     category: "Marketing"
   },
   {
@@ -87,8 +85,7 @@ const coursesData = [
     image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
     duration: "3 Months",
     level: "Advanced",
-    originalPrice: "₹49,999",
-    price: "₹29,999",
+    price: "₹49,999",
     category: "Accounting"
   }
 ];
@@ -247,11 +244,12 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
   // Calculate total lessons
   const totalLessons = curriculum.reduce((total, module) => total + module.lessons.length, 0);
 
-  // ✅ MODIFIED: Handle payment
-  const handlePayment = () => {
-    console.log("💳 Payment initiated for course:", course.title);
-    // Yahan aap payment gateway integration add kar sakte hain
-    alert(`Redirecting to payment for: ${course.title}\nAmount: ${course.price}`);
+  // ✅ MODIFIED: Handle enrollment form navigation
+  const handleEnrollment = () => {
+    console.log("📝 Enrollment initiated for course:", course.title);
+    if (onNavigate) {
+      onNavigate(`enrollment-form-${courseId}`);
+    }
   };
 
   // ✅ MODIFIED: Handle course preview (agar koi preview video hai toh)
@@ -569,10 +567,7 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                 <CardHeader className="pb-3 sm:pb-4">
                   <div className="text-center">
                     <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-1 sm:mb-2">{course.price}</div>
-                    <div className="text-sm text-muted-foreground line-through mb-2">{course.originalPrice}</div>
-                    <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 text-xs sm:text-sm">
-                      Limited Time Offer • 40% OFF
-                    </Badge>
+                    <div className="text-sm text-muted-foreground mb-2">One-time payment</div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3 sm:space-y-4">
@@ -600,7 +595,7 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                     </div>
                   </div>
 
-                  {/* ✅ MODIFIED: Payment Button instead of Preview */}
+                  {/* ✅ MODIFIED: Enrollment Button */}
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -608,10 +603,10 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                     <Button
                       className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-4 sm:py-6 text-base sm:text-lg font-semibold"
                       size="lg"
-                      onClick={handlePayment}
+                      onClick={handleEnrollment}
                     >
                       <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
-                      Enroll Now & Pay
+                      Enroll & Pay
                     </Button>
                   </motion.div>
 

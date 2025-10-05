@@ -89,18 +89,18 @@ export function Testimonials() {
   };
 
   return (
-    <section id="testimonials" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-teal-50">
+    <section id="testimonials" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-blue-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Header */}
         <ScrollReveal>
           <div className="text-center space-y-4 sm:space-y-6 mb-12 sm:mb-16 lg:mb-20">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight text-gray-900 dark:text-white">
               What Our
               <span className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mt-1 lg:mt-2">
                 Students Say
               </span>
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl lg:max-w-3xl mx-auto leading-relaxed sm:leading-loose px-4 sm:px-0">
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground dark:text-gray-300 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed sm:leading-loose px-4 sm:px-0">
               Don't just take our word for it. Hear from our successful graduates who have transformed their careers.
             </p>
           </div>
@@ -108,7 +108,7 @@ export function Testimonials() {
 
         {/* Testimonial Carousel */}
         <div className="relative max-w-4xl mx-auto">
-          <Card className="overflow-hidden shadow-2xl">
+          <Card className="overflow-hidden shadow-2xl bg-white dark:bg-gray-800">
             <CardContent className="p-4 sm:p-6 lg:p-8 xl:p-12">
               <div className="relative h-64 sm:h-72 lg:h-80">
                 <AnimatePresence mode="popLayout" custom={direction}>
@@ -150,19 +150,19 @@ export function Testimonials() {
                         </div>
 
                         {/* Testimonial Text - Responsive typography */}
-                        <blockquote className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed sm:leading-loose text-center lg:text-left">
+                        <blockquote className="text-base sm:text-lg lg:text-xl text-muted-foreground dark:text-gray-300 leading-relaxed sm:leading-loose text-center lg:text-left">
                           "{currentTestimonial.testimonial}"
                         </blockquote>
 
                         {/* Student Info - Responsive typography */}
                         <div className="text-center lg:text-left space-y-1 sm:space-y-2">
-                          <div className="font-bold text-lg sm:text-xl lg:text-2xl text-foreground">
+                          <div className="font-bold text-lg sm:text-xl lg:text-2xl text-foreground dark:text-white">
                             {currentTestimonial.name}
                           </div>
-                          <div className="text-sm sm:text-base text-muted-foreground">
+                          <div className="text-sm sm:text-base text-muted-foreground dark:text-gray-400">
                             {currentTestimonial.role}
                           </div>
-                          <div className="text-xs sm:text-sm text-blue-600 font-medium">
+                          <div className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-medium">
                             Graduate of {currentTestimonial.course}
                           </div>
                         </div>
@@ -180,7 +180,7 @@ export function Testimonials() {
               variant="outline"
               size="icon"
               onClick={prevTestimonial}
-              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 hover:scale-110"
+              className="rounded-full border-border dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 hover:scale-110"
             >
               <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
@@ -188,14 +188,14 @@ export function Testimonials() {
               variant="outline"
               size="icon"
               onClick={nextTestimonial}
-              className="rounded-full border-border hover:border-blue-500 hover:bg-blue-50 w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 hover:scale-110"
+              className="rounded-full border-border dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 hover:scale-110"
             >
               <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
 
           {/* Dots Indicator - Increased margin top for more space */}
-          <div className="flex justify-center space-x-2 sm:space-x-3 mt-8 sm:mt-10"> {/* Increased from mt-4/mt-6 to mt-8/mt-10 */}
+          <div className="flex justify-center space-x-2 sm:space-x-3 mt-8 sm:mt-10">
             {testimonials.map((_, index) => (
               <button
                 key={index}
@@ -207,7 +207,7 @@ export function Testimonials() {
                 className={`transition-all duration-300 ${
                   index === currentIndex 
                     ? 'bg-gradient-to-r from-blue-600 to-teal-600' 
-                    : 'bg-gray-300 hover:bg-gray-400'
+                    : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
                 }`}
                 style={{
                   width: index === currentIndex ? '24px' : '12px',
@@ -222,7 +222,7 @@ export function Testimonials() {
 
         {/* Stats - Enhanced responsive grid */}
         <ScrollReveal delay={200}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-12 sm:mt-16 lg:mt-20 max-w-4xl mx-auto"> {/* Increased margin top */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-12 sm:mt-16 lg:mt-20 max-w-4xl mx-auto">
             {[
               { value: "100%", label: "Job Placement Rate" },
               { value: "4.8", label: "Average Rating" },
@@ -231,12 +231,12 @@ export function Testimonials() {
             ].map((stat, index) => (
               <div 
                 key={index}
-                className="text-center p-4 sm:p-6 rounded-xl bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 transition-all duration-300"
+                className="text-center p-4 sm:p-6 rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-700/50 hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-300"
               >
                 <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-1 sm:mb-2">
                   {stat.value}
                 </div>
-                <div className="text-xs sm:text-sm text-muted-foreground font-medium">
+                <div className="text-xs sm:text-sm text-muted-foreground dark:text-gray-400 font-medium">
                   {stat.label}
                 </div>
               </div>

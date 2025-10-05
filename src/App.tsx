@@ -17,6 +17,8 @@ import { AboutPage } from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import TermAndConditions from "./pages/TermsAndConditions";
 import { RefundPolicy } from "./pages/RefundPolicy";
+import EnrollmentFormPage from "./pages/EnrollmentFormPage";
+import PaymentPage from "./pages/PaymentPage"; // ✅ PaymentPage import karo
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -46,6 +48,7 @@ export default function App() {
   const handleNavigate = (page: string, courseId?: string) => {
     console.log("🚀 App Navigation:", page, "Course ID:", courseId);
     
+    // ✅ FIXED: Handle different navigation formats
     if (page === "course-details" && courseId) {
       setCurrentPage('course-details');
       setSelectedCourseId(courseId);
@@ -56,6 +59,18 @@ export default function App() {
       setCurrentPage('course-details');
       setSelectedCourseId(courseIdFromPage);
       console.log("✅ Course Details Page Set (old format):", courseIdFromPage);
+    }
+    else if (page.startsWith('enrollment-form-')) {
+      const courseIdFromPage = page.replace('enrollment-form-', '');
+      setCurrentPage('enrollment-form');
+      setSelectedCourseId(courseIdFromPage);
+      console.log("✅ Enrollment Form Page Set:", courseIdFromPage);
+    }
+    else if (page.startsWith('payment-')) {
+      const courseIdFromPage = page.replace('payment-', '');
+      setCurrentPage('payment');
+      setSelectedCourseId(courseIdFromPage);
+      console.log("✅ Payment Page Set:", courseIdFromPage);
     }
     else {
       setCurrentPage(page);
@@ -83,7 +98,29 @@ export default function App() {
       case "privacy-policy":
         return <PrivacyPolicy key="privacy-policy" onNavigate={handleNavigate} />;
       case "course-details":
-        return <CourseDetailsPage key={`course-details-${selectedCourseId}`} onNavigate={handleNavigate} courseId={selectedCourseId} />;
+        return (
+          <CourseDetailsPage 
+            key={`course-details-${selectedCourseId}`} 
+            onNavigate={handleNavigate} 
+            courseId={selectedCourseId} 
+          />
+        );
+      case "enrollment-form":
+        return (
+          <EnrollmentFormPage 
+            key={`enrollment-form-${selectedCourseId}`}
+            onNavigate={handleNavigate} 
+            courseId={selectedCourseId} 
+          />
+        );
+      case "payment":
+        return (
+          <PaymentPage 
+            key={`payment-${selectedCourseId}`}
+            onNavigate={handleNavigate} 
+            courseId={selectedCourseId} 
+          />
+        );
       case "about":
         return <AboutPage key="about" onNavigate={handleNavigate} />;
       case "contact":

@@ -1,4 +1,36 @@
-/* ✅ CRITICAL MOBILE ZOOM PREVENTION - MUST BE AT TOP */
+/* ✅ DESKTOP 75% DEFAULT ZOOM - PERFECT */
+@media (min-width: 768px) {
+  html {
+    zoom: 0.75 !important;
+    transform: scale(0.75) !important;
+    transform-origin: top left !important;
+    width: 133.33% !important;
+    height: 133.33% !important;
+  }
+  
+  body {
+    width: 133.33% !important;
+    height: 133.33% !important;
+    transform: scale(1) !important;
+  }
+}
+
+/* ✅ MOBILE STAYS 100% */
+@media (max-width: 767px) {
+  html {
+    zoom: 1 !important;
+    transform: scale(1) !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  body {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* ✅ CRITICAL MOBILE ZOOM PREVENTION */
 @viewport {
   width: device-width;
   zoom: 1.0;
@@ -35,7 +67,6 @@ html {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  zoom: 1 !important;
 }
 
 body {
@@ -52,7 +83,6 @@ body {
   padding: 0;
   overflow-x: hidden;
   position: relative;
-  transform: scale(1) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
 }
@@ -385,7 +415,7 @@ main {
 }
 
 /* ✅ MOBILE-SPECIFIC FIXES */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   html { font-size: 14px !important; }
   body { font-size: 14px !important; }
 }
@@ -428,11 +458,14 @@ img {
   }
 }
 
-/* ✅ SMOOTH THEME TRANSITIONS */
-* {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 0.2s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+/* ✅ FIXED: NO GLOBAL TRANSITIONS - NO CONFLICTS */
+html, body {
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button, a, input, textarea, select {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ✅ FINAL SAFETY NET */

@@ -19,12 +19,12 @@ const setupViewportHandler = () => {
   const handleOrientationChange = () => {
     const viewport = document.querySelector('meta[name="viewport"]');
     if (viewport) {
-      if (window.orientation === 90 || window.orientation === -90) {
+      if (window.orientation === 90 || window.orientation === 90) {
         // Landscape mode
-        viewport.setAttribute('content', 'width=device-width, initial-scale=0.8, maximum-scale=1.0');
+        viewport.setAttribute('content', 'width=device-width, initial-scale=0.7, maximum-scale=1.0');
       } else {
         // Portrait mode  
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+        viewport.setAttribute('content', 'width=device-width, initial-scale=0.8, maximum-scale=5.0, user-scalable=yes');
       }
     }
   };

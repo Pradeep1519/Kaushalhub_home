@@ -10,47 +10,41 @@ import { AnimatedCard } from "../components/AnimatedCard";
 import { AnimatedButton } from "../components/AnimatedButton";
 import { useState } from "react";
 
-// ✅ COURSES DATA - YAHI FILE MEIN
+// ✅ COURSES DATA - YAHI FILE MEIN (Course IDs match with CourseDetailsPage)
 const coursesData = [
   {
-    id: 1,
+    id: "plc-automation", // ✅ Same ID as CourseDetailsPage
     title: "PLC & Automation",
     description: "Learn industrial automation with PLC programming, ladder logic, and SCADA systems.",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop",
     duration: "3 Months",
     students: "2,847",
     rating: "4.8",
-    discount: "40% OFF",
-    price: "₹29,999",
-    originalPrice: "₹49,999",
+    price: "₹49,999",
     category: "Automation",
     level: "Advanced"
   },
   {
-    id: 2,
+    id: "digital-marketing", // ✅ Same ID as CourseDetailsPage
     title: "Digital Marketing With AI & E-Commerce",
     description: "Complete digital marketing course covering SEO, social media, PPC, and analytics.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop",
     duration: "3 Months",
     students: "3,521",
     rating: "4.9",
-    discount: "40% OFF",
-    price: "₹29,999",
-    originalPrice: "₹49,999",
+    price: "₹49,999",
     category: "Marketing",
     level: "Advanced"
   },
   {
-    id: 3,
+    id: "tally-gst", // ✅ Same ID as CourseDetailsPage
     title: "Tally with GST + Advanced Excel",
     description: "Master Tally accounting software with GST compliance and advanced financial reporting.",
     image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
     duration: "3 Months",
     students: "1,956",
     rating: "4.7",
-    discount: "40% OFF",
-    price: "₹29,999",
-    originalPrice: "₹49,999",
+    price: "₹49,999",
     category: "Accounting",
     level: "Advanced"
   }
@@ -70,24 +64,11 @@ function CourseCard({ course, index = 0, onViewCourse }: {
   onViewCourse?: (courseId: string) => void; 
 }) {
   
-  // ✅ Course ID mapping
-  const getCourseId = (title: string): string => {
-    const courseIdMap: Record<string, string> = {
-      'Advanced Excel with AI': 'excel-ai',
-      'PLC & Automation': 'plc-automation', 
-      'Digital Marketing With AI & E-Commerce': 'digital-marketing',
-      'Tally with GST + Advanced Excel': 'tally-gst'
-    };
-    return courseIdMap[title] || title.toLowerCase().replace(/\s+/g, '-');
-  };
-
-  const courseId = getCourseId(course.title);
-  
-  // ✅ SIMPLE View Course function
+  // ✅ SIMPLE View Course function - Direct course.id use karo
   const handleViewCourseClick = () => {
-    console.log('🎯 CourseCard: View Course clicked - ID:', courseId);
+    console.log('🎯 CourseCard: View Course clicked - ID:', course.id);
     if (onViewCourse) {
-      onViewCourse(courseId);
+      onViewCourse(course.id); // ✅ Direct course.id use karo
     }
   };
 
@@ -115,12 +96,6 @@ function CourseCard({ course, index = 0, onViewCourse }: {
             <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
               <Badge variant="secondary" className="bg-blue-100/90 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 backdrop-blur-sm text-xs">
                 {course.level}
-              </Badge>
-            </div>
-            {/* ✅ DISCOUNT BADGE - Top center mein */}
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
-              <Badge className="bg-red-500 text-white border-0 text-xs">
-                {course.discount}
               </Badge>
             </div>
           </div>
@@ -158,19 +133,18 @@ function CourseCard({ course, index = 0, onViewCourse }: {
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <span className="text-xl sm:text-2xl font-bold text-blue-600">{course.price}</span>
-                <span className="text-xs sm:text-sm text-muted-foreground line-through">{course.originalPrice}</span>
               </div>
               <div className="text-xs text-green-600 font-medium mt-1">
-                {course.discount} • Save ₹20,000
+                One-time payment
               </div>
             </div>
-            <AnimatedButton 
-              className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 h-auto"
-              glowEffect
+            {/* ✅ FIXED: Button outline issue removed */}
+            <button 
+              className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 h-auto rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               onClick={handleViewCourseClick}
             >
               View Course
-            </AnimatedButton>
+            </button>
           </div>
         </CardFooter>
       </AnimatedCard>
@@ -239,7 +213,7 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               <div className="text-center">
-                <div className="font-bold text-blue-600 text-sm sm:text-base lg:text-lg mb-1">15K+</div>
+                <div className="font-bold text-blue-600 text-sm sm:text-base lg:text-lg mb-1">10K+</div>
                 <div className="text-xs sm:text-sm text-muted-foreground">Active Students</div>
               </div>
               <div className="text-center">
@@ -247,7 +221,7 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
                 <div className="text-xs sm:text-sm text-muted-foreground">Courses</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-purple-600 text-sm sm:text-base lg:text-lg mb-1">95%</div>
+                <div className="font-bold text-purple-600 text-sm sm:text-base lg:text-lg mb-1">99%</div>
                 <div className="text-xs sm:text-sm text-muted-foreground">Success Rate</div>
               </div>
             </motion.div>
@@ -318,7 +292,7 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
                   variant={viewMode === "grid" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setViewMode("grid")}
-                  className="hover:scale-105 transition-transform duration-200 p-2 sm:p-3"
+                  className="hover:scale-105 transition-transform duration-200 p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   <Grid className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
@@ -326,7 +300,7 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
                   variant={viewMode === "list" ? "default" : "outline"}
                   size="sm"
                   onClick={() => setViewMode("list")}
-                  className="hover:scale-105 transition-transform duration-200 p-2 sm:p-3"
+                  className="hover:scale-105 transition-transform duration-200 p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   <List className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
@@ -375,7 +349,7 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
                   setSelectedCategory("All");
                   setSelectedLevel("All");
                 }}
-                className="hover:scale-105 transition-transform duration-200 text-sm sm:text-base"
+                className="hover:scale-105 transition-transform duration-200 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Clear All Filters
               </Button>

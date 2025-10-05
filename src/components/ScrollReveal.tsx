@@ -34,21 +34,18 @@ export function ScrollReveal({
     const width = window.innerWidth;
     
     if (width < 768) {
-      // Mobile - smaller movements, faster animations
       return {
-        distance: distance * 0.6, // 60% of original distance
-        duration: duration * 0.8,  // 20% faster
-        threshold: Math.min(threshold + 0.05, 0.3) // More sensitive on mobile
+        distance: distance * 0.6,
+        duration: duration * 0.8,
+        threshold: Math.min(threshold + 0.05, 0.3)
       };
     } else if (width < 1024) {
-      // Tablet - medium movements
       return {
-        distance: distance * 0.8, // 80% of original distance
-        duration: duration * 0.9,  // 10% faster
+        distance: distance * 0.8,
+        duration: duration * 0.9,
         threshold: threshold
       };
     } else {
-      // Desktop - original values
       return { distance, duration, threshold };
     }
   };
@@ -67,7 +64,7 @@ export function ScrollReveal({
       },
       { 
         threshold: responsiveValues.threshold, 
-        rootMargin: responsive ? '20px' : '50px' // Smaller margin on mobile
+        rootMargin: responsive ? '20px' : '50px'
       }
     );
 
@@ -97,16 +94,15 @@ export function ScrollReveal({
         return `translateX(-${dist}px)`;
       case 'fade':
       default:
-        return `translateY(${dist * 0.33}px)`; // Smaller movement for fade
+        return `translateY(${dist * 0.33}px)`;
     }
   };
 
-  // Smoother easing functions
   const getEasing = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      return 'cubic-bezier(0.4, 0, 0.2, 1)'; // Smoother on mobile
+      return 'cubic-bezier(0.4, 0, 0.2, 1)';
     }
-    return 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Original easing
+    return 'cubic-bezier(0.25, 0.46, 0.45, 0.94)';
   };
 
   return (
@@ -116,7 +112,7 @@ export function ScrollReveal({
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translate3d(0, 0, 0)' : getInitialTransform(),
-        transition: `all ${responsiveValues.duration}ms ${getEasing()}`,
+        transition: `opacity ${responsiveValues.duration}ms ${getEasing()}, transform ${responsiveValues.duration}ms ${getEasing()}`,
         transitionProperty: 'opacity, transform',
         backfaceVisibility: 'hidden',
         perspective: 1000,
@@ -127,7 +123,7 @@ export function ScrollReveal({
   );
 }
 
-// Pre-configured variants for common use cases
+// Pre-configured variants
 export function FadeReveal({ children, ...props }: Omit<ScrollRevealProps, 'direction'>) {
   return (
     <ScrollReveal direction="fade" distance={40} {...props}>

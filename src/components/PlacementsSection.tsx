@@ -67,7 +67,7 @@ const CompanyLogo = ({ company, index }) => {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-6 bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+    <div className="w-full h-full flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
       <img
         src={company.logo}
         alt={company.name}
@@ -102,7 +102,7 @@ export function PlacementsSection() {
   ];
 
   return (
-    <section id="placements" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30">
+    <section id="placements" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-teal-900/20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
@@ -115,15 +115,15 @@ export function PlacementsSection() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={isVisible ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-50 rounded-full border border-blue-200 mb-6"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-50 dark:bg-blue-900/30 rounded-full border border-blue-200 dark:border-blue-800 mb-6"
           >
-            <Building2 className="w-5 h-5 text-blue-600" />
-            <span className="text-sm font-semibold text-blue-700">
+            <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
               Placement Partners
             </span>
           </motion.div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             Our Students Work at
             <motion.span 
               className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mt-2"
@@ -139,7 +139,7 @@ export function PlacementsSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+            className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed"
           >
             We have successfully placed our students in 200+ leading non-tech companies across various industries. 
             Join the league of successful professionals building careers at India's most respected organizations.
@@ -156,7 +156,7 @@ export function PlacementsSection() {
           {stats.map((stat, index) => (
             <motion.div
               key={index}
-              className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-500 group"
+              className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-500 group"
               initial={{ opacity: 0, y: 20 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
@@ -165,10 +165,10 @@ export function PlacementsSection() {
               <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                 <stat.icon className="w-6 h-6 text-white" />
               </div>
-              <div className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+              <div className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {stat.number}
               </div>
-              <div className="text-sm text-gray-600 font-medium">
+              <div className="text-sm text-gray-600 dark:text-gray-300 font-medium">
                 {stat.label}
               </div>
             </motion.div>
@@ -179,8 +179,8 @@ export function PlacementsSection() {
         <div className="space-y-6">
           {/* Line 1 - Right to Left */}
           <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white to-transparent z-10" />
+            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
+            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
             
             <motion.div
               className="flex gap-8 lg:gap-10"
@@ -212,8 +212,8 @@ export function PlacementsSection() {
 
           {/* Line 2 - Left to Right */}
           <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white to-transparent z-10" />
+            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
+            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
             
             <motion.div
               className="flex gap-8 lg:gap-10"
@@ -245,8 +245,8 @@ export function PlacementsSection() {
 
           {/* Line 3 - Right to Left */}
           <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white to-transparent z-10" />
+            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
+            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
             
             <motion.div
               className="flex gap-8 lg:gap-10"
@@ -278,8 +278,8 @@ export function PlacementsSection() {
 
           {/* Line 4 - Left to Right */}
           <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white to-transparent z-10" />
+            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
+            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
             
             <motion.div
               className="flex gap-8 lg:gap-10"
@@ -311,8 +311,8 @@ export function PlacementsSection() {
 
           {/* Line 5 - Right to Left */}
           <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white to-transparent z-10" />
+            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
+            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
             
             <motion.div
               className="flex gap-8 lg:gap-10"

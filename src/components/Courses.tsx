@@ -21,11 +21,9 @@ const coursesData = [
     duration: "3 Months",
     students: "200+",
     rating: "4.8",
-    price: "₹29,999",
-    originalPrice: "₹49,999",
+    price: "₹49,999",
     category: "Automation",
-    level: "Advanced",
-    discount: "40% OFF"
+    level: "Advanced"
   },
   {
     id: "digital-marketing",
@@ -35,11 +33,9 @@ const coursesData = [
     duration: "3 Months",
     students: "150+",
     rating: "4.9",
-    price: "₹29,999",
-    originalPrice: "₹49,999",
+    price: "₹49,999",
     category: "Marketing", 
-    level: "Advanced",
-    discount: "40% OFF"
+    level: "Advanced"
   },
   {
     id: "tally-gst",
@@ -49,11 +45,9 @@ const coursesData = [
     duration: "3 Months",
     students: "150+",
     rating: "4.7",
-    price: "₹29,999",
-    originalPrice: "₹49,999",
+    price: "₹49,999",
     category: "Accounting",
-    level: "Advanced",
-    discount: "40% OFF"
+    level: "Advanced"
   }
 ];
 
@@ -155,25 +149,20 @@ export function Courses({ onNavigate }: CoursesProps) {
                         </div>
                         <div className="flex items-center gap-1 sm:gap-2">
                           <BadgePercent className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-                          <span className="truncate">{course.discount}</span>
+                          <span className="truncate">Best Price</span>
                         </div>
                       </div>
                     </div>
                   </CardContent>
 
                   <CardFooter className="p-4 sm:p-5 lg:p-6 pt-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 flex-shrink-0">
-                    {/* Pricing Section */}
+                    {/* Pricing Section - Only Original Price */}
                     <div className="flex flex-col justify-center w-full sm:w-auto">
                       <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 leading-none">
                         {course.price}
                       </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="text-sm text-muted-foreground line-through">
-                          {course.originalPrice}
-                        </div>
-                        <div className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 px-2 py-1 rounded-full font-medium">
-                          40% OFF
-                        </div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        Pay as you want
                       </div>
                     </div>
                     
