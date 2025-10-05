@@ -2,38 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- ✅ CRITICAL FIX: ADD maximum-scale and user-scalable -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Kaushalhub NaukriPath - Transform your future with modern education and industry-relevant courses." />
     <title>Kaushalhub NaukriPath Private Limited</title>
-    
-    <!-- ✅ CRITICAL: Prevent iOS Safari formatting -->
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="format-detection" content="date=no" />
-    <meta name="format-detection" content="address=no" />
-    <meta name="format-detection" content="email=no" />
-    
-    <!-- ✅ Preload important resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- ✅ Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <link rel="apple-touch-icon" href="/logo.svg" />
-    
-    <!-- ✅ CSS is now imported in main.tsx - NO MANUAL LINKS NEEDED -->
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- ✅ Fallback for non-JS users -->
-    <noscript>
-      <div style="text-align: center; padding: 2rem; font-family: Arial, sans-serif;">
-        <h1>Kaushalhub NaukriPath</h1>
-        <p>Please enable JavaScript to view this website.</p>
-      </div>
-    </noscript>
   </body>
 </html>
