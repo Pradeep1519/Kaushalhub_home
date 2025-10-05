@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
-import { UserProvider } from "./contexts/UserContext";
+import { UserProvider } from "./contexts/UserContext.tsx";
 import "./index.css";
 
 // ✅ ADD RESPONSIVE VIEWPORT HANDLER
