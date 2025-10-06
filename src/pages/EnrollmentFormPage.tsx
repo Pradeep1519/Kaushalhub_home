@@ -16,6 +16,7 @@ interface EnrollmentFormPageProps {
   courseId?: string;
 }
 
+// Course data - ye backend ke courseId se match karega
 const coursesData = [
   {
     id: "plc-automation",
@@ -24,7 +25,7 @@ const coursesData = [
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop",
   },
   {
-    id: "digital-marketing",
+    id: "digital-marketing", 
     title: "Digital Marketing With AI & E-Commerce",
     price: 49999,
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop",
@@ -38,16 +39,20 @@ const coursesData = [
 ];
 
 export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: EnrollmentFormPageProps) {
+  // ✅ Form state with ALL required fields for backend
   const [formData, setFormData] = useState({
+    // Personal Information (Backend Required Fields)
     fullName: "",
-    email: "",
+    email: "", 
     phone: "",
     gender: "",
     dateOfBirth: "",
     address: "",
     city: "",
-    state: "",
+    state: "", 
     pincode: "",
+    
+    // Optional Fields
     education: "",
     occupation: "",
     couponCode: "",
@@ -61,46 +66,48 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   const [showCongrats, setShowCongrats] = useState(false);
   const [couponApplied, setCouponApplied] = useState(false);
 
+  // ✅ Course details fetch karo
   const course = coursesData.find(c => c.id === courseId);
 
+  // ✅ Initial price set karo
   useEffect(() => {
     if (course) {
       setFinalPrice(course.price);
     }
   }, [course]);
 
+  // ✅ Discount calculate karo
   const calculateDiscount = (gender: string, couponCode: string) => {
     let discountPercentage = 0;
     
-    // Base discount for male students with coupon
+    // Male students ke liye 40% discount with coupon
     if (couponCode === "SPECIAL40" && gender === "male") {
       discountPercentage = 40;
     }
-    // Extra 5% for female students with coupon
+    // Female students ke liye extra 5% (total 45%)
     else if (couponCode === "SPECIAL40" && gender === "female") {
-      discountPercentage = 45; // 40% + 5% extra
+      discountPercentage = 45;
     }
     
     return discountPercentage;
   };
 
+  // ✅ Input change handle karo
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
-    // ✅ ONLY update discount when gender changes, NOT when coupon code changes
-    if (field === "gender") {
-      // Agar coupon already applied hai, toh gender change par discount recalculate karo
-      if (couponApplied) {
-        const discountPercentage = calculateDiscount(value, formData.couponCode);
-        setDiscount(discountPercentage);
-        if (course) {
-          const discountedPrice = course.price * (1 - discountPercentage / 100);
-          setFinalPrice(Math.round(discountedPrice));
-        }
+    // Gender change par discount recalculate karo
+    if (field === "gender" && couponApplied) {
+      const discountPercentage = calculateDiscount(value, formData.couponCode);
+      setDiscount(discountPercentage);
+      if (course) {
+        const discountedPrice = course.price * (1 - discountPercentage / 100);
+        setFinalPrice(Math.round(discountedPrice));
       }
     }
   };
 
+  // ✅ Coupon apply karo
   const applyCoupon = () => {
     if (formData.couponCode === "SPECIAL40") {
       const discountPercentage = calculateDiscount(formData.gender, "SPECIAL40");
@@ -112,13 +119,9 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         setFinalPrice(Math.round(discountedPrice));
       }
       
-      // Show congratulations popup
+      // Success popup show karo
       setShowCongrats(true);
-      
-      // Auto hide popup after 5 seconds
-      setTimeout(() => {
-        setShowCongrats(false);
-      }, 5000);
+      setTimeout(() => setShowCongrats(false), 5000);
       
     } else if (formData.couponCode) {
       alert("Invalid coupon code. Please use 'SPECIAL40' for discount.");
@@ -127,6 +130,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
     }
   };
 
+  // ✅ Coupon remove karo
   const removeCoupon = () => {
     setDiscount(0);
     setCouponApplied(false);
@@ -136,24 +140,46 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
     setFormData(prev => ({ ...prev, couponCode: "" }));
   };
 
+  // ✅ FORM SUBMIT HANDLER (MAIN FIX)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      // ✅ Backend ke required fields ko properly prepare karo
       const enrollmentData = {
-        ...formData,
-        courseId,
-        courseTitle: course?.title,
-        originalPrice: course?.price,
-        discountPercentage: discount,
+        // Personal Information (REQUIRED by backend)
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        gender: formData.gender,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+        
+        // Course Information (REQUIRED by backend)
+        courseId: courseId,
+        courseTitle: course?.title || "Unknown Course",
+        originalPrice: course?.price || 0,
         finalPrice: finalPrice,
-        enrollmentDate: new Date().toISOString(),
+        
+        // Optional Fields
+        dateOfBirth: formData.dateOfBirth || undefined,
+        education: formData.education || "",
+        occupation: formData.occupation || "",
+        emergencyContact: formData.emergencyContact || "",
+        couponCode: formData.couponCode || "",
+        discountPercentage: discount,
+        
+        // System Fields
         status: "pending_payment"
       };
 
-      // MongoDB Atlas API call
-      const response = await fetch('/api/enrollments', {
+      console.log("📤 Sending enrollment data to backend:", enrollmentData);
+
+      // ✅ Backend API call karo
+      const response = await fetch('http://localhost:5000/api/enrollments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -161,25 +187,34 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         body: JSON.stringify(enrollmentData),
       });
 
+      const responseData = await response.json();
+      console.log("📥 Backend response:", responseData);
+
       if (response.ok) {
+        // ✅ Success case
         setIsSaved(true);
-        // Enable payment button after successful save
+        console.log("✅ Enrollment saved successfully!");
+        
+        // 2 second baad payment page par navigate karo
         setTimeout(() => {
           if (onNavigate) {
             onNavigate(`payment-${courseId}`);
           }
         }, 2000);
       } else {
-        throw new Error('Failed to save enrollment data');
+        // ❌ Backend error handle karo
+        throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      console.error('Error saving enrollment:', error);
-      alert('Error saving enrollment data. Please try again.');
+      // ❌ Network ya other error handle karo
+      console.error('❌ Error saving enrollment:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Failed to save enrollment data. Please try again.'}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // ✅ Course not found case handle karo
   if (!course) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
@@ -197,7 +232,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
-      {/* Congratulations Popup */}
+      {/* 🎉 Congratulations Popup */}
       <AnimatePresence>
         {showCongrats && (
           <motion.div
@@ -237,7 +272,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         )}
       </AnimatePresence>
 
-      {/* Header */}
+      {/* 🏠 Header Section */}
       <motion.header
         className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
         initial={{ opacity: 0, y: -20 }}
@@ -246,6 +281,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
+            {/* Back Button */}
             <Button
               variant="ghost"
               onClick={() => onNavigate && onNavigate(`course-details-${courseId}`)}
@@ -256,6 +292,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
               <span className="xs:hidden">Back</span>
             </Button>
             
+            {/* Page Title */}
             <div className="text-center">
               <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                 Enrollment Form
@@ -265,14 +302,16 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
               </p>
             </div>
             
-            <div className="w-20"></div> {/* Spacer for balance */}
+            {/* Spacer for balance */}
+            <div className="w-20"></div>
           </div>
         </div>
       </motion.header>
 
+      {/* 📝 Main Content */}
       <main className="container mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8">
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
-          {/* Enrollment Form */}
+          {/* 📋 Enrollment Form (Left Side - 2/3 width) */}
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -288,8 +327,9 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                    {/* Personal Information */}
+                    {/* 👤 Personal Information Section */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      {/* Full Name Field */}
                       <div className="space-y-2">
                         <Label htmlFor="fullName">Full Name *</Label>
                         <Input
@@ -301,6 +341,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                         />
                       </div>
                       
+                      {/* Email Field */}
                       <div className="space-y-2">
                         <Label htmlFor="email">Email Address *</Label>
                         <Input
@@ -315,6 +356,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      {/* Phone Field */}
                       <div className="space-y-2">
                         <Label htmlFor="phone">Phone Number *</Label>
                         <Input
@@ -327,9 +369,13 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                         />
                       </div>
                       
+                      {/* Gender Field */}
                       <div className="space-y-2">
                         <Label htmlFor="gender">Gender *</Label>
-                        <Select value={formData.gender} onValueChange={(value) => handleInputChange("gender", value)}>
+                        <Select 
+                          value={formData.gender} 
+                          onValueChange={(value) => handleInputChange("gender", value)}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select gender" />
                           </SelectTrigger>
@@ -343,6 +389,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      {/* Date of Birth Field */}
                       <div className="space-y-2">
                         <Label htmlFor="dateOfBirth">Date of Birth</Label>
                         <Input
@@ -353,6 +400,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                         />
                       </div>
                       
+                      {/* Emergency Contact Field */}
                       <div className="space-y-2">
                         <Label htmlFor="emergencyContact">Emergency Contact</Label>
                         <Input
@@ -364,7 +412,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                       </div>
                     </div>
 
-                    {/* Address Information */}
+                    {/* 🏠 Address Information Section */}
                     <div className="space-y-2">
                       <Label htmlFor="address">Address *</Label>
                       <Textarea
@@ -378,6 +426,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                      {/* City Field */}
                       <div className="space-y-2">
                         <Label htmlFor="city">City *</Label>
                         <Input
@@ -389,6 +438,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                         />
                       </div>
                       
+                      {/* State Field */}
                       <div className="space-y-2">
                         <Label htmlFor="state">State *</Label>
                         <Input
@@ -400,6 +450,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                         />
                       </div>
                       
+                      {/* PIN Code Field */}
                       <div className="space-y-2">
                         <Label htmlFor="pincode">PIN Code *</Label>
                         <Input
@@ -412,11 +463,15 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                       </div>
                     </div>
 
-                    {/* Education & Occupation */}
+                    {/* 🎓 Education & Occupation Section */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      {/* Education Field */}
                       <div className="space-y-2">
                         <Label htmlFor="education">Education Qualification</Label>
-                        <Select value={formData.education} onValueChange={(value) => handleInputChange("education", value)}>
+                        <Select 
+                          value={formData.education} 
+                          onValueChange={(value) => handleInputChange("education", value)}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select education" />
                           </SelectTrigger>
@@ -430,6 +485,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                         </Select>
                       </div>
                       
+                      {/* Occupation Field */}
                       <div className="space-y-2">
                         <Label htmlFor="occupation">Occupation</Label>
                         <Input
@@ -441,7 +497,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                       </div>
                     </div>
 
-                    {/* Coupon Code */}
+                    {/* 🎫 Coupon Code Section */}
                     <div className="space-y-2">
                       <Label htmlFor="couponCode">Coupon Code</Label>
                       <div className="flex gap-2">
@@ -473,7 +529,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                       </p>
                     </div>
 
-                    {/* Submit Button */}
+                    {/* 💾 Submit Button */}
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button
                         type="submit"
@@ -502,7 +558,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
             </motion.div>
           </div>
 
-          {/* Course Summary */}
+          {/* 📊 Course Summary (Right Side - 1/3 width) */}
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -517,6 +573,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* Course Details */}
                   <div className="flex items-center gap-3">
                     <ImageWithFallback
                       src={course.image}
@@ -530,6 +587,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                     </div>
                   </div>
 
+                  {/* Price Breakdown */}
                   <div className="space-y-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div className="flex justify-between text-sm">
                       <span>Original Price:</span>
@@ -551,12 +609,14 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                     </div>
                   </div>
 
+                  {/* Discount Badge */}
                   {discount > 0 && (
                     <Badge className="w-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 text-center py-2">
                       🎉 You saved {discount}% on this course!
                     </Badge>
                   )}
 
+                  {/* Features List */}
                   <div className="space-y-2 text-xs text-gray-500">
                     <p>✅ Lifetime access</p>
                     <p>✅ Certificate of completion</p>
