@@ -22,7 +22,7 @@ export function Footer({ onNavigate }: FooterProps) {
             <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
               <div className="flex-shrink-0">
                 <img 
-                  src="/logo.svg" 
+                  src="/logo/logo.svg" 
                   alt="KaushalHub Logo" 
                   className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-contain transition-transform duration-300 hover:scale-105"
                 />
