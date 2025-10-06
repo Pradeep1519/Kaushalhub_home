@@ -215,7 +215,7 @@ body {
 
 /* ✅ LAYOUT PROTECTION */
 header, footer, main, section {
-  width: 75%;
+  width: 100%;
   position: relative;
 }
 
