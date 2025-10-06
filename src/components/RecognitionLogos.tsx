@@ -5,17 +5,17 @@ import React from 'react';
 const RecognitionLogos = () => {
   const logos = [
     {
-      src: "/public/recog/mca.png",
+      src: "/recog/mca.png",
       alt: "Ministry of Corporate Affairs, Government of India", 
       href: "https://www.mca.gov.in"
     },
     {
-      src: "/public/recog/msme.jpg",
+      src: "/recog/msme.jpg",
       alt: "Ministry of MSME, Government of India",
       href: "https://msme.gov.in"
     },
     {
-      src: "/public/recog/startupindia.png",
+      src: "/recog/startupindia.png",
       alt: "Startup India", 
       href: "https://www.startupindia.gov.in"
     }
