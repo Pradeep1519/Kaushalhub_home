@@ -296,16 +296,16 @@ export function Header({
               <div className="hidden sm:block relative user-dropdown">
                 <button
                   onClick={toggleDropdown}
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-transparent hover:border-gray-200"
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 flex items-center justify-center text-white text-sm font-bold shadow-md">
                     {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
-                  <span className="text-sm font-medium text-gray-700 max-w-24 truncate">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 max-w-24 truncate">
                     {getAuthButtonText()}
                   </span>
                   <ChevronDown 
-                    className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+                    className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
                       isDropdownOpen ? 'rotate-180' : ''
                     }`} 
                   />
@@ -314,32 +314,32 @@ export function Header({
                 <AnimatePresence>
                   {isDropdownOpen && (
                     <motion.div
-                      className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50"
+                      className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
                       initial={{ opacity: 0, y: -10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
                     >
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="font-semibold text-gray-900 truncate">{user?.name}</p>
-                        <p className="text-sm text-gray-500 truncate">{user?.email}</p>
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                        <p className="font-semibold text-gray-900 dark:text-white truncate">{user?.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
                       </div>
 
                       <button
                         onClick={handleDashboardClick}
                         className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors duration-200 ${
                           hasEnrolledCourses 
-                            ? 'hover:bg-blue-50 text-gray-700 hover:text-blue-700' 
-                            : 'text-gray-400 cursor-not-allowed'
+                            ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400' 
+                            : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
                         }`}
                         disabled={!hasEnrolledCourses}
                       >
                         <LayoutDashboard className={`w-4 h-4 ${
-                          hasEnrolledCourses ? 'text-blue-600' : 'text-gray-400'
+                          hasEnrolledCourses ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-600'
                         }`} />
                         <div className="flex-1">
                           <p className="text-sm font-medium">Go to Dashboard</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {hasEnrolledCourses 
                               ? 'Access your learning dashboard' 
                               : 'Enroll in a course to access dashboard'
@@ -350,7 +350,7 @@ export function Header({
 
                       <button
                         onClick={handleLogoutClick}
-                        className="w-full flex items-center space-x-3 px-4 py-3 text-left text-red-600 hover:bg-red-50 transition-colors duration-200 border-t border-gray-100"
+                        className="w-full flex items-center space-x-3 px-4 py-3 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 border-t border-gray-100 dark:border-gray-800"
                       >
                         <LogOut className="w-4 h-4" />
                         <span className="text-sm font-medium">Logout</span>
@@ -373,7 +373,7 @@ export function Header({
             )}
             
             <button
-              className="lg:hidden p-1.5 sm:p-2 text-foreground hover:text-blue-600 transition-colors duration-200 rounded-lg hover:bg-gray-100"
+              className="lg:hidden p-1.5 sm:p-2 text-foreground hover:text-blue-600 transition-colors duration-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
@@ -408,8 +408,8 @@ export function Header({
                   <motion.button
                     key={item.id}
                     onClick={() => handleNavClick(item.page || "home", item.anchor)}
-                    className={`text-left text-foreground/80 hover:text-blue-600 transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-gray-50 text-xl sm:text-2xl font-bold ${
-                      item.id === currentPage || item.page === currentPage ? "text-blue-600 font-extrabold bg-blue-50" : ""
+                    className={`text-left text-foreground/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-xl sm:text-2xl font-bold ${
+                      item.id === currentPage || item.page === currentPage ? "text-blue-600 dark:text-blue-400 font-extrabold bg-blue-50 dark:bg-blue-900/20" : ""
                     }`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -420,12 +420,12 @@ export function Header({
                   </motion.button>
                 ))}
                 
-                <div className="pt-4 border-t border-gray-200 space-y-4">
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-4 py-3 bg-gray-50 rounded-lg">
-                        <p className="font-semibold text-gray-900">{user?.name}</p>
-                        <p className="text-sm text-gray-500">{user?.email}</p>
+                      <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <p className="font-semibold text-gray-900 dark:text-white">{user?.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
                       </div>
 
                       <motion.button
@@ -436,7 +436,7 @@ export function Header({
                         className={`w-full flex items-center space-x-3 py-4 px-4 rounded-lg text-xl font-bold transition-all duration-200 ${
                           hasEnrolledCourses
                             ? 'bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:from-blue-700 hover:to-teal-700'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                         }`}
                         disabled={!hasEnrolledCourses}
                       >
@@ -449,7 +449,7 @@ export function Header({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
                         onClick={handleLogoutClick}
-                        className="w-full bg-gray-500 text-white py-4 px-4 rounded-lg text-xl font-bold hover:bg-gray-600 transition-all duration-200 flex items-center space-x-3"
+                        className="w-full bg-gray-500 dark:bg-gray-700 text-white py-4 px-4 rounded-lg text-xl font-bold hover:bg-gray-600 dark:hover:bg-gray-600 transition-all duration-200 flex items-center space-x-3"
                       >
                         <LogOut className="w-5 h-5" />
                         <span>Logout</span>

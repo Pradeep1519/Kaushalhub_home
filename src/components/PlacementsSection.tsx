@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Building2, Users, Target, Award, Star, TrendingUp } from "lucide-react";
 
 const nonTechCompanies = [
@@ -55,11 +55,11 @@ const CompanyLogo = ({ company, index }) => {
 
   if (imgError) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl p-4">
-        <div className="text-white font-bold text-lg text-center leading-tight mb-1">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg p-2 sm:p-3">
+        <div className="text-white font-bold text-xs sm:text-sm text-center leading-tight mb-1">
           {company.name.split(' ')[0]}
         </div>
-        <div className="text-white text-xs text-center opacity-80">
+        <div className="text-white text-[10px] sm:text-xs text-center opacity-80">
           {company.type}
         </div>
       </div>
@@ -67,11 +67,11 @@ const CompanyLogo = ({ company, index }) => {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+    <div className="w-full h-full flex items-center justify-center p-2 sm:p-3 md:p-4 lg:p-4 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-sm sm:shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-md sm:hover:shadow-lg transition-all duration-300">
       <img
         src={company.logo}
         alt={company.name}
-        className="max-w-full max-h-20 object-contain"
+        className="w-auto h-auto max-w-[80%] max-h-[80%] object-contain"
         loading="lazy"
         title={company.name}
         onError={handleError}
@@ -80,19 +80,134 @@ const CompanyLogo = ({ company, index }) => {
   );
 };
 
+// Marquee Line Component
+const MarqueeLine = ({ companies, direction = "right", speed = 40, lineNumber }) => {
+  const containerRef = useRef(null);
+  
+  // Calculate dynamic animation distance based on screen size
+  const getAnimationDistance = () => {
+    if (typeof window === 'undefined') return -1200;
+    
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 640) return -600;  // Mobile
+    if (screenWidth < 768) return -800;  // Small tablet
+    if (screenWidth < 1024) return -1000; // Tablet
+    if (screenWidth < 1280) return -1200; // Small desktop
+    return -1400; // Large desktop
+  };
+
+  const animationDistance = getAnimationDistance();
+  
+  const animationProps = direction === "right" 
+    ? {
+        x: [animationDistance, 0],
+        transition: {
+          x: {
+            duration: speed,
+            repeat: Infinity,
+            ease: "linear",
+          },
+        },
+      }
+    : {
+        x: [0, animationDistance],
+        transition: {
+          x: {
+            duration: speed,
+            repeat: Infinity,
+            ease: "linear",
+          },
+        },
+      };
+
+  return (
+    <div className="relative py-1 sm:py-2">
+      <div className="absolute left-0 top-0 w-12 sm:w-16 md:w-20 lg:w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
+      <div className="absolute right-0 top-0 w-12 sm:w-16 md:w-20 lg:w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
+      
+      <motion.div
+        ref={containerRef}
+        className="flex gap-3 sm:gap-4 md:gap-5 lg:gap-6"
+        animate={animationProps}
+      >
+        {companies.map((company, index) => (
+          <motion.div
+            key={`line${lineNumber}-${index}`}
+            className="flex-shrink-0"
+            style={{
+              width: 'clamp(80px, 20vw, 160px)',
+              height: 'clamp(60px, 15vw, 120px)'
+            }}
+            whileHover={{ 
+              scale: 1.05,
+              y: -2
+            }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <CompanyLogo company={company} index={index} />
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
+  );
+};
+
 export function PlacementsSection() {
   const [isVisible, setIsVisible] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
+    
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Create 5 different marquee sets
-  const marquee1 = [...nonTechCompanies.slice(0, 6), ...nonTechCompanies.slice(0, 6)];
-  const marquee2 = [...nonTechCompanies.slice(6, 12), ...nonTechCompanies.slice(6, 12)];
-  const marquee3 = [...nonTechCompanies.slice(12, 18), ...nonTechCompanies.slice(12, 18)];
-  const marquee4 = [...nonTechCompanies.slice(18), ...nonTechCompanies.slice(0, 6)];
-  const marquee5 = [...nonTechCompanies, ...nonTechCompanies.slice(0, 3)];
+  // Create marquee sets based on screen size
+  const createMarqueeSet = (startIndex, count) => {
+    const slice = nonTechCompanies.slice(startIndex, startIndex + count);
+    return [...slice, ...slice]; // Double for smooth looping
+  };
+
+  // Adjust number of companies per line based on screen size
+  const getCompaniesPerLine = () => {
+    if (windowWidth < 640) return 4;   // Mobile
+    if (windowWidth < 768) return 5;   // Small tablet
+    if (windowWidth < 1024) return 6;  // Tablet
+    if (windowWidth < 1280) return 7;  // Small desktop
+    return 8; // Large desktop
+  };
+
+  const companiesPerLine = getCompaniesPerLine();
+
+  const marqueeSets = [
+    { 
+      companies: createMarqueeSet(0, companiesPerLine), 
+      direction: "left", 
+      speed: windowWidth < 768 ? 35 : 45 
+    },
+    { 
+      companies: createMarqueeSet(companiesPerLine, companiesPerLine), 
+      direction: "right", 
+      speed: windowWidth < 768 ? 38 : 50 
+    },
+    { 
+      companies: createMarqueeSet(companiesPerLine * 2, companiesPerLine), 
+      direction: "left", 
+      speed: windowWidth < 768 ? 40 : 48 
+    },
+    { 
+      companies: createMarqueeSet(companiesPerLine * 3, companiesPerLine), 
+      direction: "right", 
+      speed: windowWidth < 768 ? 42 : 52 
+    },
+  ];
 
   const stats = [
     { icon: Users, number: "10,000+", label: "Students Placed", color: "from-blue-500 to-cyan-500" },
@@ -102,31 +217,31 @@ export function PlacementsSection() {
   ];
 
   return (
-    <section id="placements" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-teal-900/20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="placements" className="py-12 sm:py-16 lg:py-20 xl:py-24 bg-gradient-to-br from-white via-blue-50/30 to-teal-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-teal-900/20 overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16 lg:mb-20"
+          className="text-center mb-12 sm:mb-16 lg:mb-20"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={isVisible ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-50 dark:bg-blue-900/30 rounded-full border border-blue-200 dark:border-blue-800 mb-6"
+            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-50 dark:bg-blue-900/30 rounded-full border border-blue-200 dark:border-blue-800 mb-4 sm:mb-6"
           >
-            <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+            <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
+            <span className="text-xs sm:text-sm font-semibold text-blue-700 dark:text-blue-300">
               Placement Partners
             </span>
           </motion.div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
             Our Students Work at
             <motion.span 
-              className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mt-2"
+              className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mt-2 sm:mt-3"
               initial={{ opacity: 0, y: 20 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -139,7 +254,7 @@ export function PlacementsSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed"
           >
             We have successfully placed our students in 200+ leading non-tech companies across various industries. 
             Join the league of successful professionals building careers at India's most respected organizations.
@@ -151,196 +266,41 @@ export function PlacementsSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 lg:mb-20 max-w-5xl mx-auto"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16 lg:mb-20 max-w-5xl mx-auto"
         >
           {stats.map((stat, index) => (
             <motion.div
               key={index}
-              className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-500 group"
+              className="relative bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-500 group"
               initial={{ opacity: 0, y: 20 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
-              whileHover={{ y: -5 }}
+              whileHover={{ y: -5, scale: 1.02 }}
             >
-              <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                <stat.icon className="w-6 h-6 text-white" />
+              <div className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 mx-auto`}>
+                <stat.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
-              <div className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2 text-center">
                 {stat.number}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+              <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-medium text-center leading-tight">
                 {stat.label}
               </div>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* 5 Line Animated Logo Marquee */}
-        <div className="space-y-6">
-          {/* Line 1 - Right to Left */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
-            
-            <motion.div
-              className="flex gap-8 lg:gap-10"
-              animate={{
-                x: [0, -1400],
-              }}
-              transition={{
-                x: {
-                  duration: 30,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-              }}
-            >
-              {marquee1.map((company, index) => (
-                <motion.div
-                  key={`line1-${index}`}
-                  className="flex-shrink-0 w-48 h-32"
-                  whileHover={{ 
-                    scale: 1.05,
-                    y: -3
-                  }}
-                >
-                  <CompanyLogo company={company} index={index} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Line 2 - Left to Right */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
-            
-            <motion.div
-              className="flex gap-8 lg:gap-10"
-              animate={{
-                x: [-1400, 0],
-              }}
-              transition={{
-                x: {
-                  duration: 35,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-              }}
-            >
-              {marquee2.map((company, index) => (
-                <motion.div
-                  key={`line2-${index}`}
-                  className="flex-shrink-0 w-48 h-32"
-                  whileHover={{ 
-                    scale: 1.05,
-                    y: -3
-                  }}
-                >
-                  <CompanyLogo company={company} index={index} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Line 3 - Right to Left */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
-            
-            <motion.div
-              className="flex gap-8 lg:gap-10"
-              animate={{
-                x: [0, -1300],
-              }}
-              transition={{
-                x: {
-                  duration: 32,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-              }}
-            >
-              {marquee3.map((company, index) => (
-                <motion.div
-                  key={`line3-${index}`}
-                  className="flex-shrink-0 w-48 h-32"
-                  whileHover={{ 
-                    scale: 1.05,
-                    y: -3
-                  }}
-                >
-                  <CompanyLogo company={company} index={index} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Line 4 - Left to Right */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
-            
-            <motion.div
-              className="flex gap-8 lg:gap-10"
-              animate={{
-                x: [-1300, 0],
-              }}
-              transition={{
-                x: {
-                  duration: 38,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-              }}
-            >
-              {marquee4.map((company, index) => (
-                <motion.div
-                  key={`line4-${index}`}
-                  className="flex-shrink-0 w-48 h-32"
-                  whileHover={{ 
-                    scale: 1.05,
-                    y: -3
-                  }}
-                >
-                  <CompanyLogo company={company} index={index} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Line 5 - Right to Left */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-white dark:from-gray-900 to-transparent z-10" />
-            <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-white dark:from-gray-900 to-transparent z-10" />
-            
-            <motion.div
-              className="flex gap-8 lg:gap-10"
-              animate={{
-                x: [0, -1350],
-              }}
-              transition={{
-                x: {
-                  duration: 34,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-              }}
-            >
-              {marquee5.map((company, index) => (
-                <motion.div
-                  key={`line5-${index}`}
-                  className="flex-shrink-0 w-48 h-32"
-                  whileHover={{ 
-                    scale: 1.05,
-                    y: -3
-                  }}
-                >
-                  <CompanyLogo company={company} index={index} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
+        {/* Animated Logo Marquee */}
+        <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+          {marqueeSets.map((marquee, index) => (
+            <MarqueeLine
+              key={index}
+              companies={marquee.companies}
+              direction={marquee.direction}
+              speed={marquee.speed}
+              lineNumber={index + 1}
+            />
+          ))}
         </div>
 
         {/* Success Stories CTA */}
@@ -348,29 +308,29 @@ export function PlacementsSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-center mt-16 lg:mt-20"
+          className="text-center mt-12 sm:mt-16 lg:mt-20"
         >
-          <div className="bg-gradient-to-r from-blue-600 to-teal-600 rounded-3xl p-8 lg:p-12 text-white shadow-2xl">
+          <div className="bg-gradient-to-r from-blue-600 to-teal-600 rounded-2xl sm:rounded-3xl p-8 sm:p-10 lg:p-12 text-white shadow-2xl">
             <div className="max-w-2xl mx-auto">
-              <Star className="w-12 h-12 mx-auto mb-4 text-yellow-300 fill-current" />
-              <h3 className="text-2xl sm:text-3xl font-bold mb-4">
+              <Star className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto mb-4 sm:mb-6 text-yellow-300 fill-current" />
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
                 Start Your Success Story
               </h3>
-              <p className="text-blue-100 text-lg mb-6 leading-relaxed">
+              <p className="text-blue-100 text-lg sm:text-xl lg:text-2xl mb-6 sm:mb-8 leading-relaxed">
                 Join thousands of students who transformed their careers with our industry-focused training programs.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
                 <motion.button
-                  className="bg-white text-blue-600 hover:bg-gray-100 font-semibold text-lg px-8 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  className="bg-white text-blue-600 hover:bg-gray-100 font-semibold text-base sm:text-lg lg:text-xl px-8 sm:px-10 lg:px-12 py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   View Placement Details
                 </motion.button>
                 <motion.button
-                  className="border-2 border-white text-white hover:bg-white/10 font-semibold text-lg px-8 py-3 rounded-xl transition-all duration-300"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  className="border-2 border-white text-white hover:bg-white/10 font-semibold text-base sm:text-lg lg:text-xl px-8 sm:px-10 lg:px-12 py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all duration-300"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   Download Brochure
                 </motion.button>
