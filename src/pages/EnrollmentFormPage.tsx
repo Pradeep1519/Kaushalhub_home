@@ -64,7 +64,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   const [showCongrats, setShowCongrats] = useState(false);
   const [couponApplied, setCouponApplied] = useState(false);
 
-  // Course details
+  // Course details - FIXED: courseId se course find karo
   const course = coursesData.find(c => c.id === courseId);
 
   // Initial price set
@@ -134,12 +134,19 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
     setFormData(prev => ({ ...prev, couponCode: "" }));
   };
 
-  // FORM SUBMIT HANDLER (UPDATED)
+  // ✅ FIXED: FORM SUBMIT HANDLER
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      // ✅ FIX: Course ko properly get karo
+      const currentCourse = coursesData.find(c => c.id === courseId);
+      
+      if (!currentCourse) {
+        throw new Error('Course not found');
+      }
+
       const enrollmentData = {
         // Personal Information
         fullName: formData.fullName,
@@ -151,10 +158,10 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         state: formData.state,
         pincode: formData.pincode,
         
-        // Course Information
+        // ✅ FIXED: Course Information
         courseId: courseId,
-        courseTitle: course?.title || "Unknown Course",
-        originalPrice: course?.price || 0,
+        courseTitle: currentCourse.title,
+        originalPrice: currentCourse.price,
         finalPrice: finalPrice,
         
         // Optional Fields
@@ -167,6 +174,12 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
       };
 
       console.log("📤 Sending enrollment data:", enrollmentData);
+      console.log("🔍 Course details:", {
+        courseId: courseId,
+        courseTitle: currentCourse.title,
+        originalPrice: currentCourse.price,
+        finalPrice: finalPrice
+      });
 
       // ✅ USE API SERVICE
       const responseData = await apiService.createEnrollment(enrollmentData);
