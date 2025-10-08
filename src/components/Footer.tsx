@@ -48,10 +48,7 @@ export function Footer({ onNavigate }: FooterProps) {
   const popularCourses = [
     'PLC & Automation',
     'Digital Marketing With AI',
-    'Tally with GST + Excel',
-    'Web Development',
-    'Data Science & Analytics',
-    'Mobile App Development'
+    'Tally with GST + Excel'
   ];
 
   const socialLinks = [
