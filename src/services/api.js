@@ -48,7 +48,7 @@ class ApiService {
     }
   }
 
-  // Enrollment APIs
+  // ✅ ENROLLMENT APIS
   async createEnrollment(enrollmentData) {
     return this.request('/api/enrollments', {
       method: 'POST',
@@ -65,7 +65,13 @@ class ApiService {
     return this.request('/api/enrollments/stats');
   }
 
-  // Auth APIs
+  // ✅ NEW: Check Previous Enrollments by Email/Phone
+  async getEnrollmentsCheck(queryParams = {}) {
+    const queryString = new URLSearchParams(queryParams).toString();
+    return this.request(`/api/enrollments/check?${queryString}`);
+  }
+
+  // ✅ AUTH APIS
   async signup(userData) {
     return this.request('/api/auth/signup', {
       method: 'POST',
@@ -87,7 +93,7 @@ class ApiService {
     });
   }
 
-  // Health Check
+  // ✅ HEALTH CHECK
   async healthCheck() {
     return this.request('/api/health');
   }

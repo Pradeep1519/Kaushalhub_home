@@ -1,7 +1,7 @@
 // src/pages/EnrollmentFormPage.tsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, BookOpen, CreditCard, CheckCircle, X } from "lucide-react";
+import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, BookOpen, CreditCard, CheckCircle, X, Search, Clock, AlertCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
@@ -11,6 +11,7 @@ import { Textarea } from "../components/ui/textarea";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { apiService } from "../services/api";
+import { PaymentModal } from "../components/PaymentModal";
 
 interface EnrollmentFormPageProps {
   onNavigate?: (page: string) => void;
@@ -63,8 +64,15 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   const [finalPrice, setFinalPrice] = useState(0);
   const [showCongrats, setShowCongrats] = useState(false);
   const [couponApplied, setCouponApplied] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  
+  // ✅ NEW: Previous Enrollments State
+  const [showPreviousEnrollments, setShowPreviousEnrollments] = useState(false);
+  const [previousEnrollments, setPreviousEnrollments] = useState<any[]>([]);
+  const [checkingEnrollments, setCheckingEnrollments] = useState(false);
+  const [enrollmentError, setEnrollmentError] = useState("");
 
-  // Course details - FIXED: courseId se course find karo
+  // Course details
   const course = coursesData.find(c => c.id === courseId);
 
   // Initial price set
@@ -134,17 +142,68 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
     setFormData(prev => ({ ...prev, couponCode: "" }));
   };
 
-  // ✅ FIXED: FORM SUBMIT HANDLER
+  // ✅ NEW: Check Previous Enrollments
+  const checkPreviousEnrollments = async () => {
+    if (!formData.email && !formData.phone) {
+      alert('Please enter email or phone number to check previous enrollments');
+      return;
+    }
+
+    setCheckingEnrollments(true);
+    setEnrollmentError("");
+    try {
+      const response = await apiService.getEnrollmentsCheck({
+        email: formData.email,
+        phone: formData.phone
+      });
+
+      if (response.success) {
+        setPreviousEnrollments(response.data);
+        setShowPreviousEnrollments(true);
+        
+        // ✅ Auto-show modal if there are pending enrollments for same course
+        const sameCoursePending = response.data.find(
+          (enrollment: any) => 
+            enrollment.courseId === courseId && 
+            enrollment.status === 'pending_payment'
+        );
+        
+        if (sameCoursePending) {
+          setEnrollmentError(`You already have a pending enrollment for ${course?.title}. Click "Continue Payment" to complete.`);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking enrollments:', error);
+      alert('Error checking previous enrollments');
+    } finally {
+      setCheckingEnrollments(false);
+    }
+  };
+
+  // ✅ UPDATED: FORM SUBMIT HANDLER with Previous Enrollment Check
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setEnrollmentError("");
 
     try {
-      // ✅ FIX: Course ko properly get karo
       const currentCourse = coursesData.find(c => c.id === courseId);
       
       if (!currentCourse) {
         throw new Error('Course not found');
+      }
+
+      // ✅ Check if already enrolled in same course
+      const existingEnrollment = previousEnrollments.find(
+        (enrollment: any) => 
+          enrollment.courseId === courseId && 
+          enrollment.status === 'pending_payment'
+      );
+
+      if (existingEnrollment) {
+        setEnrollmentError(`You already have a pending enrollment for this course. Please click "Continue Payment" to complete.`);
+        setIsSubmitting(false);
+        return;
       }
 
       const enrollmentData = {
@@ -158,7 +217,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         state: formData.state,
         pincode: formData.pincode,
         
-        // ✅ FIXED: Course Information
+        // Course Information
         courseId: courseId,
         courseTitle: currentCourse.title,
         originalPrice: currentCourse.price,
@@ -174,14 +233,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
       };
 
       console.log("📤 Sending enrollment data:", enrollmentData);
-      console.log("🔍 Course details:", {
-        courseId: courseId,
-        courseTitle: currentCourse.title,
-        originalPrice: currentCourse.price,
-        finalPrice: finalPrice
-      });
 
-      // ✅ USE API SERVICE
       const responseData = await apiService.createEnrollment(enrollmentData);
 
       console.log("📥 Backend response:", responseData);
@@ -190,17 +242,27 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         setIsSaved(true);
         console.log("✅ Enrollment saved successfully!");
         
+        // ✅ Show Payment Modal with Discounted Price
         setTimeout(() => {
-          if (onNavigate) {
-            onNavigate(`payment-${courseId}`);
-          }
-        }, 2000);
+          setShowPaymentModal(true);
+        }, 1000);
+        
       } else {
         throw new Error(responseData.error || 'Enrollment failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error saving enrollment:', error);
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to save enrollment data. Please try again.'}`);
+      
+      // ✅ Handle duplicate enrollment error
+      if (error.message?.includes('already enrolled') || error.message?.includes('duplicate')) {
+        setEnrollmentError('You are already enrolled or have a pending enrollment for this course. Please check your previous enrollments.');
+        // Auto-check previous enrollments
+        if (formData.email || formData.phone) {
+          checkPreviousEnrollments();
+        }
+      } else {
+        alert(`Error: ${error.message || 'Failed to save enrollment data. Please try again.'}`);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -250,7 +312,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                   {formData.gender === 'female' && " Extra 5% for female students applied!"}
                 </p>
                 <div className="text-lg font-bold text-green-600 mb-4">
-                  You saved ₹{Math.round(course.price * (discount / 100))}
+                  You saved ₹{Math.round(course.price * (discount / 100)).toLocaleString('en-IN')}
                 </div>
                 <Button
                   onClick={() => setShowCongrats(false)}
@@ -258,6 +320,156 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                 >
                   Continue Enrollment
                 </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ✅ Payment Modal */}
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        onSuccess={() => {
+          console.log("✅ Payment successful!");
+          setShowPaymentModal(false);
+          if (onNavigate) {
+            onNavigate(`payment-success-${courseId}`);
+          }
+        }}
+        course={{
+          title: course.title,
+          originalPrice: course.price,
+          finalPrice: finalPrice,
+          duration: "3 Months",
+          discountPercentage: discount
+        }}
+      />
+
+      {/* ✅ Previous Enrollments Modal */}
+      <AnimatePresence>
+        {showPreviousEnrollments && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowPreviousEnrollments(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: -20 }}
+              className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">📋 Your Previous Enrollments</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowPreviousEnrollments(false)}
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+
+              {previousEnrollments.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No previous enrollments found.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {previousEnrollments.map((enrollment, index) => (
+                    <Card key={enrollment._id || index} className="border-l-4 border-l-blue-500">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-lg">{enrollment.courseTitle}</h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 text-sm">
+                              <p className="text-gray-500">
+                                <strong>Enrolled:</strong> {new Date(enrollment.enrollmentDate).toLocaleDateString('en-IN')}
+                              </p>
+                              <p className="text-gray-500">
+                                <strong>Amount:</strong> ₹{enrollment.finalPrice?.toLocaleString('en-IN') || 'N/A'}
+                              </p>
+                              <p className="text-gray-500">
+                                <strong>Status:</strong> 
+                                <Badge 
+                                  variant={
+                                    enrollment.status === 'enrolled' ? 'default' :
+                                    enrollment.status === 'payment_completed' ? 'secondary' : 'outline'
+                                  }
+                                  className="ml-2"
+                                >
+                                  {enrollment.status.replace('_', ' ').toUpperCase()}
+                                </Badge>
+                              </p>
+                              {enrollment.discountPercentage > 0 && (
+                                <p className="text-green-600">
+                                  <strong>Discount:</strong> {enrollment.discountPercentage}% OFF
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2 ml-4">
+                            {/* ✅ Continue Payment for Same Course & Pending Status */}
+                            {enrollment.courseId === courseId && enrollment.status === 'pending_payment' && (
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setShowPreviousEnrollments(false);
+                                  setShowPaymentModal(true);
+                                }}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                Continue Payment
+                              </Button>
+                            )}
+                            
+                            {/* ✅ View Course for Different Course */}
+                            {enrollment.courseId !== courseId && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setShowPreviousEnrollments(false);
+                                  if (onNavigate) {
+                                    onNavigate(`course-details-${enrollment.courseId}`);
+                                  }
+                                }}
+                              >
+                                View Course
+                              </Button>
+                            )}
+                            
+                            {/* ✅ View Details for Completed/Enrolled */}
+                            {(enrollment.status === 'enrolled' || enrollment.status === 'payment_completed') && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  // Navigate to course dashboard or details
+                                  console.log('View course details:', enrollment);
+                                  alert('Redirecting to course dashboard...');
+                                }}
+                              >
+                                View Details
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              
+              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  💡 <strong>Tip:</strong> You can continue pending payments or enroll in new courses. 
+                  Each course requires separate enrollment.
+                </p>
               </div>
             </motion.div>
           </motion.div>
@@ -292,13 +504,54 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
               </p>
             </div>
             
-            <div className="w-20"></div>
+            {/* ✅ Check Previous Enrollments Button */}
+            <Button
+              variant="outline"
+              onClick={checkPreviousEnrollments}
+              disabled={checkingEnrollments || (!formData.email && !formData.phone)}
+              className="flex items-center gap-2 text-sm"
+            >
+              {checkingEnrollments ? (
+                <>
+                  <Clock className="w-4 h-4 animate-spin" />
+                  Checking...
+                </>
+              ) : (
+                <>
+                  <Search className="w-4 h-4" />
+                  Check Previous
+                </>
+              )}
+            </Button>
           </div>
         </div>
       </motion.header>
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8">
+        {/* ✅ Enrollment Error Alert */}
+        {enrollmentError && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
+          >
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-600" />
+              <div>
+                <p className="text-yellow-800 font-medium">{enrollmentError}</p>
+                <Button
+                  variant="link"
+                  onClick={checkPreviousEnrollments}
+                  className="p-0 h-auto text-yellow-700 underline"
+                >
+                  Click here to view your previous enrollments
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Enrollment Form */}
           <div className="lg:col-span-2">
@@ -352,6 +605,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           onChange={(e) => handleInputChange("phone", e.target.value)}
                           required
                           placeholder="Enter your phone number"
+                          maxLength={11}
                         />
                       </div>
                       
@@ -567,21 +821,21 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                   <div className="space-y-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div className="flex justify-between text-sm">
                       <span>Original Price:</span>
-                      <span className="font-semibold">₹{course.price}</span>
+                      <span className="font-semibold">₹{course.price.toLocaleString('en-IN')}</span>
                     </div>
                     
                     {discount > 0 && (
                       <div className="flex justify-between text-sm">
                         <span>Discount ({discount}%):</span>
                         <span className="font-semibold text-green-600">
-                          -₹{Math.round(course.price * (discount / 100))}
+                          -₹{Math.round(course.price * (discount / 100)).toLocaleString('en-IN')}
                         </span>
                       </div>
                     )}
                     
                     <div className="flex justify-between text-lg font-bold border-t pt-2">
                       <span>Final Price:</span>
-                      <span className="text-blue-600">₹{finalPrice}</span>
+                      <span className="text-blue-600">₹{finalPrice.toLocaleString('en-IN')}</span>
                     </div>
                   </div>
 
