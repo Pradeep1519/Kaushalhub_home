@@ -58,7 +58,7 @@ export function Hero({ onNavigate }: HeroProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.6 }}
                 >
-                  Transform Your
+                  Transform Your Future
                 </motion.span>
                 <motion.span 
                   className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent"
@@ -66,14 +66,14 @@ export function Hero({ onNavigate }: HeroProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                  Future with
+                  With Learn Job-Ready
                 </motion.span>
                 <motion.span
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.6 }}
                 >
-                  Modern Education
+                  Skills That Get You Hired
                 </motion.span>
               </h1>
               <motion.p 
@@ -82,8 +82,10 @@ export function Hero({ onNavigate }: HeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
-                Join thousands of students who are already building their careers with our cutting-edge courses. 
-                Learn from industry experts and get hands-on experience with real-world projects.
+                Industry-Designwd courses, live projects & 100% placement assistance (or 30% refund*)
+                Enroll with just ₹5,000. Easy EMI available
+                Kaushalhub NaukriPath Private Limited-MSME Registered. 
+                Placement-first Training
               </motion.p>
             </motion.div>
 

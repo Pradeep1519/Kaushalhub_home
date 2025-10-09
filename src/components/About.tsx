@@ -45,7 +45,7 @@ export function About() {
               {/* Heading Section */}
               <div className="space-y-4 lg:space-y-6">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight">
-                  About
+                  Why Choose
                   <span className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mt-1 lg:mt-2">
                     KaushalHub NaukriPath
                   </span>
@@ -63,10 +63,10 @@ export function About() {
                   <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-foreground text-base sm:text-lg lg:text-xl">
-                      Expert Instructors
+                      Project that employers ask for
                     </h4>
                     <p className="text-muted-foreground text-sm sm:text-base lg:text-lg mt-1 leading-relaxed">
-                      Learn from industry professionals with real-world experience
+                      Build real,interview-ready work
                     </p>
                   </div>
                 </div>
@@ -75,10 +75,10 @@ export function About() {
                   <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-foreground text-base sm:text-lg lg:text-xl">
-                      Hands-on Projects
+                      Direct employer connections
                     </h4>
                     <p className="text-muted-foreground text-sm sm:text-base lg:text-lg mt-1 leading-relaxed">
-                      Build real projects that you can showcase in your portfolio
+                      Hiring partners & campus drives.
                     </p>
                   </div>
                 </div>
@@ -87,10 +87,10 @@ export function About() {
                   <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-foreground text-base sm:text-lg lg:text-xl">
-                      Career Support
+                      Career Support end-to-end
                     </h4>
                     <p className="text-muted-foreground text-sm sm:text-base lg:text-lg mt-1 leading-relaxed">
-                      Get personalized career guidance and job placement assistance
+                      Resume, Linkedln, soft skills, mock interviews
                     </p>
                   </div>
                 </div>
@@ -99,10 +99,10 @@ export function About() {
                   <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-foreground text-base sm:text-lg lg:text-xl">
-                      Flexible Learning
+                      Affordable & Practical
                     </h4>
                     <p className="text-muted-foreground text-sm sm:text-base lg:text-lg mt-1 leading-relaxed">
-                      Study at your own pace with lifetime access to course materials
+                      Low down payments + EMI plans for students
                     </p>
                   </div>
                 </div>

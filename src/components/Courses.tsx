@@ -19,6 +19,7 @@ const coursesData = [
     description: "Learn industrial automation with PLC programming, ladder logic, and SCADA systems.",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop",
     duration: "3 Months",
+    outcomes:"PLC Programmer Automation Engineer Maintenance Technician",
     students: "200+",
     rating: "4.8",
     price: "₹49,999",
@@ -28,9 +29,10 @@ const coursesData = [
   {
     id: "digital-marketing",
     title: "Digital Marketing With AI & E-Commerce",
-    description: "Complete digital marketing course covering SEO, social media, PPC, and analytics.",
+    description: "SEO, Google Ads, Meta Ads, Analytics, Ai content tools, E-commerce ads & product listing.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop",
     duration: "3 Months",
+    outcomes: "SEO Analyst Ads Specialist E-commerce Excutive",
     students: "150+",
     rating: "4.9",
     price: "₹49,999",
@@ -43,6 +45,7 @@ const coursesData = [
     description: "Master Tally accounting software with GST compliance and advanced financial reporting.",
     image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=250&fit=crop",
     duration: "3 Months",
+    outcomes: "Accountant MIS Executive GST Consultant",
     students: "150+",
     rating: "4.7",
     price: "₹49,999",
@@ -131,6 +134,10 @@ export function Courses({ onNavigate }: CoursesProps) {
                       {/* Course Description */}
                       <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 leading-relaxed flex-1">
                         {course.description}
+                      </p>
+                      {/* Outcomes */}
+                      <p className="text-sm sm:text-base text-muted-foregrount line-clamp-3 leading-relaxed flax-1">
+                        {course.outcomes}
                       </p>
 
                       {/* Course Stats - Improved Responsive Layout */}

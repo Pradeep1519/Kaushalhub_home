@@ -10,7 +10,7 @@ const testimonials = [
   {
     id: 1,
     name: "Priya Sharma",
-    role: "Financial Analyst at TCS",
+    role: "Financial Analyst at Genpact",
     image: "https://images.unsplash.com/photo-1561065533-316e3142d586?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMHN0dWRlbnQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NTczMTk3OTh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     testimonial: "The Advanced Excel with AI course revolutionized how I work with data. The AI integration techniques and advanced formulas helped me become more efficient and get promoted to a senior analyst role.",
     rating: 5,
@@ -28,7 +28,7 @@ const testimonials = [
   {
     id: 3,
     name: "Sneha Patel",
-    role: "Digital Marketing Manager at Flipkart",
+    role: "Digital Marketing Manager at ViralBulls Digital Media",
     image: "https://images.unsplash.com/photo-1561065533-316e3142d586?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMHN0dWRlbnQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NTczMTk3OTh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
     testimonial: "EduTech's Digital Marketing course gave me practical skills that I use daily. The real campaign projects and latest industry trends covered in the course helped me secure my dream job at Flipkart.",
     rating: 5,
@@ -226,8 +226,8 @@ export function Testimonials() {
             {[
               { value: "100%", label: "Job Placement Rate" },
               { value: "4.8", label: "Average Rating" },
-              { value: "10K+", label: "Graduates" },
-              { value: "₹5L+", label: "Avg. Starting Salary" }
+              { value: "2K+", label: "Graduates" },
+              { value: "₹3L+", label: "Avg. Starting Salary" }
             ].map((stat, index) => (
               <div 
                 key={index}

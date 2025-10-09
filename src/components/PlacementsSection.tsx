@@ -210,10 +210,10 @@ export function PlacementsSection() {
   ];
 
   const stats = [
-    { icon: Users, number: "10,000+", label: "Students Placed", color: "from-blue-500 to-cyan-500" },
+    { icon: Users, number: "2,000+", label: "Students Placed", color: "from-blue-500 to-cyan-500" },
     { icon: Target, number: "50+", label: "Partner Companies", color: "from-purple-500 to-pink-500" },
-    { icon: Award, number: "99%", label: "Placement Rate", color: "from-green-500 to-emerald-500" },
-    { icon: TrendingUp, number: "₹5L+", label: "Average Package", color: "from-orange-500 to-red-500" }
+    { icon: Award, number: "100%", label: "Placement Rate", color: "from-green-500 to-emerald-500" },
+    { icon: TrendingUp, number: "₹3L+", label: "Average Package", color: "from-orange-500 to-red-500" }
   ];
 
   return (

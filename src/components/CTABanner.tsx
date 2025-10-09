@@ -29,33 +29,33 @@ export function CTABanner({ onNavigate }: CTABannerProps) {
     {
       icon: Users,
       title: "Expert Instructors",
-      description: "Learn from industry professionals with 10+ years experience",
+      description: "Learn directly from industry professionals with 10+ years of real-world experience. Gain insights from experts who have trained employees of top Indian companies.",
       color: "from-blue-500 to-cyan-500",
       stats: "50+ Experts"
     },
     {
       icon: Clock,
-      title: "Flexible Learning",
-      description: "Study at your own pace with lifetime access",
+      title: "Practical Learning",
+      description: "No boring theory — only hands-on projects designed with real business data and tools. Master the skills that recruiters demand, from day one.",
       color: "from-purple-500 to-pink-500",
       stats: "Self-Paced"
     },
     {
       icon: Trophy,
-      title: "Career Growth",
-      description: "Get job-ready with practical skills and projects",
+      title: "Guaranteed Career Growth",
+      description: "Get 100% Placement Assistance, mock interviews, and career mentoring. We don’t just train — we prepare you to get hired and grow in your career.",
       color: "from-green-500 to-emerald-500",
       stats: "98% Success"
     }
   ];
 
   const benefits = [
-    "Industry-recognized certificates",
-    "Hands-on projects & assignments",
-    "1-on-1 mentorship sessions",
-    "Career guidance & placement support",
-    "Lifetime community access",
-    "Flexible payment options"
+    "MSME & Startup India Recognized",
+    "Govt. & Industry-Certified Programs",
+    "100% Placement Assistance",
+    "Resume + LinkedIn Building Support",
+    "Lifetime Career Mentorship",
+    "Easy EMI & Refund Policy"
   ];
 
   return (
@@ -125,14 +125,14 @@ export function CTABanner({ onNavigate }: CTABannerProps) {
                 </motion.div>
 
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
-                  Ready to Advance
+                  Ready to Launch
                   <motion.span 
                     className="block bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mt-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={isVisible ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.8, delay: 0.4 }}
                   >
-                    Your Career?
+                    Your Career? 🚀
                   </motion.span>
                 </h2>
 
@@ -142,7 +142,8 @@ export function CTABanner({ onNavigate }: CTABannerProps) {
                   transition={{ duration: 0.8, delay: 0.5 }}
                   className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed"
                 >
-                  Join thousands of professionals who transformed their careers with our industry-focused courses. Get the skills that employers are looking for.
+                  Join India’s most trusted skill & placement platform — KaushalHub NaukriPath Pvt. Ltd.
+                  We help students from Tier-2 & Tier-3 cities become job-ready with practical training, expert mentors, and real placement support.
                 </motion.p>
               </div>
 

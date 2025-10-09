@@ -176,37 +176,37 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   const testimonials = [
     {
       name: "Priya Sharma",
-      course: "Full Stack Development",
-      role: "Software Engineer at Google",
+      course: "Advanced Excel with AI",
+      role: "Financial Analyst at Genpact",
       rating: 5,
-      comment: "KaushalHub transformed my career from non-tech to Google engineer. The practical projects and mentor support were exceptional!",
+      comment: "The Advanced Excel with AI course revolutionized how I work with data. The AI integration techniques and advanced formulas helped me become more efficient and get promoted to a senior analyst role.",
       avatar: "PS",
       delay: 0
     },
     {
-      name: "Raj Patel",
-      course: "Data Science",
-      role: "Data Scientist at Amazon",
+      name: "Rajesh Kumar",
+      course: "PLC Programming",
+      role: "Automation Engineer at L&T",
       rating: 5,
-      comment: "The curriculum was perfectly aligned with industry needs. Got placed at Amazon with 3x salary hike within 6 months.",
+      comment: "The PLC Programming course was incredibly comprehensive. The hands-on projects with real industrial scenarios prepared me perfectly for my current role. The instructors have genuine industry experience.",
       avatar: "RP",
       delay: 200
     },
     {
-      name: "Anita Gupta",
+      name: "Sneha Patel",
       course: "Digital Marketing",
-      role: "Marketing Head at Flipkart",
+      role: "Digital Marketing Manager at ViralBulls Digital Media",
       rating: 5,
-      comment: "Flexible learning with excellent community support. The AI marketing modules helped me get promoted to Head of Marketing.",
+      comment: "EduTech's Digital Marketing course gave me practical skills that I use daily. The real campaign projects and latest industry trends covered in the course helped me secure my dream job at Flipkart.",
       avatar: "AG",
       delay: 400
     },
     {
-      name: "Suresh Kumar",
-      course: "AI & Machine Learning",
-      role: "AI Researcher at Microsoft",
+      name: "Amit Verma",
+      course: "Tally with GST",
+      role: "Accounts Manager at Reliance",
       rating: 5,
-      comment: "Outstanding faculty and cutting-edge content. The research projects helped me publish papers and land my dream job.",
+      comment: "The Tally with GST course was exactly what I needed. The practical approach to learning Tally ERP and GST compliance gave me the confidence to handle complex accounting tasks in my new role.",
       avatar: "SK",
       delay: 600
     }
@@ -502,11 +502,8 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                   <div className="text-center max-w-4xl mx-auto">
                     <Target className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 mx-auto mb-4 md:mb-6 text-blue-500" />
                     <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-gray-900 dark:text-white">Our Mission</h3>
-                    <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
-                      To democratize quality education by making industry-relevant skills accessible 
-                      to everyone, regardless of their background or location. We bridge the gap between 
-                      academic learning and professional requirements through innovative learning 
-                      methodologies, cutting-edge technology, and personalized mentorship.
+                    <p className="text-base md:text-lg font-bold text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
+                      To Prepare student's with Imdustry-ready skills and connect them to jobs.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 text-left">
                       {[
@@ -528,11 +525,8 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                   <div className="text-center max-w-4xl mx-auto">
                     <Eye className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 mx-auto mb-4 md:mb-6 text-purple-500" />
                     <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-gray-900 dark:text-white">Our Vision</h3>
-                    <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
-                      To become India's most trusted skill development platform, empowering 1 million+ 
-                      learners with future-ready skills by 2025. We envision a world where quality education 
-                      is accessible to all, fostering innovation and contributing to India's growth as a 
-                      global technology and innovation hub.
+                    <p className="text-base md:text-lg font-bold text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
+                    To be India’s most trusted job-oriented training platform, empowering 1 million learners by 2027.
                     </p>
                     <div className="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 rounded-lg md:rounded-xl p-3 md:p-4">
                       <h4 className="text-base md:text-lg font-semibold mb-2 md:mb-3 text-gray-900 dark:text-white">Our 2025 Goals</h4>
@@ -595,13 +589,13 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 text-left">
                       <div className="space-y-3 md:space-y-4">
                         <div>
-                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🎯 Project-Based Learning</h4>
+                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🎯 Learn by Doing</h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">
                             Learn by building real-world projects that solve actual industry problems
                           </p>
                         </div>
                         <div>
-                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🤝 Personalized Mentorship</h4>
+                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🤝 Mentor-Led</h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">
                             1:1 guidance from industry experts throughout your learning journey
                           </p>
@@ -609,15 +603,15 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                       </div>
                       <div className="space-y-3 md:space-y-4">
                         <div>
-                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🚀 Career-Focused Curriculum</h4>
+                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🚀 Career-First</h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">
                             Courses designed with input from top companies and hiring managers
                           </p>
                         </div>
                         <div>
-                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🌍 Community-Driven</h4>
+                          <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">🌍 Placement-Driven</h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">
-                            Learn with peers, collaborate on projects, and grow together
+                            Resume, LinkedIn & interview prep
                           </p>
                         </div>
                       </div>

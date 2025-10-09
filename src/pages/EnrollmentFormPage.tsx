@@ -66,11 +66,21 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   const [couponApplied, setCouponApplied] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   
-  // ✅ NEW: Previous Enrollments State
+  // ✅ IMPROVED: Previous Enrollments State
   const [showPreviousEnrollments, setShowPreviousEnrollments] = useState(false);
   const [previousEnrollments, setPreviousEnrollments] = useState<any[]>([]);
   const [checkingEnrollments, setCheckingEnrollments] = useState(false);
   const [enrollmentError, setEnrollmentError] = useState("");
+  
+  // ✅ NEW: Quick Check State
+  const [showQuickCheck, setShowQuickCheck] = useState(false);
+  const [quickCheckData, setQuickCheckData] = useState({
+    email: "",
+    phone: ""
+  });
+
+  // ✅ NEW: Dynamic Payment Course State
+  const [paymentCourse, setPaymentCourse] = useState<any>(null);
 
   // Course details
   const course = coursesData.find(c => c.id === courseId);
@@ -79,6 +89,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   useEffect(() => {
     if (course) {
       setFinalPrice(course.price);
+      setPaymentCourse(course);
     }
   }, [course]);
 
@@ -142,7 +153,59 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
     setFormData(prev => ({ ...prev, couponCode: "" }));
   };
 
-  // ✅ NEW: Check Previous Enrollments
+  // ✅ IMPROVED: Quick Check Previous Enrollments
+  const quickCheckEnrollments = async () => {
+    if (!quickCheckData.email && !quickCheckData.phone) {
+      alert('Please enter email or phone number to check previous enrollments');
+      return;
+    }
+
+    setCheckingEnrollments(true);
+    setEnrollmentError("");
+    try {
+      const response = await apiService.getEnrollmentsCheck({
+        email: quickCheckData.email,
+        phone: quickCheckData.phone
+      });
+
+      if (response.success) {
+        setPreviousEnrollments(response.data);
+        setShowPreviousEnrollments(true);
+        setShowQuickCheck(false);
+        
+        // ✅ Auto-fill form if user wants to enroll in new course
+        if (response.data.length > 0) {
+          const firstEnrollment = response.data[0];
+          setFormData(prev => ({
+            ...prev,
+            email: quickCheckData.email || prev.email,
+            phone: quickCheckData.phone || prev.phone,
+            fullName: firstEnrollment.fullName || prev.fullName
+          }));
+        }
+        
+        // ✅ Auto-show payment if same course pending
+        const sameCoursePending = response.data.find(
+          (enrollment: any) => 
+            enrollment.courseId === courseId && 
+            enrollment.status === 'pending_payment'
+        );
+        
+        if (sameCoursePending) {
+          setEnrollmentError(`You already have a pending enrollment for ${course?.title}. Click "Complete Payment" to finish.`);
+        }
+      } else {
+        alert('No previous enrollments found');
+      }
+    } catch (error) {
+      console.error('Error checking enrollments:', error);
+      alert('Error checking previous enrollments');
+    } finally {
+      setCheckingEnrollments(false);
+    }
+  };
+
+  // ✅ IMPROVED: Check Previous Enrollments from Form Data
   const checkPreviousEnrollments = async () => {
     if (!formData.email && !formData.phone) {
       alert('Please enter email or phone number to check previous enrollments');
@@ -161,7 +224,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         setPreviousEnrollments(response.data);
         setShowPreviousEnrollments(true);
         
-        // ✅ Auto-show modal if there are pending enrollments for same course
+        // ✅ Auto-show payment if same course pending
         const sameCoursePending = response.data.find(
           (enrollment: any) => 
             enrollment.courseId === courseId && 
@@ -169,7 +232,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         );
         
         if (sameCoursePending) {
-          setEnrollmentError(`You already have a pending enrollment for ${course?.title}. Click "Continue Payment" to complete.`);
+          setEnrollmentError(`You already have a pending enrollment for ${course?.title}. Click "Complete Payment" to finish.`);
         }
       }
     } catch (error) {
@@ -178,6 +241,27 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
     } finally {
       setCheckingEnrollments(false);
     }
+  };
+
+  // ✅ NEW: Handle Payment for Previous Enrollment
+  const handlePreviousEnrollmentPayment = (enrollment: any) => {
+    // Set dynamic payment course details
+    setPaymentCourse({
+      id: enrollment.courseId,
+      title: enrollment.courseTitle,
+      originalPrice: enrollment.originalPrice,
+      finalPrice: enrollment.finalPrice,
+      duration: "3 Months",
+      discountPercentage: enrollment.discountPercentage || 0
+    });
+    
+    // Set the price for payment modal
+    setFinalPrice(enrollment.finalPrice);
+    setDiscount(enrollment.discountPercentage || 0);
+    
+    // Close previous enrollments modal and show payment modal
+    setShowPreviousEnrollments(false);
+    setShowPaymentModal(true);
   };
 
   // ✅ UPDATED: FORM SUBMIT HANDLER with Previous Enrollment Check
@@ -201,7 +285,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
       );
 
       if (existingEnrollment) {
-        setEnrollmentError(`You already have a pending enrollment for this course. Please click "Continue Payment" to complete.`);
+        setEnrollmentError(`You already have a pending enrollment for this course. Please click "Complete Payment" to finish.`);
         setIsSubmitting(false);
         return;
       }
@@ -326,7 +410,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         )}
       </AnimatePresence>
 
-      {/* ✅ Payment Modal */}
+      {/* ✅ IMPROVED: Payment Modal */}
       <PaymentModal
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
@@ -337,16 +421,10 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
             onNavigate(`payment-success-${courseId}`);
           }
         }}
-        course={{
-          title: course.title,
-          originalPrice: course.price,
-          finalPrice: finalPrice,
-          duration: "3 Months",
-          discountPercentage: discount
-        }}
+        course={paymentCourse || course}
       />
 
-      {/* ✅ Previous Enrollments Modal */}
+      {/* ✅ IMPROVED: Previous Enrollments Modal */}
       <AnimatePresence>
         {showPreviousEnrollments && (
           <motion.div
@@ -413,22 +491,19 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                             </div>
                           </div>
                           <div className="flex flex-col gap-2 ml-4">
-                            {/* ✅ Continue Payment for Same Course & Pending Status */}
-                            {enrollment.courseId === courseId && enrollment.status === 'pending_payment' && (
+                            {/* ✅ PAYMENT BUTTON for ALL Pending Enrollments */}
+                            {enrollment.status === 'pending_payment' && (
                               <Button
                                 size="sm"
-                                onClick={() => {
-                                  setShowPreviousEnrollments(false);
-                                  setShowPaymentModal(true);
-                                }}
+                                onClick={() => handlePreviousEnrollmentPayment(enrollment)}
                                 className="bg-green-600 hover:bg-green-700"
                               >
-                                Continue Payment
+                                Complete Payment
                               </Button>
                             )}
                             
                             {/* ✅ View Course for Different Course */}
-                            {enrollment.courseId !== courseId && (
+                            {enrollment.courseId !== courseId && enrollment.status !== 'pending_payment' && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -467,8 +542,95 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
               
               <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  💡 <strong>Tip:</strong> You can continue pending payments or enroll in new courses. 
+                  💡 <strong>Tip:</strong> You can complete pending payments or enroll in new courses. 
                   Each course requires separate enrollment.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ✅ NEW: Quick Check Modal */}
+      <AnimatePresence>
+        {showQuickCheck && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowQuickCheck(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold">Check Previous Enrollments</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowQuickCheck(false)}
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="quickEmail">Email Address</Label>
+                  <Input
+                    id="quickEmail"
+                    type="email"
+                    value={quickCheckData.email}
+                    onChange={(e) => setQuickCheckData(prev => ({...prev, email: e.target.value}))}
+                    placeholder="Enter your email"
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="quickPhone">Phone Number</Label>
+                  <Input
+                    id="quickPhone"
+                    type="tel"
+                    value={quickCheckData.phone}
+                    onChange={(e) => setQuickCheckData(prev => ({...prev, phone: e.target.value}))}
+                    placeholder="Enter your phone number"
+                    className="mt-1"
+                    maxLength={11}
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button
+                  onClick={quickCheckEnrollments}
+                  disabled={checkingEnrollments || (!quickCheckData.email && !quickCheckData.phone)}
+                  className="flex-1"
+                >
+                  {checkingEnrollments ? (
+                    <>
+                      <Clock className="w-4 h-4 mr-2 animate-spin" />
+                      Checking...
+                    </>
+                  ) : (
+                    "Check Enrollments"
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowQuickCheck(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-xs text-blue-700 dark:text-blue-300">
+                  🔍 Enter your email or phone number to check your previous course enrollments and pending payments.
                 </p>
               </div>
             </motion.div>
@@ -504,24 +666,15 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
               </p>
             </div>
             
-            {/* ✅ Check Previous Enrollments Button */}
+            {/* ✅ IMPROVED: Check Previous Enrollments Button */}
             <Button
               variant="outline"
-              onClick={checkPreviousEnrollments}
-              disabled={checkingEnrollments || (!formData.email && !formData.phone)}
+              onClick={() => setShowQuickCheck(true)}
               className="flex items-center gap-2 text-sm"
             >
-              {checkingEnrollments ? (
-                <>
-                  <Clock className="w-4 h-4 animate-spin" />
-                  Checking...
-                </>
-              ) : (
-                <>
-                  <Search className="w-4 h-4" />
-                  Check Previous
-                </>
-              )}
+              <Search className="w-4 h-4" />
+              <span className="hidden sm:inline">Check Previous</span>
+              <span className="sm:hidden">Previous</span>
             </Button>
           </div>
         </div>
@@ -759,6 +912,29 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                       <p className="text-xs text-gray-500">
                         Use coupon code "SPECIAL40" for special discounts
                       </p>
+                    </div>
+
+                    {/* Check Previous Enrollments Button */}
+                    <div className="flex gap-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={checkPreviousEnrollments}
+                        disabled={checkingEnrollments || (!formData.email && !formData.phone)}
+                        className="flex-1"
+                      >
+                        {checkingEnrollments ? (
+                          <>
+                            <Clock className="w-4 h-4 mr-2 animate-spin" />
+                            Checking...
+                          </>
+                        ) : (
+                          <>
+                            <Search className="w-4 h-4 mr-2" />
+                            Check My Previous Enrollments
+                          </>
+                        )}
+                      </Button>
                     </div>
 
                     {/* Submit Button */}

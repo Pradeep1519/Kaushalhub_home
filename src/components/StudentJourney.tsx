@@ -1,33 +1,48 @@
-import { CheckCircle, BookOpen, Users, Trophy, Briefcase } from "lucide-react";
+import { CheckCircle, BookOpen, Users, Trophy, Briefcase, Umbrella, MoveUpIcon } from "lucide-react";
+import { color } from "motion/react";
 
 const journeySteps = [
   {
     id: 1,
     icon: BookOpen,
-    title: "Start Learning",
+    title: "Enroll with ₹5,000 Easy EMi option",
     description: "Begin your journey with our comprehensive curriculum designed by industry experts.",
     color: "blue"
   },
   {
     id: 2,
     icon: Users,
-    title: "Join Community",
+    title: "Attend 3 Classes per Week",
     description: "Connect with fellow learners, participate in discussions, and collaborate on projects.",
     color: "green"
   },
   {
     id: 3,
     icon: Trophy,
-    title: "Build Projects",
+    title: "Work on Projects & Case Studies",
     description: "Apply your knowledge by building real-world projects that showcase your skills.",
     color: "purple"
   },
   {
     id: 4,
     icon: Briefcase,
-    title: "Land Your Dream Job",
+    title: "Resume & Linkedln Optimization",
     description: "Get career support and job placement assistance to secure your ideal position.",
     color: "teal"
+  },
+  {
+    id:5,
+    icon: MoveUpIcon,
+    title: "Mock Interviews & Aptitude Training",
+    description: "",
+    color: "red",
+  },
+  {
+    id: 6,
+    icon: Umbrella,
+    title: "Direct Placement Opportunitues",
+    description: "",
+    color: "blue"
   }
 ];
 
