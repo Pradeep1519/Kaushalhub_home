@@ -131,7 +131,7 @@ export function Footer({ onNavigate }: FooterProps) {
                     KaushalHub NaukriPath
                   </h3>
                   <p className="text-gray-400 text-sm mt-2 font-medium">
-                    Education • Technology • Innovation
+                    Learn. Grow. Get Hired. 
                   </p>
                 </div>
               </div>

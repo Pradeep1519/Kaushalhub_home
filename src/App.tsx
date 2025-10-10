@@ -1,31 +1,45 @@
-import { useState, useEffect } from "react"; 
-import { Header } from "./components/Header"; 
-import { Footer } from "./components/Footer"; 
-import { ThemeProvider } from "./components/ThemeProvider"; 
-import { AuthProvider } from "./contexts/AuthContext"; 
-import { LoadingScreen } from "./components/LoadingScreen"; 
-import { HomePage } from "./pages/HomePage"; 
-import CoursesPage from "./pages/CoursesPage"; 
-import { CareersPage } from "./pages/CareersPage"; 
+// src/App.tsx - COMPLETE FIXED VERSION
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
+import { ThemeProvider } from "./components/ThemeProvider";
+import { AuthProvider } from "./contexts/AuthContext";
+import { LoadingScreen } from "./components/LoadingScreen";
+import { HomePage } from "./pages/HomePage";
+import CoursesPage from "./pages/CoursesPage";
+import { CareersPage } from "./pages/CareersPage";
 import { motion, AnimatePresence } from "motion/react";
-import styles from "./App.module.css"; 
-import { PrivacyPolicy } from "./pages/privacy-policy"; 
+import styles from "./App.module.css";
+import { PrivacyPolicy } from "./pages/privacy-policy";
 import { LoginPage } from './pages/LoginPage';
-import { SignUpPage } from "./pages/SignUpPage"; 
+import { SignUpPage } from "./pages/SignUpPage";
 import { CourseDetailsPage } from "./pages/CourseDetailsPage";
 import { AboutPage } from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import TermAndConditions from "./pages/TermsAndConditions";
 import { RefundPolicy } from "./pages/RefundPolicy";
 import EnrollmentFormPage from "./pages/EnrollmentFormPage";
-import PaymentPage from "./pages/PaymentPage"; // ✅ PaymentPage import karo
+import PaymentPage from "./pages/PaymentPage";
+import { useState, useEffect } from "react";
 
+// Main App Component - Router REMOVED
 export default function App() {
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="kaushal-hub-theme">
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
+
+// App Content with Navigation
+function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
-  const [currentPage, setCurrentPage] = useState("home");
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -45,36 +59,86 @@ export default function App() {
 
   const handleLoadingComplete = () => setIsLoading(false);
 
+  // ✅ FIXED: Navigation handler with proper routes
   const handleNavigate = (page: string, courseId?: string) => {
     console.log("🚀 App Navigation:", page, "Course ID:", courseId);
     
-    // ✅ FIXED: Handle different navigation formats
-    if (page === "course-details" && courseId) {
-      setCurrentPage('course-details');
-      setSelectedCourseId(courseId);
-      console.log("✅ Course Details Page Set:", courseId);
-    }
-    else if (page.startsWith('course-details-')) {
-      const courseIdFromPage = page.replace('course-details-', '');
-      setCurrentPage('course-details');
-      setSelectedCourseId(courseIdFromPage);
-      console.log("✅ Course Details Page Set (old format):", courseIdFromPage);
-    }
-    else if (page.startsWith('enrollment-form-')) {
-      const courseIdFromPage = page.replace('enrollment-form-', '');
-      setCurrentPage('enrollment-form');
-      setSelectedCourseId(courseIdFromPage);
-      console.log("✅ Enrollment Form Page Set:", courseIdFromPage);
-    }
-    else if (page.startsWith('payment-')) {
-      const courseIdFromPage = page.replace('payment-', '');
-      setCurrentPage('payment');
-      setSelectedCourseId(courseIdFromPage);
-      console.log("✅ Payment Page Set:", courseIdFromPage);
-    }
-    else {
-      setCurrentPage(page);
-      setSelectedCourseId("");
+    switch (page) {
+      case "home":
+        navigate("/");
+        break;
+      case "courses":
+        navigate("/courses");
+        break;
+      case "careers":
+        navigate("/careers");
+        break;
+      case "signup":
+        navigate("/signup");
+        break;
+      case "login":
+        navigate("/login");
+        break;
+      case "privacy-policy":
+        navigate("/privacy-policy");
+        break;
+      case "about":
+        navigate("/about");
+        break;
+      case "contact":
+        navigate("/contact");
+        break;
+      case "terms":
+        navigate("/terms");
+        break;
+      case "refund":
+        navigate("/refund");
+        break;
+      case "course-details":
+        if (courseId) {
+          navigate(`/course/${courseId}`);
+        }
+        break;
+      case "enrollment-form":
+        if (courseId) {
+          navigate(`/enroll/${courseId}`);
+        }
+        break;
+      case "payment":
+        if (courseId) {
+          navigate(`/payment/${courseId}`);
+        }
+        break;
+      // ✅ Support for old format
+      case "course-details-plc-automation":
+        navigate("/course/plc-automation");
+        break;
+      case "course-details-digital-marketing":
+        navigate("/course/digital-marketing");
+        break;
+      case "course-details-tally-gst":
+        navigate("/course/tally-gst");
+        break;
+      case "enrollment-form-plc-automation":
+        navigate("/enroll/plc-automation");
+        break;
+      case "enrollment-form-digital-marketing":
+        navigate("/enroll/digital-marketing");
+        break;
+      case "enrollment-form-tally-gst":
+        navigate("/enroll/tally-gst");
+        break;
+      case "payment-page-plc-automation":
+        navigate("/payment/plc-automation");
+        break;
+      case "payment-page-digital-marketing":
+        navigate("/payment/digital-marketing");
+        break;
+      case "payment-page-tally-gst":
+        navigate("/payment/tally-gst");
+        break;
+      default:
+        navigate("/");
     }
     
     window.scrollTo({ 
@@ -83,106 +147,88 @@ export default function App() {
     });
   };
 
-  const renderCurrentPage = () => {
-    console.log("📄 Rendering Page:", currentPage, "Course:", selectedCourseId);
-    
-    switch (currentPage) {
-      case "courses":
-        return <CoursesPage key="courses" onNavigate={handleNavigate} />;
-      case "careers":
-        return <CareersPage key="careers" onNavigate={handleNavigate} />;
-      case "signup":
-        return <SignUpPage key="signup" onNavigate={handleNavigate} />;
-      case "login":
-        return <LoginPage key="login" onNavigate={handleNavigate} />;
-      case "privacy-policy":
-        return <PrivacyPolicy key="privacy-policy" onNavigate={handleNavigate} />;
-      case "course-details":
-        return (
-          <CourseDetailsPage 
-            key={`course-details-${selectedCourseId}`} 
-            onNavigate={handleNavigate} 
-            courseId={selectedCourseId} 
-          />
-        );
-      case "enrollment-form":
-        return (
-          <EnrollmentFormPage 
-            key={`enrollment-form-${selectedCourseId}`}
-            onNavigate={handleNavigate} 
-            courseId={selectedCourseId} 
-          />
-        );
-      case "payment":
-        return (
-          <PaymentPage 
-            key={`payment-${selectedCourseId}`}
-            onNavigate={handleNavigate} 
-            courseId={selectedCourseId} 
-          />
-        );
-      case "about":
-        return <AboutPage key="about" onNavigate={handleNavigate} />;
-      case "contact":
-        return <ContactPage key="contact" onNavigate={handleNavigate} />;
-      case "terms":
-        return <TermAndConditions key="terms" onNavigate={handleNavigate} />;
-      case "refund":
-        return <RefundPolicy key="refund" onNavigate={handleNavigate} />;
-      case "home":
-      default:
-        return <HomePage key="home" onNavigate={handleNavigate} />;
-    }
+  // ✅ Get current page from URL for header/footer
+  const getCurrentPage = () => {
+    const path = location.pathname;
+    if (path === "/") return "home";
+    if (path === "/courses") return "courses";
+    if (path === "/careers") return "careers";
+    if (path === "/signup") return "signup";
+    if (path === "/login") return "login";
+    if (path === "/privacy-policy") return "privacy-policy";
+    if (path === "/about") return "about";
+    if (path === "/contact") return "contact";
+    if (path === "/terms") return "terms";
+    if (path === "/refund") return "refund";
+    if (path.startsWith("/course/")) return "course-details";
+    if (path.startsWith("/enroll/")) return "enrollment-form";
+    if (path.startsWith("/payment/")) return "payment";
+    return "home";
   };
 
-  const noHeaderFooterPages = ["signup", "signin", "login"];
+  const currentPage = getCurrentPage();
+  const noHeaderFooterPages = ["signup", "login"];
   const shouldShowHeaderFooter = !noHeaderFooterPages.includes(currentPage);
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="kaushal-hub-theme">
-      <AuthProvider>
-        <AnimatePresence mode="wait">
-          {isLoading && (
-            <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
-          )}
-        </AnimatePresence>
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
+        )}
+      </AnimatePresence>
 
-        <motion.div
-          className={`${styles.appContainer} bg-background text-foreground min-h-screen flex flex-col w-full max-w-full overflow-x-hidden`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showContent ? 1 : 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {/* ✅ FIXED HEADER */}
-          {shouldShowHeaderFooter && (
-            <Header currentPage={currentPage} onNavigate={handleNavigate} />
-          )}
+      <motion.div
+        className={`${styles.appContainer} bg-background text-foreground min-h-screen flex flex-col w-full max-w-full overflow-x-hidden`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showContent ? 1 : 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        {/* ✅ FIXED HEADER */}
+        {shouldShowHeaderFooter && (
+          <Header currentPage={currentPage} onNavigate={handleNavigate} />
+        )}
 
-          {/* ✅ FIXED MAIN CONTENT - UPDATED PADDING */}
-          <main className="flex-1 w-full max-w-full overflow-x-hidden pt-20 sm:pt-22 lg:pt-24">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentPage}
-                className={`${styles.pageContainer} w-full max-w-full overflow-x-hidden mx-auto`}
-                initial={{ opacity: 0, x: isMobile ? 0 : 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: isMobile ? 0 : -20 }}
-                transition={{ 
-                  duration: isMobile ? 0.3 : 0.4, 
-                  ease: [0.25, 0.46, 0.45, 0.94] 
-                }}
-              >
-                {renderCurrentPage()}
-              </motion.div>
-            </AnimatePresence>
-          </main>
+        {/* ✅ FIXED MAIN CONTENT WITH ROUTES */}
+        <main className="flex-1 w-full max-w-full overflow-x-hidden pt-20 sm:pt-22 lg:pt-24">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              className={`${styles.pageContainer} w-full max-w-full overflow-x-hidden mx-auto`}
+              initial={{ opacity: 0, x: isMobile ? 0 : 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: isMobile ? 0 : -20 }}
+              transition={{ 
+                duration: isMobile ? 0.3 : 0.4, 
+                ease: [0.25, 0.46, 0.45, 0.94] 
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
+                <Route path="/courses" element={<CoursesPage onNavigate={handleNavigate} />} />
+                <Route path="/careers" element={<CareersPage onNavigate={handleNavigate} />} />
+                <Route path="/signup" element={<SignUpPage onNavigate={handleNavigate} />} />
+                <Route path="/login" element={<LoginPage onNavigate={handleNavigate} />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy onNavigate={handleNavigate} />} />
+                <Route path="/about" element={<AboutPage onNavigate={handleNavigate} />} />
+                <Route path="/contact" element={<ContactPage onNavigate={handleNavigate} />} />
+                <Route path="/terms" element={<TermAndConditions onNavigate={handleNavigate} />} />
+                <Route path="/refund" element={<RefundPolicy onNavigate={handleNavigate} />} />
+                
+                {/* ✅ Course Routes with Parameters */}
+                <Route path="/course/:courseId" element={<CourseDetailsPage onNavigate={handleNavigate} />} />
+                <Route path="/enroll/:courseId" element={<EnrollmentFormPage onNavigate={handleNavigate} />} />
+                <Route path="/payment/:courseId" element={<PaymentPage onNavigate={handleNavigate} />} />
+              </Routes>
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
-          {/* ✅ FIXED FOOTER */}
-          {shouldShowHeaderFooter && (
-            <Footer onNavigate={handleNavigate} />
-          )}
-        </motion.div>
-      </AuthProvider>
-    </ThemeProvider>
+        {/* ✅ FIXED FOOTER */}
+        {shouldShowHeaderFooter && (
+          <Footer onNavigate={handleNavigate} />
+        )}
+      </motion.div>
+    </>
   );
 }

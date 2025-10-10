@@ -1,7 +1,22 @@
-// src/pages/EnrollmentFormPage.tsx
+// src/pages/EnrollmentFormPage.tsx - FIXED VERSION
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, BookOpen, CreditCard, CheckCircle, X, Search, Clock, AlertCircle } from "lucide-react";
+import { 
+  ArrowLeft, 
+  User, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Calendar, 
+  BookOpen, 
+  CreditCard, 
+  CheckCircle, 
+  X,
+  AlertCircle,
+  Loader2,
+  Save,
+  Lock
+} from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
@@ -11,7 +26,6 @@ import { Textarea } from "../components/ui/textarea";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { apiService } from "../services/api";
-import { PaymentModal } from "../components/PaymentModal";
 
 interface EnrollmentFormPageProps {
   onNavigate?: (page: string) => void;
@@ -40,6 +54,19 @@ const coursesData = [
   }
 ];
 
+// Validation types
+interface FormErrors {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  gender?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  couponCode?: string;
+}
+
 export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: EnrollmentFormPageProps) {
   // Form state
   const [formData, setFormData] = useState({
@@ -64,23 +91,8 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   const [finalPrice, setFinalPrice] = useState(0);
   const [showCongrats, setShowCongrats] = useState(false);
   const [couponApplied, setCouponApplied] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  
-  // ✅ IMPROVED: Previous Enrollments State
-  const [showPreviousEnrollments, setShowPreviousEnrollments] = useState(false);
-  const [previousEnrollments, setPreviousEnrollments] = useState<any[]>([]);
-  const [checkingEnrollments, setCheckingEnrollments] = useState(false);
-  const [enrollmentError, setEnrollmentError] = useState("");
-  
-  // ✅ NEW: Quick Check State
-  const [showQuickCheck, setShowQuickCheck] = useState(false);
-  const [quickCheckData, setQuickCheckData] = useState({
-    email: "",
-    phone: ""
-  });
-
-  // ✅ NEW: Dynamic Payment Course State
-  const [paymentCourse, setPaymentCourse] = useState<any>(null);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [showErrors, setShowErrors] = useState(false);
 
   // Course details
   const course = coursesData.find(c => c.id === courseId);
@@ -89,9 +101,105 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   useEffect(() => {
     if (course) {
       setFinalPrice(course.price);
-      setPaymentCourse(course);
     }
   }, [course]);
+
+  // ✅ FIXED: Form Validation
+  const validateForm = (): boolean => {
+    const errors: FormErrors = {};
+
+    // Required field validation
+    if (!formData.fullName.trim()) {
+      errors.fullName = "Full name is required";
+    } else if (formData.fullName.trim().length < 2) {
+      errors.fullName = "Full name must be at least 2 characters";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    if (!formData.phone.trim()) {
+      errors.phone = "Phone number is required";
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      errors.phone = "Please enter a valid 10-digit Indian phone number";
+    }
+
+    if (!formData.gender) {
+      errors.gender = "Please select your gender";
+    }
+
+    if (!formData.address.trim()) {
+      errors.address = "Address is required";
+    }
+
+    if (!formData.city.trim()) {
+      errors.city = "City is required";
+    }
+
+    if (!formData.state.trim()) {
+      errors.state = "State is required";
+    }
+
+    if (!formData.pincode.trim()) {
+      errors.pincode = "PIN code is required";
+    } else if (!/^\d{6}$/.test(formData.pincode)) {
+      errors.pincode = "Please enter a valid 6-digit PIN code";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // ✅ FIXED: Real-time validation - only show errors after first submit attempt
+  const validateField = (field: string, value: string) => {
+    if (!showErrors) return; // Don't show errors until user tries to submit
+
+    const errors = { ...formErrors };
+
+    switch (field) {
+      case 'email':
+        if (!value.trim()) {
+          errors.email = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          errors.email = "Please enter a valid email address";
+        } else {
+          delete errors.email;
+        }
+        break;
+
+      case 'phone':
+        if (!value.trim()) {
+          errors.phone = "Phone number is required";
+        } else if (!/^[6-9]\d{9}$/.test(value)) {
+          errors.phone = "Please enter a valid 10-digit Indian phone number";
+        } else {
+          delete errors.phone;
+        }
+        break;
+
+      case 'pincode':
+        if (!value.trim()) {
+          errors.pincode = "PIN code is required";
+        } else if (!/^\d{6}$/.test(value)) {
+          errors.pincode = "Please enter a valid 6-digit PIN code";
+        } else {
+          delete errors.pincode;
+        }
+        break;
+
+      default:
+        if (!value.trim()) {
+          errors[field as keyof FormErrors] = "This field is required";
+        } else {
+          delete errors[field as keyof FormErrors];
+        }
+    }
+
+    setFormErrors(errors);
+  };
 
   // Discount calculation
   const calculateDiscount = (gender: string, couponCode: string) => {
@@ -111,6 +219,11 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
+    // Real-time validation only after first submit attempt
+    if (showErrors && ['email', 'phone', 'pincode', 'fullName', 'address', 'city', 'state'].includes(field)) {
+      validateField(field, value);
+    }
+    
     if (field === "gender" && couponApplied) {
       const discountPercentage = calculateDiscount(value, formData.couponCode);
       setDiscount(discountPercentage);
@@ -121,12 +234,18 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
     }
   };
 
-  // Coupon apply
+  // Coupon apply with validation
   const applyCoupon = () => {
+    if (!formData.couponCode.trim()) {
+      setFormErrors(prev => ({ ...prev, couponCode: "Please enter a coupon code" }));
+      return;
+    }
+
     if (formData.couponCode === "SPECIAL40") {
       const discountPercentage = calculateDiscount(formData.gender, "SPECIAL40");
       setDiscount(discountPercentage);
       setCouponApplied(true);
+      setFormErrors(prev => ({ ...prev, couponCode: undefined }));
       
       if (course) {
         const discountedPrice = course.price * (1 - discountPercentage / 100);
@@ -136,10 +255,11 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
       setShowCongrats(true);
       setTimeout(() => setShowCongrats(false), 5000);
       
-    } else if (formData.couponCode) {
-      alert("Invalid coupon code. Please use 'SPECIAL40' for discount.");
     } else {
-      alert("Please enter a coupon code.");
+      setFormErrors(prev => ({ 
+        ...prev, 
+        couponCode: "Invalid coupon code. Please use 'SPECIAL40' for discount." 
+      }));
     }
   };
 
@@ -151,143 +271,32 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
       setFinalPrice(course.price);
     }
     setFormData(prev => ({ ...prev, couponCode: "" }));
+    setFormErrors(prev => ({ ...prev, couponCode: undefined }));
   };
 
-  // ✅ IMPROVED: Quick Check Previous Enrollments
-  const quickCheckEnrollments = async () => {
-    if (!quickCheckData.email && !quickCheckData.phone) {
-      alert('Please enter email or phone number to check previous enrollments');
-      return;
-    }
-
-    setCheckingEnrollments(true);
-    setEnrollmentError("");
-    try {
-      const response = await apiService.getEnrollmentsCheck({
-        email: quickCheckData.email,
-        phone: quickCheckData.phone
-      });
-
-      if (response.success) {
-        setPreviousEnrollments(response.data);
-        setShowPreviousEnrollments(true);
-        setShowQuickCheck(false);
-        
-        // ✅ Auto-fill form if user wants to enroll in new course
-        if (response.data.length > 0) {
-          const firstEnrollment = response.data[0];
-          setFormData(prev => ({
-            ...prev,
-            email: quickCheckData.email || prev.email,
-            phone: quickCheckData.phone || prev.phone,
-            fullName: firstEnrollment.fullName || prev.fullName
-          }));
-        }
-        
-        // ✅ Auto-show payment if same course pending
-        const sameCoursePending = response.data.find(
-          (enrollment: any) => 
-            enrollment.courseId === courseId && 
-            enrollment.status === 'pending_payment'
-        );
-        
-        if (sameCoursePending) {
-          setEnrollmentError(`You already have a pending enrollment for ${course?.title}. Click "Complete Payment" to finish.`);
-        }
-      } else {
-        alert('No previous enrollments found');
-      }
-    } catch (error) {
-      console.error('Error checking enrollments:', error);
-      alert('Error checking previous enrollments');
-    } finally {
-      setCheckingEnrollments(false);
-    }
-  };
-
-  // ✅ IMPROVED: Check Previous Enrollments from Form Data
-  const checkPreviousEnrollments = async () => {
-    if (!formData.email && !formData.phone) {
-      alert('Please enter email or phone number to check previous enrollments');
-      return;
-    }
-
-    setCheckingEnrollments(true);
-    setEnrollmentError("");
-    try {
-      const response = await apiService.getEnrollmentsCheck({
-        email: formData.email,
-        phone: formData.phone
-      });
-
-      if (response.success) {
-        setPreviousEnrollments(response.data);
-        setShowPreviousEnrollments(true);
-        
-        // ✅ Auto-show payment if same course pending
-        const sameCoursePending = response.data.find(
-          (enrollment: any) => 
-            enrollment.courseId === courseId && 
-            enrollment.status === 'pending_payment'
-        );
-        
-        if (sameCoursePending) {
-          setEnrollmentError(`You already have a pending enrollment for ${course?.title}. Click "Complete Payment" to finish.`);
-        }
-      }
-    } catch (error) {
-      console.error('Error checking enrollments:', error);
-      alert('Error checking previous enrollments');
-    } finally {
-      setCheckingEnrollments(false);
-    }
-  };
-
-  // ✅ NEW: Handle Payment for Previous Enrollment
-  const handlePreviousEnrollmentPayment = (enrollment: any) => {
-    // Set dynamic payment course details
-    setPaymentCourse({
-      id: enrollment.courseId,
-      title: enrollment.courseTitle,
-      originalPrice: enrollment.originalPrice,
-      finalPrice: enrollment.finalPrice,
-      duration: "3 Months",
-      discountPercentage: enrollment.discountPercentage || 0
-    });
-    
-    // Set the price for payment modal
-    setFinalPrice(enrollment.finalPrice);
-    setDiscount(enrollment.discountPercentage || 0);
-    
-    // Close previous enrollments modal and show payment modal
-    setShowPreviousEnrollments(false);
-    setShowPaymentModal(true);
-  };
-
-  // ✅ UPDATED: FORM SUBMIT HANDLER with Previous Enrollment Check
-  const handleSubmit = async (e: React.FormEvent) => {
+  // ✅ FIXED: Save Enrollment Data Only
+  const handleSaveEnrollment = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowErrors(true); // Show errors after first submit attempt
+    
+    // Final validation
+    if (!validateForm()) {
+      // Scroll to first error
+      const firstErrorField = Object.keys(formErrors)[0];
+      const element = document.getElementById(firstErrorField);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
     setIsSubmitting(true);
-    setEnrollmentError("");
 
     try {
       const currentCourse = coursesData.find(c => c.id === courseId);
       
       if (!currentCourse) {
         throw new Error('Course not found');
-      }
-
-      // ✅ Check if already enrolled in same course
-      const existingEnrollment = previousEnrollments.find(
-        (enrollment: any) => 
-          enrollment.courseId === courseId && 
-          enrollment.status === 'pending_payment'
-      );
-
-      if (existingEnrollment) {
-        setEnrollmentError(`You already have a pending enrollment for this course. Please click "Complete Payment" to finish.`);
-        setIsSubmitting(false);
-        return;
       }
 
       const enrollmentData = {
@@ -326,29 +335,33 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         setIsSaved(true);
         console.log("✅ Enrollment saved successfully!");
         
-        // ✅ Show Payment Modal with Discounted Price
-        setTimeout(() => {
-          setShowPaymentModal(true);
-        }, 1000);
-        
       } else {
         throw new Error(responseData.error || 'Enrollment failed');
       }
     } catch (error: any) {
       console.error('❌ Error saving enrollment:', error);
       
-      // ✅ Handle duplicate enrollment error
-      if (error.message?.includes('already enrolled') || error.message?.includes('duplicate')) {
-        setEnrollmentError('You are already enrolled or have a pending enrollment for this course. Please check your previous enrollments.');
-        // Auto-check previous enrollments
-        if (formData.email || formData.phone) {
-          checkPreviousEnrollments();
-        }
-      } else {
-        alert(`Error: ${error.message || 'Failed to save enrollment data. Please try again.'}`);
+      // Show user-friendly error message
+      let errorMessage = 'Failed to save enrollment data. Please try again.';
+      
+      if (error.message?.includes('already enrolled')) {
+        errorMessage = 'You are already enrolled in this course.';
+      } else if (error.message?.includes('email')) {
+        errorMessage = 'This email is already registered. Please use a different email.';
+      } else if (error.message?.includes('phone')) {
+        errorMessage = 'This phone number is already registered. Please use a different number.';
       }
+      
+      alert(`Error: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // ✅ NEW: Handle Payment Navigation
+  const handleProceedToPayment = () => {
+    if (onNavigate) {
+      onNavigate(`payment-page-${courseId}`);
     }
   };
 
@@ -410,234 +423,6 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
         )}
       </AnimatePresence>
 
-      {/* ✅ IMPROVED: Payment Modal */}
-      <PaymentModal
-        isOpen={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        onSuccess={() => {
-          console.log("✅ Payment successful!");
-          setShowPaymentModal(false);
-          if (onNavigate) {
-            onNavigate(`payment-success-${courseId}`);
-          }
-        }}
-        course={paymentCourse || course}
-      />
-
-      {/* ✅ IMPROVED: Previous Enrollments Modal */}
-      <AnimatePresence>
-        {showPreviousEnrollments && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={() => setShowPreviousEnrollments(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: -20 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">📋 Your Previous Enrollments</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowPreviousEnrollments(false)}
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-
-              {previousEnrollments.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No previous enrollments found.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {previousEnrollments.map((enrollment, index) => (
-                    <Card key={enrollment._id || index} className="border-l-4 border-l-blue-500">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-lg">{enrollment.courseTitle}</h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 text-sm">
-                              <p className="text-gray-500">
-                                <strong>Enrolled:</strong> {new Date(enrollment.enrollmentDate).toLocaleDateString('en-IN')}
-                              </p>
-                              <p className="text-gray-500">
-                                <strong>Amount:</strong> ₹{enrollment.finalPrice?.toLocaleString('en-IN') || 'N/A'}
-                              </p>
-                              <p className="text-gray-500">
-                                <strong>Status:</strong> 
-                                <Badge 
-                                  variant={
-                                    enrollment.status === 'enrolled' ? 'default' :
-                                    enrollment.status === 'payment_completed' ? 'secondary' : 'outline'
-                                  }
-                                  className="ml-2"
-                                >
-                                  {enrollment.status.replace('_', ' ').toUpperCase()}
-                                </Badge>
-                              </p>
-                              {enrollment.discountPercentage > 0 && (
-                                <p className="text-green-600">
-                                  <strong>Discount:</strong> {enrollment.discountPercentage}% OFF
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex flex-col gap-2 ml-4">
-                            {/* ✅ PAYMENT BUTTON for ALL Pending Enrollments */}
-                            {enrollment.status === 'pending_payment' && (
-                              <Button
-                                size="sm"
-                                onClick={() => handlePreviousEnrollmentPayment(enrollment)}
-                                className="bg-green-600 hover:bg-green-700"
-                              >
-                                Complete Payment
-                              </Button>
-                            )}
-                            
-                            {/* ✅ View Course for Different Course */}
-                            {enrollment.courseId !== courseId && enrollment.status !== 'pending_payment' && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setShowPreviousEnrollments(false);
-                                  if (onNavigate) {
-                                    onNavigate(`course-details-${enrollment.courseId}`);
-                                  }
-                                }}
-                              >
-                                View Course
-                              </Button>
-                            )}
-                            
-                            {/* ✅ View Details for Completed/Enrolled */}
-                            {(enrollment.status === 'enrolled' || enrollment.status === 'payment_completed') && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  // Navigate to course dashboard or details
-                                  console.log('View course details:', enrollment);
-                                  alert('Redirecting to course dashboard...');
-                                }}
-                              >
-                                View Details
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-              
-              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  💡 <strong>Tip:</strong> You can complete pending payments or enroll in new courses. 
-                  Each course requires separate enrollment.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ✅ NEW: Quick Check Modal */}
-      <AnimatePresence>
-        {showQuickCheck && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={() => setShowQuickCheck(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-bold">Check Previous Enrollments</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowQuickCheck(false)}
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="quickEmail">Email Address</Label>
-                  <Input
-                    id="quickEmail"
-                    type="email"
-                    value={quickCheckData.email}
-                    onChange={(e) => setQuickCheckData(prev => ({...prev, email: e.target.value}))}
-                    placeholder="Enter your email"
-                    className="mt-1"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="quickPhone">Phone Number</Label>
-                  <Input
-                    id="quickPhone"
-                    type="tel"
-                    value={quickCheckData.phone}
-                    onChange={(e) => setQuickCheckData(prev => ({...prev, phone: e.target.value}))}
-                    placeholder="Enter your phone number"
-                    className="mt-1"
-                    maxLength={11}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <Button
-                  onClick={quickCheckEnrollments}
-                  disabled={checkingEnrollments || (!quickCheckData.email && !quickCheckData.phone)}
-                  className="flex-1"
-                >
-                  {checkingEnrollments ? (
-                    <>
-                      <Clock className="w-4 h-4 mr-2 animate-spin" />
-                      Checking...
-                    </>
-                  ) : (
-                    "Check Enrollments"
-                  )}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowQuickCheck(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
-
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="text-xs text-blue-700 dark:text-blue-300">
-                  🔍 Enter your email or phone number to check your previous course enrollments and pending payments.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Header Section */}
       <motion.header
         className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
@@ -666,45 +451,13 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
               </p>
             </div>
             
-            {/* ✅ IMPROVED: Check Previous Enrollments Button */}
-            <Button
-              variant="outline"
-              onClick={() => setShowQuickCheck(true)}
-              className="flex items-center gap-2 text-sm"
-            >
-              <Search className="w-4 h-4" />
-              <span className="hidden sm:inline">Check Previous</span>
-              <span className="sm:hidden">Previous</span>
-            </Button>
+            <div className="w-20"></div> {/* Spacer for layout balance */}
           </div>
         </div>
       </motion.header>
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8">
-        {/* ✅ Enrollment Error Alert */}
-        {enrollmentError && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
-          >
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-600" />
-              <div>
-                <p className="text-yellow-800 font-medium">{enrollmentError}</p>
-                <Button
-                  variant="link"
-                  onClick={checkPreviousEnrollments}
-                  className="p-0 h-auto text-yellow-700 underline"
-                >
-                  Click here to view your previous enrollments
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Enrollment Form */}
           <div className="lg:col-span-2">
@@ -721,7 +474,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  <form onSubmit={handleSaveEnrollment} className="space-y-4 sm:space-y-6">
                     {/* Personal Information */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div className="space-y-2">
@@ -732,7 +485,14 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           onChange={(e) => handleInputChange("fullName", e.target.value)}
                           required
                           placeholder="Enter your full name"
+                          className={showErrors && formErrors.fullName ? "border-red-500" : ""}
                         />
+                        {showErrors && formErrors.fullName && (
+                          <div className="flex items-center gap-1 text-red-500 text-sm">
+                            <AlertCircle className="w-4 h-4" />
+                            {formErrors.fullName}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="space-y-2">
@@ -744,7 +504,14 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           onChange={(e) => handleInputChange("email", e.target.value)}
                           required
                           placeholder="Enter your email"
+                          className={showErrors && formErrors.email ? "border-red-500" : ""}
                         />
+                        {showErrors && formErrors.email && (
+                          <div className="flex items-center gap-1 text-red-500 text-sm">
+                            <AlertCircle className="w-4 h-4" />
+                            {formErrors.email}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -757,9 +524,16 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           value={formData.phone}
                           onChange={(e) => handleInputChange("phone", e.target.value)}
                           required
-                          placeholder="Enter your phone number"
-                          maxLength={11}
+                          placeholder="Enter 10-digit phone number"
+                          maxLength={10}
+                          className={showErrors && formErrors.phone ? "border-red-500" : ""}
                         />
+                        {showErrors && formErrors.phone && (
+                          <div className="flex items-center gap-1 text-red-500 text-sm">
+                            <AlertCircle className="w-4 h-4" />
+                            {formErrors.phone}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="space-y-2">
@@ -768,7 +542,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           value={formData.gender} 
                           onValueChange={(value) => handleInputChange("gender", value)}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className={showErrors && formErrors.gender ? "border-red-500" : ""}>
                             <SelectValue placeholder="Select gender" />
                           </SelectTrigger>
                           <SelectContent>
@@ -777,6 +551,12 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
+                        {showErrors && formErrors.gender && (
+                          <div className="flex items-center gap-1 text-red-500 text-sm">
+                            <AlertCircle className="w-4 h-4" />
+                            {formErrors.gender}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -798,6 +578,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           value={formData.emergencyContact}
                           onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
                           placeholder="Emergency contact number"
+                          maxLength={10}
                         />
                       </div>
                     </div>
@@ -812,7 +593,14 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                         required
                         placeholder="Enter your complete address"
                         rows={3}
+                        className={showErrors && formErrors.address ? "border-red-500" : ""}
                       />
+                      {showErrors && formErrors.address && (
+                        <div className="flex items-center gap-1 text-red-500 text-sm">
+                          <AlertCircle className="w-4 h-4" />
+                          {formErrors.address}
+                        </div>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
@@ -824,7 +612,14 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           onChange={(e) => handleInputChange("city", e.target.value)}
                           required
                           placeholder="Enter your city"
+                          className={showErrors && formErrors.city ? "border-red-500" : ""}
                         />
+                        {showErrors && formErrors.city && (
+                          <div className="flex items-center gap-1 text-red-500 text-sm">
+                            <AlertCircle className="w-4 h-4" />
+                            {formErrors.city}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="space-y-2">
@@ -835,7 +630,14 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           onChange={(e) => handleInputChange("state", e.target.value)}
                           required
                           placeholder="Enter your state"
+                          className={showErrors && formErrors.state ? "border-red-500" : ""}
                         />
+                        {showErrors && formErrors.state && (
+                          <div className="flex items-center gap-1 text-red-500 text-sm">
+                            <AlertCircle className="w-4 h-4" />
+                            {formErrors.state}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="space-y-2">
@@ -845,8 +647,16 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           value={formData.pincode}
                           onChange={(e) => handleInputChange("pincode", e.target.value)}
                           required
-                          placeholder="Enter PIN code"
+                          placeholder="Enter 6-digit PIN"
+                          maxLength={6}
+                          className={showErrors && formErrors.pincode ? "border-red-500" : ""}
                         />
+                        {showErrors && formErrors.pincode && (
+                          <div className="flex items-center gap-1 text-red-500 text-sm">
+                            <AlertCircle className="w-4 h-4" />
+                            {formErrors.pincode}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -892,6 +702,7 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           onChange={(e) => handleInputChange("couponCode", e.target.value)}
                           placeholder="Enter coupon code"
                           disabled={couponApplied}
+                          className={showErrors && formErrors.couponCode ? "border-red-500" : ""}
                         />
                         {couponApplied ? (
                           <Button 
@@ -909,57 +720,98 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                           </Button>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500">
-                        Use coupon code "SPECIAL40" for special discounts
-                      </p>
+                      {showErrors && formErrors.couponCode ? (
+                        <div className="flex items-center gap-1 text-red-500 text-sm">
+                          <AlertCircle className="w-4 h-4" />
+                          {formErrors.couponCode}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500">
+                          Use coupon code "SPECIAL40" for special discounts
+                        </p>
+                      )}
                     </div>
 
-                    {/* Check Previous Enrollments Button */}
-                    <div className="flex gap-3">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={checkPreviousEnrollments}
-                        disabled={checkingEnrollments || (!formData.email && !formData.phone)}
-                        className="flex-1"
-                      >
-                        {checkingEnrollments ? (
-                          <>
-                            <Clock className="w-4 h-4 mr-2 animate-spin" />
-                            Checking...
-                          </>
-                        ) : (
-                          <>
-                            <Search className="w-4 h-4 mr-2" />
-                            Check My Previous Enrollments
-                          </>
-                        )}
-                      </Button>
+                    {/* ✅ FIXED: Two Separate Buttons */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Save Button */}
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="submit"
+                          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 text-base font-semibold"
+                          size="lg"
+                          disabled={isSubmitting || isSaved}
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                              Saving...
+                            </>
+                          ) : isSaved ? (
+                            <>
+                              <CheckCircle className="w-5 h-5 mr-2" />
+                              Data Saved!
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-5 h-5 mr-2" />
+                              Save Enrollment Data
+                            </>
+                          )}
+                        </Button>
+                      </motion.div>
+
+                      {/* Proceed to Payment Button */}
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="button"
+                          onClick={handleProceedToPayment}
+                          className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white py-4 text-base font-semibold"
+                          size="lg"
+                          disabled={!isSaved} // Disabled until data is saved
+                        >
+                          {isSaved ? (
+                            <>
+                              <CreditCard className="w-5 h-5 mr-2" />
+                              Proceed to Payment
+                            </>
+                          ) : (
+                            <>
+                              <Lock className="w-5 h-5 mr-2" />
+                              Complete Enrollment First
+                            </>
+                          )}
+                        </Button>
+                      </motion.div>
                     </div>
 
-                    {/* Submit Button */}
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-4 sm:py-6 text-base sm:text-lg font-semibold"
-                        size="lg"
-                        disabled={isSubmitting || isSaved}
-                      >
-                        {isSubmitting ? (
-                          "Saving..."
-                        ) : isSaved ? (
-                          <>
-                            <CheckCircle className="w-5 h-5 mr-2" />
-                            Data Saved Successfully!
-                          </>
-                        ) : (
-                          <>
-                            <CreditCard className="w-5 h-5 mr-2" />
-                            Save & Proceed to Payment
-                          </>
-                        )}
-                      </Button>
-                    </motion.div>
+                    {/* ✅ FIXED: Form Status Messages */}
+                    {showErrors && Object.keys(formErrors).length > 0 && (
+                      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <AlertCircle className="w-5 h-5 text-red-500" />
+                          <p className="text-red-800 font-semibold">
+                            Please fix the following errors:
+                          </p>
+                        </div>
+                        <ul className="text-sm text-red-700 list-disc list-inside space-y-1">
+                          {Object.values(formErrors).map((error, index) => (
+                            <li key={index}>{error}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {isSaved && (
+                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <p className="text-green-800 font-semibold">
+                            ✅ Enrollment data saved successfully! You can now proceed to payment.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </form>
                 </CardContent>
               </Card>
@@ -1026,6 +878,21 @@ export function EnrollmentFormPage({ onNavigate, courseId = "plc-automation" }: 
                     <p>✅ Certificate of completion</p>
                     <p>✅ Downloadable resources</p>
                     <p>✅ 7-day money back guarantee</p>
+                  </div>
+
+                  {/* Enrollment Status */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">Enrollment Status</h4>
+                    <div className="space-y-2 text-xs">
+                      <div className={`flex items-center gap-2 ${isSaved ? 'text-green-600' : 'text-gray-500'}`}>
+                        <div className={`w-2 h-2 rounded-full ${isSaved ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                        <span>Personal Information {isSaved ? '✓ Completed' : 'Pending'}</span>
+                      </div>
+                      <div className={`flex items-center gap-2 ${isSaved ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <div className={`w-2 h-2 rounded-full ${isSaved ? 'bg-gray-300' : 'bg-gray-400'}`}></div>
+                        <span>Payment {isSaved ? 'Ready' : 'Locked'}</span>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

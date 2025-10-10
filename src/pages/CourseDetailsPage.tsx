@@ -1,4 +1,4 @@
-// src/pages/CourseDetailsPage.tsx - RESPONSIVE VERSION
+// src/pages/CourseDetailsPage.tsx - FIXED OVERLAY VERSION
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -94,6 +94,8 @@ const coursesData = [
 export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: CourseDetailsPageProps) {
   // State for favorites
   const [isFavorited, setIsFavorited] = useState(false);
+  // State for active tab
+  const [activeTab, setActiveTab] = useState("curriculum");
 
   // Find the course details based on courseId
   const course = coursesData.find(c => c.id === courseId);
@@ -391,14 +393,13 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       {/* Header Section */}
       <motion.header
-        className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
+        className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            {/* Back Button */}
             <Button
               variant="ghost"
               onClick={() => onNavigate && onNavigate("courses")}
@@ -409,7 +410,6 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
               <span className="xs:hidden">Back</span>
             </Button>
             
-            {/* Action Buttons */}
             <div className="flex items-center gap-2 sm:gap-4">
               <Button
                 variant="ghost"
@@ -428,11 +428,11 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
       </motion.header>
 
       {/* Main Content Section */}
-      <main className="container mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Left Column - Course Details */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
-            {/* Course Hero Section */}
+          <div className="lg:col-span-2 space-y-6 sm:space-y-8">
+            {/* Course Hero Section - FIXED OVERLAY */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -441,47 +441,57 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
               <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   <div className="relative">
-                    {/* Course Image */}
-                    <ImageWithFallback
-                      src={course.image}
-                      alt={course.title}
-                      className="w-full h-48 xs:h-56 sm:h-64 md:h-72 lg:h-80 object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/40" />
-                    {/* Course Info Overlay */}
-                    <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 text-white">
-                      <Badge className="mb-2 sm:mb-3 bg-blue-500 text-white text-xs sm:text-sm">
-                        {course.level}
-                      </Badge>
-                      <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 leading-tight">
-                        {course.title}
-                      </h1>
-                      <p className="text-blue-100 text-sm sm:text-base lg:text-lg mb-2 sm:mb-4 max-w-2xl leading-relaxed">
-                        {course.description}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-6 text-xs sm:text-sm">
-                        <div className="flex items-center gap-1">
-                          <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-                          <span>4.9 (2,847)</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span>12,847 students</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span>{course.duration}</span>
+                    {/* Course Image with Proper Height */}
+                    <div className="relative h-64 sm:h-72 md:h-80 lg:h-96">
+                      <ImageWithFallback
+                        src={course.image}
+                        alt={course.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Dark Overlay for Better Text Readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+                    </div>
+                    
+                    {/* Course Info Overlay - Properly Positioned */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8 text-white">
+                      <div className="max-w-4xl">
+                        <Badge className="mb-3 bg-blue-500 text-white text-sm">
+                          {course.level}
+                        </Badge>
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 leading-tight">
+                          {course.title}
+                        </h1>
+                        <p className="text-lg sm:text-xl text-gray-200 mb-4 leading-relaxed max-w-3xl">
+                          {course.description}
+                        </p>
+                        
+                        {/* Course Stats */}
+                        <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm sm:text-base">
+                          <div className="flex items-center gap-2">
+                            <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" />
+                            <span>4.9 (2,847 reviews)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span>12,847 students</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span>{course.duration}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    
                     {/* Preview Button */}
                     <Button
-                      variant="ghost"
+                      variant="secondary"
                       size="sm"
-                      className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm p-2 sm:p-3"
+                      className="absolute top-4 right-4 bg-white/90 hover:bg-white text-gray-900 backdrop-blur-sm"
                       onClick={handlePreview}
                     >
-                      <Play className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <Play className="w-4 h-4 mr-2" />
+                      Preview
                     </Button>
                   </div>
                 </CardContent>
@@ -494,71 +504,64 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <Tabs defaultValue="curriculum" className="w-full">
-                {/* Tab Navigation */}
-                <TabsList className="grid w-full grid-cols-3 p-1 sm:p-2">
-                  <TabsTrigger value="curriculum" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-6">
+                  <TabsTrigger value="curriculum" className="text-sm sm:text-base">
                     Curriculum
                   </TabsTrigger>
-                  <TabsTrigger value="instructor" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+                  <TabsTrigger value="instructor" className="text-sm sm:text-base">
                     Instructor
                   </TabsTrigger>
-                  <TabsTrigger value="reviews" className="text-xs sm:text-sm px-2 sm:px-4 py-2">
+                  <TabsTrigger value="reviews" className="text-sm sm:text-base">
                     Reviews
                   </TabsTrigger>
                 </TabsList>
 
                 {/* Curriculum Tab Content */}
-                <TabsContent value="curriculum" className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
+                <TabsContent value="curriculum" className="space-y-4">
                   <Card>
-                    <CardHeader className="pb-3 sm:pb-4">
-                      <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                        <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-xl">
+                        <BookOpen className="w-5 h-5 text-blue-500" />
                         Course Curriculum
                       </CardTitle>
-                      <p className="text-muted-foreground text-sm sm:text-base">
+                      <p className="text-muted-foreground">
                         {curriculum.length} modules • {totalLessons} lessons • {course.duration} Program
                       </p>
                     </CardHeader>
-                    <CardContent className="space-y-3 sm:space-y-4">
-                      {/* Curriculum Modules */}
+                    <CardContent className="space-y-4">
                       {curriculum.map((module, moduleIndex) => (
                         <motion.div
                           key={module.id}
-                          className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 sm:p-4"
+                          className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: moduleIndex * 0.1 }}
                         >
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2 sm:mb-3">
-                            <h4 className="font-semibold text-base sm:text-lg leading-tight">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-lg">
                               Module {moduleIndex + 1}: {module.title}
                             </h4>
-                            <Badge variant="outline" className="text-xs sm:text-sm w-fit">
+                            <Badge variant="outline">
                               {module.lessons.length} lessons
                             </Badge>
                           </div>
-                          {/* Module Lessons */}
                           <div className="space-y-2">
-                            {module.lessons.map((lesson, lessonIndex) => (
+                            {module.lessons.map((lesson) => (
                               <div
                                 key={lesson.id}
-                                className="flex items-center justify-between p-2 sm:p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-sm sm:text-base"
+                                className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
                               >
-                                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                                  {/* Lesson Type Icons */}
-                                  {lesson.type === 'video' && <Video className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500 flex-shrink-0" />}
-                                  {lesson.type === 'text' && <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />}
-                                  {lesson.type === 'quiz' && <Trophy className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0" />}
-                                  {lesson.type === 'project' && <Award className="w-3 h-3 sm:w-4 sm:h-4 text-purple-500 flex-shrink-0" />}
-                                  <span className="truncate">{lesson.title}</span>
+                                <div className="flex items-center gap-3 flex-1">
+                                  {lesson.type === 'video' && <Video className="w-4 h-4 text-blue-500" />}
+                                  {lesson.type === 'text' && <FileText className="w-4 h-4 text-green-500" />}
+                                  {lesson.type === 'quiz' && <Trophy className="w-4 h-4 text-orange-500" />}
+                                  {lesson.type === 'project' && <Award className="w-4 h-4 text-purple-500" />}
+                                  <span className="text-sm">{lesson.title}</span>
                                 </div>
-                                <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                                  {/* Completion Status */}
-                                  {lesson.isCompleted && (
-                                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
-                                  )}
-                                </div>
+                                {lesson.isCompleted && (
+                                  <CheckCircle className="w-4 h-4 text-green-500" />
+                                )}
                               </div>
                             ))}
                           </div>
@@ -569,35 +572,33 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                 </TabsContent>
 
                 {/* Instructor Tab Content */}
-                <TabsContent value="instructor" className="mt-4 sm:mt-6">
+                <TabsContent value="instructor" className="space-y-4">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg sm:text-xl">Meet Your Instructor</CardTitle>
+                      <CardTitle className="text-xl">Meet Your Instructor</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-                        {/* Instructor Avatar */}
-                        <Avatar className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0">
+                      <div className="flex flex-col sm:flex-row items-start gap-6">
+                        <Avatar className="w-20 h-20 sm:w-24 sm:h-24">
                           <AvatarImage src={instructor.avatar} alt={instructor.name} />
-                          <AvatarFallback className="text-sm">
+                          <AvatarFallback>
                             {instructor.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
-                        {/* Instructor Details */}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-lg sm:text-xl font-semibold mb-1">{instructor.name}</h3>
-                          <p className="text-muted-foreground text-sm sm:text-base mb-2 sm:mb-3">{instructor.title}</p>
-                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm">
-                            <div className="flex items-center gap-1">
-                              <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold mb-2">{instructor.name}</h3>
+                          <p className="text-muted-foreground mb-3">{instructor.title}</p>
+                          <div className="flex items-center gap-4 mb-4">
+                            <div className="flex items-center gap-2">
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                               <span>{instructor.rating} rating</span>
                             </div>
-                            <div className="flex items-center gap-1">
-                              <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <div className="flex items-center gap-2">
+                              <Users className="w-4 h-4" />
                               <span>{instructor.students} students</span>
                             </div>
                           </div>
-                          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
+                          <p className="text-muted-foreground leading-relaxed">
                             {instructor.bio}
                           </p>
                         </div>
@@ -607,30 +608,29 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                 </TabsContent>
 
                 {/* Reviews Tab Content */}
-                <TabsContent value="reviews" className="mt-4 sm:mt-6">
+                <TabsContent value="reviews" className="space-y-4">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg sm:text-xl">Student Reviews</CardTitle>
+                      <CardTitle className="text-xl">Student Reviews</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4 sm:space-y-6">
-                      {/* Review Summary Section */}
-                      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <CardContent className="space-y-6">
+                      {/* Review Summary */}
+                      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <div className="text-center">
-                          <div className="text-2xl sm:text-3xl font-bold">4.9</div>
-                          <div className="flex items-center gap-1 mt-1">
+                          <div className="text-3xl font-bold">4.9</div>
+                          <div className="flex items-center gap-1 mt-2">
                             {[...Array(5)].map((_, i) => (
-                              <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+                              <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                             ))}
                           </div>
-                          <div className="text-xs sm:text-sm text-muted-foreground mt-1">2,847 reviews</div>
+                          <div className="text-sm text-muted-foreground mt-1">2,847 reviews</div>
                         </div>
-                        {/* Rating Distribution */}
-                        <div className="flex-1 w-full sm:w-auto">
+                        <div className="flex-1">
                           {[5, 4, 3, 2, 1].map(stars => (
-                            <div key={stars} className="flex items-center gap-2 mb-1">
-                              <span className="text-xs sm:text-sm w-6 sm:w-8">{stars}★</span>
-                              <Progress value={stars === 5 ? 85 : stars === 4 ? 12 : 3} className="flex-1 h-1.5 sm:h-2" />
-                              <span className="text-xs sm:text-sm text-muted-foreground w-6 sm:w-8">
+                            <div key={stars} className="flex items-center gap-2 mb-2">
+                              <span className="text-sm w-8">{stars}★</span>
+                              <Progress value={stars === 5 ? 85 : stars === 4 ? 12 : 3} className="flex-1 h-2" />
+                              <span className="text-sm text-muted-foreground w-8">
                                 {stars === 5 ? '85%' : stars === 4 ? '12%' : '3%'}
                               </span>
                             </div>
@@ -638,7 +638,7 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                         </div>
                       </div>
 
-                      {/* Individual Reviews List */}
+                      {/* Individual Reviews */}
                       {[
                         {
                           name: "Priya Sharma",
@@ -661,28 +661,28 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                       ].map((review, index) => (
                         <motion.div
                           key={index}
-                          className="border-b border-gray-200 dark:border-gray-700 pb-3 sm:pb-4 last:border-b-0"
+                          className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.1 }}
                         >
-                          <div className="flex items-start gap-2 sm:gap-3">
-                            <Avatar className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0">
+                          <div className="flex items-start gap-3">
+                            <Avatar className="w-8 h-8">
                               <AvatarFallback className="text-xs">
                                 {review.name.split(' ').map(n => n[0]).join('')}
                               </AvatarFallback>
                             </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                                <span className="font-medium text-sm sm:text-base">{review.name}</span>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium">{review.name}</span>
                                 <div className="flex items-center gap-1">
                                   {[...Array(review.rating)].map((_, i) => (
-                                    <Star key={i} className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-yellow-400 text-yellow-400" />
+                                    <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                                   ))}
                                 </div>
-                                <span className="text-xs text-muted-foreground">{review.date}</span>
+                                <span className="text-sm text-muted-foreground">{review.date}</span>
                               </div>
-                              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                              <p className="text-sm text-muted-foreground">
                                 {review.comment}
                               </p>
                             </div>
@@ -699,40 +699,41 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
           {/* Right Column - Course Info Card */}
           <div className="lg:col-span-1">
             <motion.div
-              className="sticky top-4 sm:top-6 lg:top-8"
+              className="sticky top-24"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Card>
-                <CardHeader className="pb-3 sm:pb-4">
+                <CardHeader>
                   <div className="text-center">
-                    {/* Course Price */}
-                    <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-1 sm:mb-2">{course.price}</div>
-                    <div className="text-sm text-muted-foreground mb-2">One-time payment</div>
+                    <div className="text-3xl lg:text-4xl font-bold text-blue-600 mb-2">
+                      {course.price}
+                    </div>
+                    <div className="text-sm text-muted-foreground">One-time payment</div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3 sm:space-y-4">
-                  {/* Course Features List */}
-                  <div className="space-y-2 sm:space-y-3">
-                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500 flex-shrink-0" />
+                <CardContent className="space-y-4">
+                  {/* Course Features */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 text-sm">
+                      <Clock className="w-4 h-4 text-blue-500" />
                       <span>{course.duration} Program</span>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 text-sm">
+                      <FileText className="w-4 h-4 text-green-500" />
                       <span>{totalLessons} lessons</span>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <Download className="w-3 h-3 sm:w-4 sm:h-4 text-purple-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 text-sm">
+                      <Download className="w-4 h-4 text-purple-500" />
                       <span>Downloadable resources</span>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <Award className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 text-sm">
+                      <Award className="w-4 h-4 text-orange-500" />
                       <span>Certificate of completion</span>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <Users className="w-3 h-3 sm:w-4 sm:h-4 text-teal-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 text-sm">
+                      <Users className="w-4 h-4 text-teal-500" />
                       <span>Lifetime access</span>
                     </div>
                   </div>
@@ -743,38 +744,39 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                     whileTap={{ scale: 0.98 }}
                   >
                     <Button
-                      className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-4 sm:py-6 text-base sm:text-lg font-semibold"
+                      className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-6 text-lg font-semibold"
                       size="lg"
                       onClick={handleEnrollment}
                     >
-                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
+                      <CreditCard className="w-5 h-5 mr-2" />
                       Enroll & Pay
                     </Button>
                   </motion.div>
 
-                  {/* Payment Security Information */}
-                  <div className="text-center p-2 sm:p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                      <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-                      <div className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-300">
-                        Secure Payment
+                  {/* Security & Guarantee */}
+                  <div className="space-y-3">
+                    <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                      <div className="flex items-center justify-center gap-2 mb-1">
+                        <Shield className="w-4 h-4 text-green-600" />
+                        <div className="text-sm font-medium text-green-800 dark:text-green-300">
+                          Secure Payment
+                        </div>
+                      </div>
+                      <div className="text-xs text-green-600 dark:text-green-400">
+                        100% Safe & Secure • SSL Encrypted
                       </div>
                     </div>
-                    <div className="text-xs text-green-600 dark:text-green-400 leading-tight">
-                      100% Safe & Secure • SSL Encrypted
-                    </div>
-                  </div>
 
-                  {/* Money Back Guarantee */}
-                  <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                      <Check className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 flex-shrink-0" />
-                      <div className="text-xs sm:text-sm font-medium text-blue-800 dark:text-blue-300">
-                        7-Day Money Back Guarantee
+                    <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <div className="flex items-center justify-center gap-2 mb-1">
+                        <Check className="w-4 h-4 text-blue-600" />
+                        <div className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                          7-Day Money Back Guarantee
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-xs text-blue-600 dark:text-blue-400 leading-tight">
-                      Not satisfied? Get full refund within 7 days
+                      <div className="text-xs text-blue-600 dark:text-blue-400">
+                        Not satisfied? Get full refund within 7 days
+                      </div>
                     </div>
                   </div>
                 </CardContent>
