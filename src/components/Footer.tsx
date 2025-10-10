@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, ArrowUp, MessageCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface FooterProps {
@@ -59,14 +59,14 @@ export function Footer({ onNavigate }: FooterProps) {
       label: "Facebook"
     },
     { 
-      icon: Instagram, 
-      href: "#", 
-      color: "hover:bg-pink-600",
-      label: "Instagram"
+      icon: MessageCircle, // ✅ WhatsApp ke liye MessageCircle use karo
+      href: "https://whatsapp.com/channel/0029Vb6zS180gcfJPY9rKT1p", 
+      color: "hover:bg-green-600", // ✅ WhatsApp color green rakho
+      label: "WhatsApp"
     },
     { 
       icon: Linkedin, 
-      href: "#", 
+      href: "https://www.linkedin.com/company/kaushalhub-naukripath/", 
       color: "hover:bg-blue-700",
       label: "LinkedIn"
     }
@@ -138,7 +138,7 @@ export function Footer({ onNavigate }: FooterProps) {
               
               <p className="text-gray-400 text-sm leading-relaxed text-left max-w-md">
                 KaushalHub NaukriPath Private Limited Recognized by Ministry of Corporate Affairs (Govt. of India) | MSME | Startup India
-                Empowering India’s youth with industry-ready skills and career-focused learning.
+                Empowering India's youth with industry-ready skills and career-focused learning.
                 We bridge the gap between education and employment through expert-led training, Govt.-recognized certifications, and real job opportunities.
               </p>
               
@@ -219,6 +219,14 @@ export function Footer({ onNavigate }: FooterProps) {
                   <Mail className="w-5 h-5 text-gray-400 flex-shrink-0 group-hover:text-green-400 transition-colors" />
                   <span className="text-gray-400 text-sm group-hover:text-white transition-colors break-all">
                     info@kaushalhub.com
+                  </span>
+                </a>
+
+                {/* ✅ WhatsApp Contact Add kiya */}
+                <a href="https://wa.me/918700522408" className="flex items-center space-x-3 group transition-colors">
+                  <MessageCircle className="w-5 h-5 text-gray-400 flex-shrink-0 group-hover:text-green-400 transition-colors" />
+                  <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
+                    WhatsApp: +91 8700522408
                   </span>
                 </a>
               </div>

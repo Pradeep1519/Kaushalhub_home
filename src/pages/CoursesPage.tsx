@@ -1,13 +1,12 @@
-// src/pages/CoursesPage.tsx - RESPONSIVE VERSION
+// src/pages/CoursesPage.tsx - COMPLETE FIXED VERSION
 import { motion } from "motion/react";
-import { Search, Grid, List, Clock, Users, Star, BadgePercent } from "lucide-react";
+import { Search, Grid, List, Clock, Users, Star } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "../components/ui/card";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { AnimatedCard } from "../components/AnimatedCard";
-import { AnimatedButton } from "../components/AnimatedButton";
 import { useState } from "react";
 
 // ✅ COURSES DATA - YAHI FILE MEIN (Course IDs match with CourseDetailsPage)
@@ -50,25 +49,25 @@ const coursesData = [
   }
 ];
 
-const categories = ["All", "Office Skills", "Automation", "Marketing", "Accounting", "General"];
+const categories = ["All", "Automation", "Marketing", "Accounting", "General"];
 const levels = ["All", "Beginner", "Intermediate", "Advanced"];
 
 interface CoursesPageProps {
-  onNavigate?: (page: string) => void;
+  onNavigate?: (page: string, data?: any) => void;
 }
 
-// ✅ COURSE CARD COMPONENT - RESPONSIVE VERSION
+// ✅ FIXED COURSE CARD COMPONENT
 function CourseCard({ course, index = 0, onViewCourse }: { 
   course: any; 
   index?: number; 
   onViewCourse?: (courseId: string) => void; 
 }) {
   
-  // ✅ SIMPLE View Course function - Direct course.id use karo
+  // ✅ FIXED: Simple click handler
   const handleViewCourseClick = () => {
     console.log('🎯 CourseCard: View Course clicked - ID:', course.id);
     if (onViewCourse) {
-      onViewCourse(course.id); // ✅ Direct course.id use karo
+      onViewCourse(course.id); // ✅ Direct course.id pass karo
     }
   };
 
@@ -138,7 +137,7 @@ function CourseCard({ course, index = 0, onViewCourse }: {
                 One-time payment
               </div>
             </div>
-            {/* ✅ FIXED: Button outline issue removed */}
+            {/* ✅ FIXED: Button with proper click handler */}
             <button 
               className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 h-auto rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               onClick={handleViewCourseClick}
@@ -152,19 +151,20 @@ function CourseCard({ course, index = 0, onViewCourse }: {
   );
 }
 
-// ✅ MAIN COURSES PAGE COMPONENT - RESPONSIVE VERSION
+// ✅ MAIN COURSES PAGE COMPONENT - FIXED NAVIGATION
 export function CoursesPage({ onNavigate }: CoursesPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // ✅ SIMPLE: Course details navigation
+  // ✅ FIXED: Course details navigation - CORRECT FORMAT
   const handleViewCourse = (courseId: string) => {
     console.log('🚀 CoursesPage: Navigating to course details -', courseId);
     
     if (onNavigate) {
-      onNavigate(`course-details-${courseId}`);
+      // ✅ CORRECT: Use "course-details" with courseId as second parameter
+      onNavigate("course-details", courseId);
     } else {
       console.error('❌ onNavigate function not available');
     }

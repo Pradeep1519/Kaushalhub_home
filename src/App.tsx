@@ -60,8 +60,8 @@ function AppContent() {
   const handleLoadingComplete = () => setIsLoading(false);
 
   // ✅ FIXED: Navigation handler with proper routes
-  const handleNavigate = (page: string, courseId?: string) => {
-    console.log("🚀 App Navigation:", page, "Course ID:", courseId);
+  const handleNavigate = (page: string, data?: any) => {
+    console.log("🚀 App Navigation:", page, "Data:", data);
     
     switch (page) {
       case "home":
@@ -95,18 +95,23 @@ function AppContent() {
         navigate("/refund");
         break;
       case "course-details":
+        // ✅ FIXED: Handle both string and object data
+        const courseId = typeof data === 'string' ? data : data?.courseId;
         if (courseId) {
           navigate(`/course/${courseId}`);
+        } else {
+          console.error('❌ Course ID not provided');
+          navigate("/courses");
         }
         break;
       case "enrollment-form":
-        if (courseId) {
-          navigate(`/enroll/${courseId}`);
+        if (data) {
+          navigate(`/enroll/${data}`);
         }
         break;
       case "payment":
-        if (courseId) {
-          navigate(`/payment/${courseId}`);
+        if (data) {
+          navigate(`/payment/${data}`);
         }
         break;
       // ✅ Support for old format

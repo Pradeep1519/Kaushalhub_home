@@ -1,6 +1,7 @@
-// src/pages/CourseDetailsPage.tsx - UPDATED INSTRUCTOR SECTION
+// src/pages/CourseDetailsPage.tsx - COMPLETE FIXED VERSION
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useParams } from "react-router-dom";
 import { 
   ArrowLeft, 
   Clock, 
@@ -33,7 +34,7 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 // Define props interface for CourseDetailsPage
 interface CourseDetailsPageProps {
-  onNavigate?: (page: string) => void;
+  onNavigate?: (page: string, data?: any) => void;
   courseId?: string;
 }
 
@@ -99,23 +100,29 @@ const coursesData = [
 ];
 
 // CourseDetailsPage component for displaying course information
-export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: CourseDetailsPageProps) {
+export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPageProps) {
+  // ✅ ADD: Get courseId from URL parameters
+  const { courseId: urlCourseId } = useParams<{ courseId: string }>();
+  
+  // ✅ FIXED: Use URL parameter first, then prop, then default
+  const effectiveCourseId = urlCourseId || courseId || "plc-automation";
+  
   // State for favorites
   const [isFavorited, setIsFavorited] = useState(false);
   // State for active tab
   const [activeTab, setActiveTab] = useState("curriculum");
 
-  // Find the course details based on courseId
-  const course = coursesData.find(c => c.id === courseId);
+  // Find the course details based on effectiveCourseId
+  const course = coursesData.find(c => c.id === effectiveCourseId);
 
   // Redirect if course not found
   useEffect(() => {
-    console.log("📖 CourseDetailsPage mounted with courseId:", courseId);
+    console.log("📖 CourseDetailsPage mounted with courseId:", effectiveCourseId);
     if (!course && onNavigate) {
       console.warn("⚠️ Course not found, redirecting to courses");
       onNavigate("courses");
     }
-  }, [course, courseId, onNavigate]);
+  }, [course, effectiveCourseId, onNavigate]);
 
   if (!course) {
     return (
@@ -344,7 +351,7 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
     return curriculumMap[courseId] || [];
   };
 
-  const curriculum = getCourseCurriculum(courseId);
+  const curriculum = getCourseCurriculum(effectiveCourseId);
 
   // ✅ UPDATED: Mock instructor data - Niraj Kumar for PLC course
   const getInstructorData = (courseId: string): Instructor => {
@@ -411,7 +418,7 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
     return instructors[courseId] || instructors["plc-automation"];
   };
 
-  const instructor = getInstructorData(courseId);
+  const instructor = getInstructorData(effectiveCourseId);
 
   // Calculate total lessons
   const totalLessons = curriculum.reduce((total, module) => total + module.lessons.length, 0);
@@ -420,7 +427,7 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
   const handleEnrollment = () => {
     console.log("📝 Enrollment initiated for course:", course.title);
     if (onNavigate) {
-      onNavigate(`enrollment-form-${courseId}`);
+      onNavigate("enrollment-form", effectiveCourseId);
     }
   };
 
