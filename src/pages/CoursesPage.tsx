@@ -213,7 +213,7 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               <div className="text-center">
-                <div className="font-bold text-blue-600 text-sm sm:text-base lg:text-lg mb-1">10K+</div>
+                <div className="font-bold text-blue-600 text-sm sm:text-base lg:text-lg mb-1">2K+</div>
                 <div className="text-xs sm:text-sm text-muted-foreground">Active Students</div>
               </div>
               <div className="text-center">

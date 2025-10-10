@@ -278,7 +278,7 @@ export function CTABanner({ onNavigate }: CTABannerProps) {
               >
                 <div className="grid grid-cols-3 gap-4 text-center">
                   {[
-                    { number: "10K+", label: "Students" },
+                    { number: "2K+", label: "Students" },
                     { number: "98%", label: "Success Rate" },
                     { number: "50+", label: "Courses" }
                   ].map((stat, index) => (

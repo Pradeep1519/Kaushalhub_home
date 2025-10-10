@@ -124,7 +124,7 @@ export function Hero({ onNavigate }: HeroProps) {
               transition={{ delay: 1.2, duration: 0.6 }}
             >
               {[
-                { value: "10K+", label: "Students", color: "text-blue-600" },
+                { value: "2K+", label: "Students", color: "text-blue-600" },
                 { value: "3", label: "Specialized Courses", color: "text-teal-600" },
                 { value: "100%", label: "Job Placement", color: "text-purple-600" }
               ].map((stat, index) => (
