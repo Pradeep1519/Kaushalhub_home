@@ -47,8 +47,8 @@ export function Footer({ onNavigate }: FooterProps) {
 
   const popularCourses = [
     'PLC & Automation',
-    'Digital Marketing With AI',
-    'Tally with GST + Excel'
+    'Digital Marketing With AI & E-Commerce',
+    'Tally with GST + Advanced Excel'
   ];
 
   const socialLinks = [
@@ -211,7 +211,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 <a href="tel:+917274803306" className="flex items-center space-x-3 group transition-colors">
                   <Phone className="w-5 h-5 text-gray-400 flex-shrink-0 group-hover:text-green-400 transition-colors" />
                   <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
-                    +91 72748 03306
+                    +91 8700522408
                   </span>
                 </a>
                 

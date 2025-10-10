@@ -1,10 +1,21 @@
-// src/services/api.js
+// src/services/api.js - UPDATED VERSION
 
 class ApiService {
   constructor() {
-    // Environment-based API URL
     this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     console.log('🔧 API Base URL:', this.baseURL);
+  }
+
+  // ✅ Get authentication token
+  getAuthToken() {
+    return localStorage.getItem('token');
+  }
+
+  // ✅ Check if user is authenticated
+  isAuthenticated() {
+    const token = this.getAuthToken();
+    const user = localStorage.getItem('user');
+    return !!(token && user);
   }
 
   async request(endpoint, options = {}) {
@@ -17,6 +28,12 @@ class ApiService {
       },
       ...options,
     };
+
+    // Add authentication token
+    const token = this.getAuthToken();
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
 
     // Add body if present
     if (options.body) {
@@ -31,7 +48,7 @@ class ApiService {
       const response = await fetch(url, config);
       const data = await response.json();
       
-      console.log(`📥 API Response:`, data);
+      console.log(`📥 API Response for ${endpoint}:`, data);
 
       if (!response.ok) {
         throw new Error(data.error || data.message || `HTTP error! status: ${response.status}`);
@@ -48,12 +65,59 @@ class ApiService {
     }
   }
 
-  // ✅ ENROLLMENT APIS
+  // ✅ ENROLLMENT APIS - FIXED WITH DUPLICATE CHECK
   async createEnrollment(enrollmentData) {
+    console.log('🎯 Creating enrollment for course:', enrollmentData.courseId);
+    
+    // ✅ First check for existing enrollment using email
+    try {
+      await this.checkExistingEnrollment(enrollmentData.courseId, enrollmentData.email);
+      console.log('✅ Enrollment check passed, creating enrollment...');
+    } catch (error) {
+      // If already enrolled, throw error
+      console.log('❌ Enrollment check failed:', error.message);
+      throw error;
+    }
+
+    // ✅ Then create new enrollment
     return this.request('/api/enrollments', {
       method: 'POST',
       data: enrollmentData,
     });
+  }
+
+  // ✅ CHECK EXISTING ENROLLMENT - UPDATED
+  async checkExistingEnrollment(courseId, email) {
+    if (!courseId || !email) {
+      throw new Error('Course ID and email are required');
+    }
+
+    console.log('🔍 Checking existing enrollment for course:', courseId, 'email:', email);
+
+    try {
+      const response = await this.request(`/api/enrollments/check/${courseId}?email=${encodeURIComponent(email)}`, {
+        method: 'GET',
+      });
+
+      console.log('📊 Enrollment check response:', response);
+
+      if (response.isEnrolled || response.isPending) {
+        throw new Error('You are already enrolled or have a pending enrollment for this course.');
+      }
+
+      return response;
+    } catch (error) {
+      console.log('🔍 Enrollment check result:', error.message);
+      
+      // If specific enrollment error, throw it
+      if (error.message.includes('already enrolled')) {
+        throw error;
+      }
+
+      // For other errors, assume no enrollment exists
+      console.log('⚠️ Assuming no existing enrollment due to error');
+      return { isEnrolled: false, isPending: false };
+    }
   }
 
   async getEnrollments(queryParams = {}) {
@@ -62,10 +126,10 @@ class ApiService {
   }
 
   async getEnrollmentStats() {
-    return this.request('/api/enrollments/stats');
+    return this.request('/api/enrollments/stats/summary');
   }
 
-  // ✅ NEW: Check Previous Enrollments by Email/Phone
+  // ✅ Check enrollments by email/phone
   async getEnrollmentsCheck(queryParams = {}) {
     const queryString = new URLSearchParams(queryParams).toString();
     return this.request(`/api/enrollments/check?${queryString}`);
