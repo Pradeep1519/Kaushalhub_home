@@ -1,4 +1,4 @@
-// src/pages/CourseDetailsPage.tsx - FIXED OVERLAY VERSION
+// src/pages/CourseDetailsPage.tsx - UPDATED INSTRUCTOR SECTION
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -18,7 +18,10 @@ import {
   Trophy,
   CreditCard,
   Shield,
-  Check
+  Check,
+  GraduationCap,
+  Briefcase,
+  Target
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -54,6 +57,11 @@ interface Instructor {
   rating: number;
   students: string;
   bio: string;
+  qualifications: string[];
+  expertise: string[];
+  projects: string[];
+  vision: string;
+  experience: string;
 }
 
 // ✅ COURSES DATA - YAHI FILE MEIN
@@ -338,16 +346,39 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
 
   const curriculum = getCourseCurriculum(courseId);
 
-  // Mock instructor data - course specific instructors
+  // ✅ UPDATED: Mock instructor data - Niraj Kumar for PLC course
   const getInstructorData = (courseId: string): Instructor => {
     const instructors: Record<string, Instructor> = {
       "plc-automation": {
-        name: "Rajesh Kumar",
-        title: "Industrial Automation Expert",
+        name: "Niraj Kumar",
+        title: "Industrial Automation & PLC Trainer",
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
         rating: 4.9,
-        students: "8K+",
-        bio: "With over 12 years of experience in industrial automation, Rajesh has trained thousands of engineers in PLC programming and automation systems across various industries."
+        students: "500+",
+        experience: "10+ years",
+        bio: "A highly skilled and passionate Industrial Automation Trainer with over 10 years of teaching and project implementation experience in PLC, SCADA, and Industrial Control Systems. Expert in developing industry-ready training modules that bridge academic concepts with real-world automation applications.",
+        qualifications: [
+          "B.Sc. (Physics)",
+          "M.Sc. (Electronics)", 
+          "M.Tech (Nanoscience & Nanotechnology)"
+        ],
+        expertise: [
+          "Siemens PLC (S7-200, S7-300, S7-400, S7-1200, S7-1500)",
+          "Allen Bradley (Logix Pro Simulator)",
+          "FESTO Automation Systems",
+          "Ladder Logic Programming",
+          "Functional Block Diagram (FBD)",
+          "Sequential Function Chart (SFC)",
+          "HMI Programming & I/O Configuration",
+          "Motor & Conveyor System Control"
+        ],
+        projects: [
+          "Door Module Automation System",
+          "Traffic Light Control Module", 
+          "Input/Output Simulation Module",
+          "Car Parking Automation System"
+        ],
+        vision: "To empower diploma and engineering students with the skills and confidence required to excel in modern industrial automation, ensuring they are job-ready from day one."
       },
       "digital-marketing": {
         name: "Priya Sharma",
@@ -355,7 +386,12 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
         avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b044?w=150&h=150&fit=crop&crop=face",
         rating: 4.8,
         students: "15K+",
-        bio: "Digital marketing expert with 8+ years of experience helping brands grow online. Specialized in SEO, social media marketing, and AI-powered marketing strategies."
+        experience: "8+ years",
+        bio: "Digital marketing expert with 8+ years of experience helping brands grow online. Specialized in SEO, social media marketing, and AI-powered marketing strategies.",
+        qualifications: ["MBA in Marketing", "Digital Marketing Certification"],
+        expertise: ["SEO", "Social Media Marketing", "PPC Advertising", "Content Strategy"],
+        projects: ["E-commerce Campaigns", "Brand Awareness Programs"],
+        vision: "Empowering students with practical digital marketing skills for the modern business landscape."
       },
       "tally-gst": {
         name: "Anil Verma",
@@ -363,7 +399,12 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
         avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
         rating: 4.9,
         students: "12K+",
-        bio: "CA with 10+ years of experience in accounting and taxation. Expert in Tally software, GST compliance, and financial reporting with practical industry knowledge."
+        experience: "10+ years",
+        bio: "CA with 10+ years of experience in accounting and taxation. Expert in Tally software, GST compliance, and financial reporting with practical industry knowledge.",
+        qualifications: ["Chartered Accountant", "GST Certification"],
+        expertise: ["Tally Prime", "GST Filing", "Financial Reporting", "Taxation"],
+        projects: ["Business Accounting Systems", "GST Compliance Projects"],
+        vision: "Making accounting and taxation accessible and practical for every student."
       }
     };
 
@@ -571,7 +612,7 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                   </Card>
                 </TabsContent>
 
-                {/* Instructor Tab Content */}
+                {/* ✅ UPDATED: Instructor Tab Content with Niraj Kumar's Data */}
                 <TabsContent value="instructor" className="space-y-4">
                   <Card>
                     <CardHeader>
@@ -597,10 +638,72 @@ export function CourseDetailsPage({ onNavigate, courseId = "plc-automation" }: C
                               <Users className="w-4 h-4" />
                               <span>{instructor.students} students</span>
                             </div>
+                            <div className="flex items-center gap-2">
+                              <Briefcase className="w-4 h-4" />
+                              <span>{instructor.experience} experience</span>
+                            </div>
                           </div>
-                          <p className="text-muted-foreground leading-relaxed">
+                          <p className="text-muted-foreground leading-relaxed mb-6">
                             {instructor.bio}
                           </p>
+
+                          {/* Qualifications */}
+                          <div className="mb-6">
+                            <h4 className="font-semibold mb-3 flex items-center gap-2">
+                              <GraduationCap className="w-4 h-4 text-blue-500" />
+                              Academic Qualifications
+                            </h4>
+                            <div className="space-y-2">
+                              {instructor.qualifications.map((qual, index) => (
+                                <div key={index} className="flex items-center gap-2 text-sm">
+                                  <CheckCircle className="w-4 h-4 text-green-500" />
+                                  <span>{qual}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Technical Expertise */}
+                          <div className="mb-6">
+                            <h4 className="font-semibold mb-3 flex items-center gap-2">
+                              <Award className="w-4 h-4 text-purple-500" />
+                              Technical Expertise
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {instructor.expertise.map((skill, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs">
+                                  {skill}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Key Projects */}
+                          <div className="mb-6">
+                            <h4 className="font-semibold mb-3 flex items-center gap-2">
+                              <Trophy className="w-4 h-4 text-orange-500" />
+                              Key Projects Executed
+                            </h4>
+                            <div className="space-y-2">
+                              {instructor.projects.map((project, index) => (
+                                <div key={index} className="flex items-center gap-2 text-sm">
+                                  <CheckCircle className="w-4 h-4 text-blue-500" />
+                                  <span>{project}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Vision */}
+                          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+                            <h4 className="font-semibold mb-2 flex items-center gap-2">
+                              <Target className="w-4 h-4 text-blue-600" />
+                              Vision as a Trainer
+                            </h4>
+                            <p className="text-sm text-blue-800 italic">
+                              "{instructor.vision}"
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </CardContent>

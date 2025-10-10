@@ -33,7 +33,7 @@ const ContactPage: React.FC = () => {
     },
     {
       id: 2,
-      name: "Abhayjot Singh",
+      name: "Abhayjot Singh Grover",
       role: "Director",
       department: "Academics, Training & Placement",
       qualification: "IIT Alumnus",
@@ -54,7 +54,7 @@ const ContactPage: React.FC = () => {
       photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
       achievements: "Built complete digital learning ecosystem from ground up"
     },
-    {
+    /*{
       id: 4,
       name: "Suraj Yadav",
       role: "Marketing & Corporate Relations Lead",
@@ -64,7 +64,7 @@ const ContactPage: React.FC = () => {
       expertise: ["Digital Marketing", "Corporate Relations", "Partnership Development", "Student Enrollment"],
       photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=face",
       achievements: "Connecting thousands of students to meaningful career opportunities"
-    }
+    }*/
   ];
 
   const courses = [
@@ -276,7 +276,7 @@ const ContactPage: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="font-medium text-gray-900 text-sm">Phone</h4>
-                      <a href="tel:+91-7274803306" className="text-gray-600 hover:text-blue-600 text-sm">+91-7274803306</a>
+                      <a href="tel:+91-8700522408" className="text-gray-600 hover:text-blue-600 text-sm">+91-8700522408</a>
                     </div>
                   </div>
 
@@ -286,7 +286,7 @@ const ContactPage: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="font-medium text-gray-900 text-sm">WhatsApp</h4>
-                      <a href="https://wa.me/7274803306" className="text-gray-600 hover:text-green-600 text-sm">+91-7274803306</a>
+                      <a href="https://wa.me/8700522408" className="text-gray-600 hover:text-green-600 text-sm">+91-8700522408</a>
                     </div>
                   </div>
 

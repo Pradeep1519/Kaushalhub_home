@@ -278,7 +278,7 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="border-t border-gray-800 mt-6 pt-6 max-w-7xl mx-auto w-full">
           <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
             <div className="text-gray-400 text-sm text-center lg:text-left order-2 lg:order-1">
-              © 2024 KaushalHub NaukriPath Private Limited. All rights reserved.
+              © 2025 KaushalHub NaukriPath Private Limited. All rights reserved.
             </div>
             
             <div className="flex flex-wrap justify-center gap-4 text-sm order-1 lg:order-2">
