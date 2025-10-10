@@ -120,7 +120,7 @@ export function CTABanner({ onNavigate }: CTABannerProps) {
                 >
                   <Star className="w-4 h-4 text-blue-600 dark:text-blue-400 fill-current" />
                   <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    Trusted by 10,000+ Students
+                    Trusted by 2,000+ Students
                   </span>
                 </motion.div>
 

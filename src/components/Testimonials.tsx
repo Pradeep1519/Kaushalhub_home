@@ -30,7 +30,7 @@ const testimonials = [
     name: "Sneha Patel",
     role: "Digital Marketing Manager at ViralBulls Digital Media",
     image: "https://images.unsplash.com/photo-1561065533-316e3142d586?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMHN0dWRlbnQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NTczMTk3OTh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    testimonial: "EduTech's Digital Marketing course gave me practical skills that I use daily. The real campaign projects and latest industry trends covered in the course helped me secure my dream job at Flipkart.",
+    testimonial: "Kaushalhub's Digital Marketing course gave me practical skills that I use daily. The real campaign projects and latest industry trends covered in the course helped me secure my dream job at Flipkart.",
     rating: 5,
     course: "Digital Marketing"
   },
