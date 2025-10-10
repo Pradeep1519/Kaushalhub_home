@@ -34,15 +34,15 @@ const journeySteps = [
     id:5,
     icon: MoveUpIcon,
     title: "Mock Interviews & Aptitude Training",
-    description: "",
+    description: "Boost confidence with expert mock interviews and aptitude training to enhance problem-solving, communication, and job readiness skills for success.",
     color: "red",
   },
   {
     id: 6,
     icon: Umbrella,
     title: "Direct Placement Opportunitues",
-    description: "",
-    color: "blue"
+    description: "Get direct placement opportunities with top companies through our network, connecting skilled candidates to the right career paths effortlessly.",
+    color: "blue" 
   }
 ];
 

@@ -137,8 +137,9 @@ export function Footer({ onNavigate }: FooterProps) {
               </div>
               
               <p className="text-gray-400 text-sm leading-relaxed text-left max-w-md">
-                Empowering learners worldwide with cutting-edge education technology. 
-                Transform your career with our expert-led courses and industry-relevant curriculum.
+                KaushalHub NaukriPath Private Limited Recognized by Ministry of Corporate Affairs (Govt. of India) | MSME | Startup India
+                Empowering India’s youth with industry-ready skills and career-focused learning.
+                We bridge the gap between education and employment through expert-led training, Govt.-recognized certifications, and real job opportunities.
               </p>
               
               <div className="flex justify-start space-x-3">

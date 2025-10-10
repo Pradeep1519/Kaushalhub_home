@@ -55,9 +55,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   // Animated counter effect
   useEffect(() => {
     const targets = {
-      students: 12500,
-      placement: 99,
-      mentors: 20,
+      students: 2000,
+      placement: 100,
+      mentors: 50,
       courses: 3,
       hours: 5000,
       countries: 1
@@ -217,25 +217,25 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
     {
       step: "01",
       title: "Learn Concepts",
-      description: "Interactive video lectures by industry experts",
+      description: "Master real-world concepts through interactive sessions, live classes, and self-paced modules designed by industry professionals.",
       icon: <Play className="w-5 h-5 md:w-6 md:h-6" />
     },
     {
       step: "02",
       title: "Practice Skills",
-      description: "Hands-on coding exercises and assignments",
+      description: "Apply what you learn through hands-on projects, case studies, and assessments that simulate actual job scenarios.",
       icon: <BookOpen className="w-5 h-5 md:w-6 md:h-6" />
     },
     {
       step: "03",
       title: "Build Projects",
-      description: "Real-world projects for your portfolio",
+      description: "Showcase your skills with certified projects and build an impressive profile that gets noticed by recruiters.",
       icon: <Laptop className="w-5 h-5 md:w-6 md:h-6" />
     },
     {
       step: "04",
-      title: "Get Certified",
-      description: "Govt. recognized certificate and placement",
+      title: "Get Hired",
+      description: "Receive placement assistance, interview preparation, and referrals from our hiring partners to launch your dream career.",
       icon: <Award className="w-5 h-5 md:w-6 md:h-6" />
     }
   ];
@@ -312,11 +312,11 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">
-                  Future
+                  Learn
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Starts Here
+                  Grow. Get Hired
                 </span>
               </motion.h1>
               
@@ -326,10 +326,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                Where <span className="font-bold text-blue-600">innovation</span> meets {' '}
-                <span className="font-bold text-purple-600">education</span>, creating {' '}
-                <span className="font-bold text-teal-600">future-ready</span> professionals
-                for the digital economy
+                Where <span className="font-bold text-blue-600">KaushalHub NaukriPath</span> empowers India’s youth with hands-on training {' '}
+                <span className="font-bold text-purple-600">expert mentorship</span>, nd real job placements {' '}
+                <span className="font-bold text-teal-600">Join 2,000+ students</span> who started their journey toward success with us!
               </motion.p>
 
               {/* Single Button */}
@@ -346,7 +345,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                   glowEffect
                 >
                   <Zap className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3" />
-                  Explore All Courses
+                  🎯 Start Your Career Now
                 </AnimatedButton>
               </motion.div>
 
@@ -358,9 +357,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                 transition={{ duration: 0.8, delay: 0.9 }}
               >
                 {[
-                  { number: "10K+", label: "Students" },
-                  { number: "99%", label: "Success Rate" },
-                  { number: "25+", label: "Mentors" }
+                  { number: "2K+", label: "Students" },
+                  { number: "100%", label: "Success Rate" },
+                  { number: "50+", label: "Mentors" }
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
                     <div className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{stat.number}</div>
