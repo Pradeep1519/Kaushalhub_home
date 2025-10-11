@@ -82,7 +82,7 @@ export function Hero({ onNavigate }: HeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
-                Industry-Designwd courses, live projects & 100% placement assistance (or 30% refund*)
+                Industry-Designed courses, live projects & 100% placement assistance (or 30% refund*)
                 Enroll with just ₹5,000. Easy EMI available
                 Kaushalhub NaukriPath Private Limited-MSME Registered. 
                 Placement-first Training

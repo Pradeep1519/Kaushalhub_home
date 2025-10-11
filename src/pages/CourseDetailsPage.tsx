@@ -1,4 +1,4 @@
-// src/pages/CourseDetailsPage.tsx - COMPLETE FIXED VERSION
+// src/pages/CourseDetailsPage.tsx - WITH MODULES
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useParams } from "react-router-dom";
@@ -22,7 +22,8 @@ import {
   Check,
   GraduationCap,
   Briefcase,
-  Target
+  Target,
+  Layers
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -42,10 +43,13 @@ interface CourseDetailsPageProps {
 interface CurriculumModule {
   id: string;
   title: string;
+  module: string;
+  duration: string;
   lessons: {
     id: string;
     title: string;
     type: 'video' | 'text' | 'quiz' | 'project';
+    duration?: string;
     isCompleted?: boolean;
   }[];
 }
@@ -139,74 +143,86 @@ export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPagePro
     );
   }
 
-  // ✅ UPDATED: Course-specific curriculum data with actual course modules
+  // ✅ UPDATED: Course-specific curriculum data with MODULES
   const getCourseCurriculum = (courseId: string): CurriculumModule[] => {
     const curriculumMap: Record<string, CurriculumModule[]> = {
       "plc-automation": [
         {
           id: "module-1",
-          title: "Introduction to Automation",
+          title: "Introduction to Automation & PLC Basics",
+          module: "Module 1",
+          duration: "2 Weeks",
           lessons: [
-            { id: "1-1", title: "Basics of Electrical & Control Systems", type: "video" },
-            { id: "1-2", title: "PLC Hardware Overview (Siemens, Allen Bradley, FESTO)", type: "video" },
-            { id: "1-3", title: "PLC Programming Basics (Ladder Logic, Inputs/Outputs)", type: "video" },
-            { id: "1-4", title: "Electrical Safety Standards", type: "text" },
-            { id: "1-5", title: "Basic Control Circuits Quiz", type: "quiz" }
+            { id: "1-1", title: "Basics of Electrical & Control Systems", type: "video", duration: "45 min" },
+            { id: "1-2", title: "PLC Hardware Overview (Siemens, Allen Bradley, FESTO)", type: "video", duration: "60 min" },
+            { id: "1-3", title: "PLC Programming Basics (Ladder Logic, Inputs/Outputs)", type: "video", duration: "75 min" },
+            { id: "1-4", title: "Electrical Safety Standards", type: "text", duration: "30 min" },
+            { id: "1-5", title: "Basic Control Circuits Quiz", type: "quiz", duration: "20 min" }
           ]
         },
         {
           id: "module-2",
-          title: "Timers & Counters in PLC",
+          title: "Timers, Counters & Basic Applications",
+          module: "Module 2",
+          duration: "2 Weeks",
           lessons: [
-            { id: "2-1", title: "On-Delay / Off-Delay Timers", type: "video" },
-            { id: "2-2", title: "Up/Down Counters Programming", type: "video" },
-            { id: "2-3", title: "Timer Applications in Real Systems", type: "video" },
-            { id: "2-4", title: "Counter Applications in Industry", type: "text" },
-            { id: "2-5", title: "Traffic Light Automation Project", type: "project" }
+            { id: "2-1", title: "On-Delay / Off-Delay Timers", type: "video", duration: "50 min" },
+            { id: "2-2", title: "Up/Down Counters Programming", type: "video", duration: "55 min" },
+            { id: "2-3", title: "Timer Applications in Real Systems", type: "video", duration: "65 min" },
+            { id: "2-4", title: "Counter Applications in Industry", type: "text", duration: "35 min" },
+            { id: "2-5", title: "Traffic Light Automation Project", type: "project", duration: "3 hours" }
           ]
         },
         {
           id: "module-3",
           title: "Advanced PLC Programming",
+          module: "Module 3",
+          duration: "2 Weeks",
           lessons: [
-            { id: "3-1", title: "Shift Registers & Data Handling", type: "video" },
-            { id: "3-2", title: "Comparators & Math Functions", type: "video" },
-            { id: "3-3", title: "Real-Time Project: Car Parking Module", type: "video" },
-            { id: "3-4", title: "Safety Standards in Industrial Automation", type: "text" },
-            { id: "3-5", title: "Advanced Logic Implementation Quiz", type: "quiz" }
+            { id: "3-1", title: "Shift Registers & Data Handling", type: "video", duration: "70 min" },
+            { id: "3-2", title: "Comparators & Math Functions", type: "video", duration: "60 min" },
+            { id: "3-3", title: "Real-Time Project: Car Parking Module", type: "video", duration: "80 min" },
+            { id: "3-4", title: "Safety Standards in Industrial Automation", type: "text", duration: "40 min" },
+            { id: "3-5", title: "Advanced Logic Implementation Quiz", type: "quiz", duration: "25 min" }
           ]
         },
         {
           id: "module-4",
           title: "Practical PLC Applications",
+          module: "Module 4",
+          duration: "2 Weeks",
           lessons: [
-            { id: "4-1", title: "Motor Starter & Stopper Circuits", type: "video" },
-            { id: "4-2", title: "Water Tank Level Control Project", type: "video" },
-            { id: "4-3", title: "Conveyor Belt Control Simulation", type: "video" },
-            { id: "4-4", title: "Industrial Sensor Integration", type: "text" },
-            { id: "4-5", title: "Motor Control Practical Assignment", type: "project" }
+            { id: "4-1", title: "Motor Starter & Stopper Circuits", type: "video", duration: "55 min" },
+            { id: "4-2", title: "Water Tank Level Control Project", type: "video", duration: "70 min" },
+            { id: "4-3", title: "Conveyor Belt Control Simulation", type: "video", duration: "65 min" },
+            { id: "4-4", title: "Industrial Sensor Integration", type: "text", duration: "45 min" },
+            { id: "4-5", title: "Motor Control Practical Assignment", type: "project", duration: "4 hours" }
           ]
         },
         {
           id: "module-5",
           title: "Industry-Oriented Projects",
+          module: "Module 5",
+          duration: "2 Weeks",
           lessons: [
-            { id: "5-1", title: "Lift / Elevator Control Logic", type: "video" },
-            { id: "5-2", title: "Bottle Filling Plant Simulation", type: "video" },
-            { id: "5-3", title: "Production Line Control Systems", type: "video" },
-            { id: "5-4", title: "Online Hands-on Assignments with PLC Software", type: "text" },
-            { id: "5-5", title: "Industrial Automation Case Studies", type: "quiz" }
+            { id: "5-1", title: "Lift / Elevator Control Logic", type: "video", duration: "75 min" },
+            { id: "5-2", title: "Bottle Filling Plant Simulation", type: "video", duration: "80 min" },
+            { id: "5-3", title: "Production Line Control Systems", type: "video", duration: "70 min" },
+            { id: "5-4", title: "Online Hands-on Assignments with PLC Software", type: "text", duration: "50 min" },
+            { id: "5-5", title: "Industrial Automation Case Studies", type: "quiz", duration: "30 min" }
           ]
         },
         {
           id: "module-6",
           title: "Capstone Project + Placement Prep",
+          module: "Module 6",
+          duration: "2 Weeks",
           lessons: [
-            { id: "6-1", title: "Final Project: Production Line Simulation", type: "project" },
-            { id: "6-2", title: "Resume & LinkedIn for Core Jobs", type: "text" },
-            { id: "6-3", title: "Mock Interviews with Industry Experts", type: "video" },
-            { id: "6-4", title: "Career Guidance Session", type: "text" },
-            { id: "6-5", title: "Placement Assistance Orientation", type: "text" }
+            { id: "6-1", title: "Final Project: Production Line Simulation", type: "project", duration: "8 hours" },
+            { id: "6-2", title: "Resume & LinkedIn for Core Jobs", type: "text", duration: "60 min" },
+            { id: "6-3", title: "Mock Interviews with Industry Experts", type: "video", duration: "90 min" },
+            { id: "6-4", title: "Career Guidance Session", type: "text", duration: "45 min" },
+            { id: "6-5", title: "Placement Assistance Orientation", type: "text", duration: "40 min" }
           ]
         }
       ],
@@ -214,67 +230,79 @@ export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPagePro
         {
           id: "module-1",
           title: "Introduction to Digital Marketing",
+          module: "Module 1",
+          duration: "2 Weeks",
           lessons: [
-            { id: "1-1", title: "Basics of SEO, SEM, Google Search Console", type: "video" },
-            { id: "1-2", title: "Social Media Platforms Overview (FB, Insta, LinkedIn)", type: "video" },
-            { id: "1-3", title: "AI Tools for Content Creation (ChatGPT, Jasper, Canva AI)", type: "video" },
-            { id: "1-4", title: "Digital Marketing Fundamentals Quiz", type: "quiz" },
-            { id: "1-5", title: "Market Research Basics", type: "text" }
+            { id: "1-1", title: "Basics of SEO, SEM, Google Search Console", type: "video", duration: "50 min" },
+            { id: "1-2", title: "Social Media Platforms Overview (FB, Insta, LinkedIn)", type: "video", duration: "65 min" },
+            { id: "1-3", title: "AI Tools for Content Creation (ChatGPT, Jasper, Canva AI)", type: "video", duration: "70 min" },
+            { id: "1-4", title: "Digital Marketing Fundamentals Quiz", type: "quiz", duration: "25 min" },
+            { id: "1-5", title: "Market Research Basics", type: "text", duration: "40 min" }
           ]
         },
         {
           id: "module-2",
           title: "SEO & Content Marketing",
+          module: "Module 2",
+          duration: "2 Weeks",
           lessons: [
-            { id: "2-1", title: "Keyword Research & On-Page SEO", type: "video" },
-            { id: "2-2", title: "Off-Page SEO & Backlinking Strategies", type: "video" },
-            { id: "2-3", title: "Writing Blogs & Optimizing with AI", type: "video" },
-            { id: "2-4", title: "Content Strategy Development", type: "text" },
-            { id: "2-5", title: "SEO Audit Project", type: "project" }
+            { id: "2-1", title: "Keyword Research & On-Page SEO", type: "video", duration: "60 min" },
+            { id: "2-2", title: "Off-Page SEO & Backlinking Strategies", type: "video", duration: "55 min" },
+            { id: "2-3", title: "Writing Blogs & Optimizing with AI", type: "video", duration: "75 min" },
+            { id: "2-4", title: "Content Strategy Development", type: "text", duration: "45 min" },
+            { id: "2-5", title: "SEO Audit Project", type: "project", duration: "3 hours" }
           ]
         },
         {
           id: "module-3",
           title: "Paid Marketing & Analytics",
+          module: "Module 3",
+          duration: "2 Weeks",
           lessons: [
-            { id: "3-1", title: "Google Ads (Search, Display, Video)", type: "video" },
-            { id: "3-2", title: "Facebook & Instagram Ads Campaign Setup", type: "video" },
-            { id: "3-3", title: "Analytics Tools (Google Analytics, Meta Business Suite)", type: "video" },
-            { id: "3-4", title: "ROI Calculation & Performance Metrics", type: "text" },
-            { id: "3-5", title: "Ad Campaign Analysis Quiz", type: "quiz" }
+            { id: "3-1", title: "Google Ads (Search, Display, Video)", type: "video", duration: "80 min" },
+            { id: "3-2", title: "Facebook & Instagram Ads Campaign Setup", type: "video", duration: "70 min" },
+            { id: "3-3", title: "Analytics Tools (Google Analytics, Meta Business Suite)", type: "video", duration: "65 min" },
+            { id: "3-4", title: "ROI Calculation & Performance Metrics", type: "text", duration: "50 min" },
+            { id: "3-5", title: "Ad Campaign Analysis Quiz", type: "quiz", duration: "30 min" }
           ]
         },
         {
           id: "module-4",
           title: "E-commerce Marketing",
+          module: "Module 4",
+          duration: "2 Weeks",
           lessons: [
-            { id: "4-1", title: "Amazon, Flipkart, Shopify Store Setup", type: "video" },
-            { id: "4-2", title: "Product Listing Optimization Techniques", type: "video" },
-            { id: "4-3", title: "Running Ads for E-commerce Products", type: "video" },
-            { id: "4-4", title: "E-commerce Analytics & Reporting", type: "text" },
-            { id: "4-5", title: "E-commerce Store Optimization Project", type: "project" }
+            { id: "4-1", title: "Amazon, Flipkart, Shopify Store Setup", type: "video", duration: "75 min" },
+            { id: "4-2", title: "Product Listing Optimization Techniques", type: "video", duration: "60 min" },
+            { id: "4-3", title: "Running Ads for E-commerce Products", type: "video", duration: "70 min" },
+            { id: "4-4", title: "E-commerce Analytics & Reporting", type: "text", duration: "45 min" },
+            { id: "4-5", title: "E-commerce Store Optimization Project", type: "project", duration: "4 hours" }
           ]
         },
         {
           id: "module-5",
           title: "Advanced Digital Marketing",
+          module: "Module 5",
+          duration: "2 Weeks",
           lessons: [
-            { id: "5-1", title: "Email Marketing Automation (Mailchimp, AI Tools)", type: "video" },
-            { id: "5-2", title: "WhatsApp Business Marketing Strategies", type: "video" },
-            { id: "5-3", title: "Influencer & Affiliate Marketing", type: "video" },
-            { id: "5-4", title: "Marketing Automation Workflows", type: "text" },
-            { id: "5-5", title: "Advanced Marketing Strategies Quiz", type: "quiz" }
+            { id: "5-1", title: "Email Marketing Automation (Mailchimp, AI Tools)", type: "video", duration: "65 min" },
+            { id: "5-2", title: "WhatsApp Business Marketing Strategies", type: "video", duration: "55 min" },
+            { id: "5-3", title: "Influencer & Affiliate Marketing", type: "video", duration: "70 min" },
+            { id: "5-4", title: "Marketing Automation Workflows", type: "text", duration: "40 min" },
+            { id: "5-5", title: "Advanced Marketing Strategies Quiz", type: "quiz", duration: "25 min" }
           ]
         },
         {
           id: "module-6",
           title: "Capstone Project + Placement Prep",
+          module: "Module 6",
+          duration: "2 Weeks",
           lessons: [
-            { id: "6-1", title: "Create a Live Campaign for a Real Business", type: "project" },
-            { id: "6-2", title: "Analyze Performance Report", type: "text" },
-            { id: "6-3", title: "Resume Making & LinkedIn Profile Setup", type: "text" },
-            { id: "6-4", title: "Mock Interview Preparation", type: "video" },
-            { id: "6-5", title: "Portfolio Development Session", type: "text" }
+            { id: "6-1", title: "Create a Live Campaign for a Real Business", type: "project", duration: "6 hours" },
+            { id: "6-2", title: "Analyze Performance Report", type: "text", duration: "50 min" },
+            { id: "6-3", title: "Resume Making & LinkedIn Profile Setup", type: "text", duration: "60 min" },
+            { id: "6-4", title: "Mock Interview Preparation", type: "video", duration: "80 min" },
+            { id: "6-5", title: "Portfolio Development Session", type: "text", duration: "45 min" }
           ]
         }
       ],
@@ -282,67 +310,79 @@ export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPagePro
         {
           id: "module-1",
           title: "Accounting Fundamentals & Tally Basics",
+          module: "Module 1",
+          duration: "2 Weeks",
           lessons: [
-            { id: "1-1", title: "Basics of Accounting & Financial Statements", type: "video" },
-            { id: "1-2", title: "Introduction to Tally Prime Interface", type: "video" },
-            { id: "1-3", title: "Creating Ledgers & Vouchers", type: "video" },
-            { id: "1-4", title: "Accounting Principles Overview", type: "text" },
-            { id: "1-5", title: "Basic Accounting Quiz", type: "quiz" }
+            { id: "1-1", title: "Basics of Accounting & Financial Statements", type: "video", duration: "55 min" },
+            { id: "1-2", title: "Introduction to Tally Prime Interface", type: "video", duration: "50 min" },
+            { id: "1-3", title: "Creating Ledgers & Vouchers", type: "video", duration: "65 min" },
+            { id: "1-4", title: "Accounting Principles Overview", type: "text", duration: "35 min" },
+            { id: "1-5", title: "Basic Accounting Quiz", type: "quiz", duration: "20 min" }
           ]
         },
         {
           id: "module-2",
           title: "GST & Compliance",
+          module: "Module 2",
+          duration: "2 Weeks",
           lessons: [
-            { id: "2-1", title: "GST Concepts (CGST, SGST, IGST)", type: "video" },
-            { id: "2-2", title: "GST Filing & Returns in Tally", type: "video" },
-            { id: "2-3", title: "E-Way Bills, TDS, Payroll Functions", type: "video" },
-            { id: "2-4", title: "GST Compliance Guidelines", type: "text" },
-            { id: "2-5", title: "GST Filing Practical Assignment", type: "project" }
+            { id: "2-1", title: "GST Concepts (CGST, SGST, IGST)", type: "video", duration: "60 min" },
+            { id: "2-2", title: "GST Filing & Returns in Tally", type: "video", duration: "70 min" },
+            { id: "2-3", title: "E-Way Bills, TDS, Payroll Functions", type: "video", duration: "75 min" },
+            { id: "2-4", title: "GST Compliance Guidelines", type: "text", duration: "40 min" },
+            { id: "2-5", title: "GST Filing Practical Assignment", type: "project", duration: "3 hours" }
           ]
         },
         {
           id: "module-3",
           title: "Advanced Excel Part 1",
+          module: "Module 3",
+          duration: "2 Weeks",
           lessons: [
-            { id: "3-1", title: "Excel Formulas, Functions (SUM, IF, COUNTIF)", type: "video" },
-            { id: "3-2", title: "Lookup Functions (VLOOKUP, HLOOKUP, XLOOKUP)", type: "video" },
-            { id: "3-3", title: "Pivot Tables & Charts Creation", type: "video" },
-            { id: "3-4", title: "Data Analysis Techniques", type: "text" },
-            { id: "3-5", title: "Excel Functions Practice Quiz", type: "quiz" }
+            { id: "3-1", title: "Excel Formulas, Functions (SUM, IF, COUNTIF)", type: "video", duration: "65 min" },
+            { id: "3-2", title: "Lookup Functions (VLOOKUP, HLOOKUP, XLOOKUP)", type: "video", duration: "70 min" },
+            { id: "3-3", title: "Pivot Tables & Charts Creation", type: "video", duration: "60 min" },
+            { id: "3-4", title: "Data Analysis Techniques", type: "text", duration: "45 min" },
+            { id: "3-5", title: "Excel Functions Practice Quiz", type: "quiz", duration: "25 min" }
           ]
         },
         {
           id: "module-4",
           title: "Advanced Excel Part 2",
+          module: "Module 4",
+          duration: "2 Weeks",
           lessons: [
-            { id: "4-1", title: "Dashboard Creation for Reports", type: "video" },
-            { id: "4-2", title: "Data Validation & Conditional Formatting", type: "video" },
-            { id: "4-3", title: "Excel for MIS Reports Generation", type: "video" },
-            { id: "4-4", title: "Advanced Reporting Techniques", type: "text" },
-            { id: "4-5", title: "Dashboard Development Project", type: "project" }
+            { id: "4-1", title: "Dashboard Creation for Reports", type: "video", duration: "75 min" },
+            { id: "4-2", title: "Data Validation & Conditional Formatting", type: "video", duration: "55 min" },
+            { id: "4-3", title: "Excel for MIS Reports Generation", type: "video", duration: "70 min" },
+            { id: "4-4", title: "Advanced Reporting Techniques", type: "text", duration: "40 min" },
+            { id: "4-5", title: "Dashboard Development Project", type: "project", duration: "4 hours" }
           ]
         },
         {
           id: "module-5",
           title: "MIS & Reporting",
+          module: "Module 5",
+          duration: "2 Weeks",
           lessons: [
-            { id: "5-1", title: "Creating Monthly Financial Reports", type: "video" },
-            { id: "5-2", title: "Automating Reports with Excel Macros", type: "video" },
-            { id: "5-3", title: "Case Study – Business Reporting", type: "video" },
-            { id: "5-4", title: "Financial Analysis Methods", type: "text" },
-            { id: "5-5", title: "MIS Reporting Quiz", type: "quiz" }
+            { id: "5-1", title: "Creating Monthly Financial Reports", type: "video", duration: "60 min" },
+            { id: "5-2", title: "Automating Reports with Excel Macros", type: "video", duration: "65 min" },
+            { id: "5-3", title: "Case Study – Business Reporting", type: "video", duration: "70 min" },
+            { id: "5-4", title: "Financial Analysis Methods", type: "text", duration: "45 min" },
+            { id: "5-5", title: "MIS Reporting Quiz", type: "quiz", duration: "30 min" }
           ]
         },
         {
           id: "module-6",
           title: "Capstone Project + Placement Prep",
+          module: "Module 6",
+          duration: "2 Weeks",
           lessons: [
-            { id: "6-1", title: "Preparing GST Return & MIS Dashboard", type: "project" },
-            { id: "6-2", title: "Resume Making & LinkedIn Profile", type: "text" },
-            { id: "6-3", title: "Mock Interviews Preparation", type: "video" },
-            { id: "6-4", title: "Career Guidance Session", type: "text" },
-            { id: "6-5", title: "Placement Assistance Process", type: "text" }
+            { id: "6-1", title: "Preparing GST Return & MIS Dashboard", type: "project", duration: "5 hours" },
+            { id: "6-2", title: "Resume Making & LinkedIn Profile", type: "text", duration: "55 min" },
+            { id: "6-3", title: "Mock Interviews Preparation", type: "video", duration: "75 min" },
+            { id: "6-4", title: "Career Guidance Session", type: "text", duration: "50 min" },
+            { id: "6-5", title: "Placement Assistance Process", type: "text", duration: "40 min" }
           ]
         }
       ]
@@ -565,13 +605,13 @@ export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPagePro
                   </TabsTrigger>
                 </TabsList>
 
-                {/* Curriculum Tab Content */}
+                {/* Curriculum Tab Content - UPDATED WITH MODULES */}
                 <TabsContent value="curriculum" className="space-y-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-xl">
                         <BookOpen className="w-5 h-5 text-blue-500" />
-                        Course Curriculum
+                        Course Curriculum - 6 Modules Program
                       </CardTitle>
                       <p className="text-muted-foreground">
                         {curriculum.length} modules • {totalLessons} lessons • {course.duration} Program
@@ -587,12 +627,25 @@ export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPagePro
                           transition={{ delay: moduleIndex * 0.1 }}
                         >
                           <div className="flex items-center justify-between mb-3">
-                            <h4 className="font-semibold text-lg">
-                              Module {moduleIndex + 1}: {module.title}
-                            </h4>
-                            <Badge variant="outline">
-                              {module.lessons.length} lessons
-                            </Badge>
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 px-3 py-1 rounded-full">
+                                <Layers className="w-4 h-4 text-purple-600" />
+                                <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                                  {module.module}
+                                </span>
+                              </div>
+                              <h4 className="font-semibold text-lg">
+                                {module.title}
+                              </h4>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                                {module.duration}
+                              </Badge>
+                              <Badge variant="outline">
+                                {module.lessons.length} lessons
+                              </Badge>
+                            </div>
                           </div>
                           <div className="space-y-2">
                             {module.lessons.map((lesson) => (
@@ -605,7 +658,14 @@ export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPagePro
                                   {lesson.type === 'text' && <FileText className="w-4 h-4 text-green-500" />}
                                   {lesson.type === 'quiz' && <Trophy className="w-4 h-4 text-orange-500" />}
                                   {lesson.type === 'project' && <Award className="w-4 h-4 text-purple-500" />}
-                                  <span className="text-sm">{lesson.title}</span>
+                                  <div className="flex-1">
+                                    <span className="text-sm">{lesson.title}</span>
+                                    {lesson.duration && (
+                                      <span className="text-xs text-muted-foreground ml-2">
+                                        ({lesson.duration})
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
                                 {lesson.isCompleted && (
                                   <CheckCircle className="w-4 h-4 text-green-500" />
@@ -874,18 +934,6 @@ export function CourseDetailsPage({ onNavigate, courseId }: CourseDetailsPagePro
                       </div>
                       <div className="text-xs text-green-600 dark:text-green-400">
                         100% Safe & Secure • SSL Encrypted
-                      </div>
-                    </div>
-
-                    <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      <div className="flex items-center justify-center gap-2 mb-1">
-                        <Check className="w-4 h-4 text-blue-600" />
-                        <div className="text-sm font-medium text-blue-800 dark:text-blue-300">
-                          7-Day Money Back Guarantee
-                        </div>
-                      </div>
-                      <div className="text-xs text-blue-600 dark:text-blue-400">
-                        Not satisfied? Get full refund within 7 days
                       </div>
                     </div>
                   </div>
